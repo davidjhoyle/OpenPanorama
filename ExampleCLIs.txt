@@ -1,0 +1,249 @@
+﻿-f "Test_Ballochroy_55.712_-5.6137.jpg" -r  -l "55.712,-5.6137" -a "3750"  -h 30 -d "Test Ballochroy, 55.712 -5.6137" -grid -fgrid -labels
+
+-f "East Loch Tarbert, Jura 55.973806, -5.837993.jpg" -r -l "55.973806, -5.837993" -h 16 -a "3750" -d "East Loch Tarbert, Jura 55.973806, -5.837993" -grid -fgrid -labels
+
+-f "Temple Wood, 56.123574, -5.498798.jpg" -r -l "56.123574, -5.498798" -h 22 -a "3750" -d "Temple Wood 56.123574, -5.498798" -grid -fgrid -labels
+
+-f "Cambletown NR72372125.jpg" -r -l "NR72372125" -a "3750" -d "Cambletown NR72372125" -grid -fgrid -labels
+
+-f "Cambletown 55.432022, -5.599366.jpg" -r -l "55.432022, -5.599366" -a "3750" -d "Cambletown 55.432022, -5.599366" -grid -fgrid -labels
+
+
+-f "Template Test Cambletown NR72372125.png" -r -l "NR72372125" -a "3750" -d "Template Test NR72372125" -grid -fgrid -labels -t 
+-tf "Template Test Cambletown NR72372125.png" -f "Template Test Cambletown NR72372125.jpg" -r -l "NR72372125" -a "3750" -d "Template Test NR72372125" -grid -fgrid -labels 
+
+
+-f "Template Test Cambletown NR72372125_P30.png" -r -l "NR72372125" -a "3750" -d "Template Test NR72372125" -grid -labels -t -p 30
+-tf "Template Test Cambletown NR72372125_P30.png" -f "Template Test Cambletown NR72372125_P30.jpg" -r -l "NR72372125" -a "3750" -d "Template Test NR72372125" -grid -labels -p 30
+
+-r -f "Sainters Circle_4500_SK008619_grid.jpg" -l "SK008619" -a "4500" -d "Sainters Circle, Stone Circle in Staffordshire, SK008619" -grid -fgrid
+
+-f "Dethick Moor_4500_SK3459_grid.jpg" -l "SK3459" -a "4500" -d "Dethick Moor, Stone Circle in Derbyshire, SK3459" -grid -fgrid
+
+-tf "C:\Users\David\Desktop\UK Stone Circles\TemplateImages\Dyffryn Lane Berriew_SJ2044101409.png" -f "Template Test Dyffryn Lane Berriew SJ2044101409.jpg" -r -l "SJ2044101409" -a "4000" -d "Dyffryn Lane Berriew Henge Powys SJ2044101409" -grid -labels -p 30
+
+D:\LAPYDAPY\Desktop\UK Stone Circles\CompletedImages\Dyffryn Lane Berriew_4000_SJ2044101409.jpg
+Location 52.6041989863057 -3.17492930198617, 84,SJ 2044 0140,Dyffryn Lane Berriew Henge Powys SJ2044101409
+Template Test Dyffryn Lane Berriew SJ2044101409.jpg,
+Location 52.6041989863057 -3.17492930198617, 84,SJ 2044 0140,Template Test SJ2044101409
+
+
+-r -f "Hermanesss Hill Shetland 60.836394 -0.885512_grid.jpg" -l "60.836394, -0.885512" -a "4500" -d "Hermanesss HIll Shetland 60.836394 -0.885512" -grid -h 205
+
+-r -f "Hermanesss Hill Shetland HP6068817576_grid.jpg" -l "HP6068817576" -a "4500" -d "Hermanesss Hill Shetland HP6068817576" -grid -h 205
+
+
+-r -f "bryn y castell sh61510161_fgrid.jpg" -l "sh61510161" -a "5000" -d "bryn y castell sh61510161" -grid -fgrid -max 80000 -h 110
+-r -f "bryn y castell sh61510161_grid_labels.jpg" -l "sh61510161" -a "5000" -d "bryn y castell sh61510161" -grid -labels -max 80000 -h 110
+
+-tf "Template Test Cambletown NR72372125.png" -f "Template Test Cambletown NR72372125_labels.jpg" -r -l "NR72372125" -a "3750" -d "Template Test NR72372125" -allgrids  -labels 
+
+
+-f "Syre A_4000_NC680430_srtm.jpg" -r -l "NC680430" -h 151 -a "4000" -d "Syre A_4000_NC680430 SRTM Data" -grid -srtm -max 20000 -labels -spots
+
+-f "Moel Y Llyn_4000_SN70109116_srtm.jpg" -r -l "52.5028059498414 -3.915171645562" -h 350 -a "4000" -d "Moel Y Llyn SN70109116 SRTM Data" -grid -srtm -max 80000 -labels -spots
+
+
+
+-f "Moel Y Llyn_4000_SN70109116_srtm.png" -r -l "52.5028059498414 -3.915171645562" -a "4000" -d "Moel Y Llyn SN70109116 SRTM Data Test" -t -mt -max 5000 -srtm
+
+-f "Moel Y Llyn_4000_SN70109116_labels_srtm.jpg" -r -l "52.5028059498414 -3.915171645562" -a "4000" -d "Moel Y Llyn SN70109116 SRTM Data Test"  -max 70000 -srtm -grid -fgrid -labels -spots 
+
+-f "Moel Y Llyn_4000_SN70109116_labels_2_srtm.jpg" -r -l "52.502893, -3.915191" -a "4000" -d "Moel Y Llyn SN70109116 SRTM Data Test"  -max 70000 -srtm -grid -fgrid -labels -spots
+
+-f "Moel Y Llyn_SN70109116_srtm.jpg" -r -l "52.502893, -3.915191" -a "3750,4000,4500,5000" -d "Moel Y Llyn SN70109116 SRTM Data Test" -max 5000 -srtm -mr -allgrids
+
+-f "tmp\Arthog Standing Stones_SH65261393.jpg" -l "SH65261393" -max 12000 -a "3750,4000,4500,5000" -d "Arthog Standing Stones, Stone Circle, Gwynedd, SH65261393" -r -srtm -mr -allgrids
+-f "Arthog Standing Stones_SH65261393.jpg" -l "SH65261393" -max 12000 -a "3750" -d "Arthog Standing Stones, Stone Circle, Gwynedd, SH65261393" -r -srtm -mr -allgrids
+
+-csv "C:\Users\David\Desktop\UK Stone Circles\MegP_Wales.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_England.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Scotland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Northern_Ireland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Ireland_(Southern).csv" -threads 4
+
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out c:\users\david\desktop\Completed  -json AllSites.json -threads 3 -ages "3750,4000,4500,5000" -csv "C:\Users\David\Desktop\UK Stone Circles\MegP_Wales.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_England.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Scotland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Northern_Ireland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Ireland_(Southern).csv"
+
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out c:\users\david\desktop\Completed -f "Arthog Standing Stones_SH65261393.jpg" -l "SH65261393" -max 12000 -a "3750" -d "Arthog Standing Stones, Stone Circle, Gwynedd, SH65261393" -r -srtm -mr -allgrids
+
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data"  -out c:\users\david\desktop\Completed -threads 1  -max 4000 -ages "3750,4000,4500,5000" -csv "C:\Users\David\Desktop\UK Stone Circles\MegP_Wales.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_England.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Scotland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Northern_Ireland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Ireland_(Southern).csv"
+
+
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out "D:\LAPYDAPY\Desktop\UK Stone Circles\SRTMImages" -aaaajson AllSites.json -threads 1 -a "3750,4000,4500,5000" -csv "C:\Users\David\Desktop\UK Stone Circles\ThomUK.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Wales.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_England.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Scotland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Northern_Ireland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Ireland_(Southern).csv" -srtm
+
+-json "UKIreland.json" -max 12000 -srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out "D:\LAPYDAPY\Desktop\UK Stone Circles\SRTMImages" -aaaajson AllSites.json -threads 1 -a "3750,4000,4500,5000" -csv "C:\Users\David\Desktop\UK Stone Circles\HoyleUK.csv,C:\Users\David\Desktop\UK Stone Circles\ThomUK.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Wales.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_England.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Scotland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Northern_Ireland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Ireland_(Southern).csv" -srtm
+
+-json "UKIreland.json" -max 12000 -srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out "D:\LAPYDAPY\Desktop\UK Stone Circles\SRTMImages" -aaaajson AllSites.json -threads 1 -a "3750,4000,4500,5000" -csv "C:\Users\David\Desktop\UK Stone Circles\HoyleUK.csv,C:\Users\David\Desktop\UK Stone Circles\ThomUK.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Wales.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_England.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Scotland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Northern_Ireland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Ireland_(Southern).csv" -srtm
+
+-json "UKShetland.json" -max 12000 -srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out "D:\LAPYDAPY\Desktop\UK Stone Circles\SRTMImages" -aaaajson AllSites.json -threads 1 -a "3750,4000,4500,5000" -csv "C:\Users\David\Desktop\UK Stone Circles\MegP_Shetland.csv" -srtm
+-json "UKIreland.json" -max 12000 -srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out "D:\LAPYDAPY\Desktop\UK Stone Circles\SRTMImages" -aaaajson AllSites.json -threads 1 -a "3750,4000,4500,5000" -csv "C:\Users\David\Desktop\UK Stone Circles\HoyleUK.csv,C:\Users\David\Desktop\UK Stone Circles\ThomUK.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Wales.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_England.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Scotland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Northern_Ireland.csv,C:\Users\David\Desktop\UK Stone Circles\MegP_Ireland_(Southern).csv" -srtm
+
+
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out c:\users\david\desktop\Completed -f "river-sligachan_ng49582662.jpg" -l "57.261436 -6.154468" -max 30000 -a "3750" -d "river-sligachan_ng49582662 isle-of-skye Stone-Circle 57.261436 -6.154468" -r -srtm -mr -allgrids
+
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out c:\users\david\desktop\Completed -f "arthog-standing-stones_sh65261393.jpg" -l "52.706217 -3.995713" -max 30000 -a "3750" -d "arthog-standing-stones_sh65261393 52.706217 -3.995713" -r -srtm -mr -allgrids
+
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out c:\users\david\desktop\Completed -f "Cylch Cerrig Glas SN1259836324.jpg" -l "SN1259836324" -max 12000 -a "3750" -d "Cylch Cerrig Glas SN1259836324" -r -srtm -mr -allgrids
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out c:\users\david\desktop\Completed -f "Cylch Cerrig Glas 51.999081 -4.744722.jpg" -l "51.999081 -4.744722" -max 12000 -a "3750" -d "Cylch Cerrig Glas 51.999081 -4.744722" -r -srtm -mr -allgrids
+
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out c:\users\david\desktop\Completed -f "Moel Y Llyn 51.999081 -4.744722.jpg" -l "52.502819 -3.915172" -max 80000 -a "3750" -d "Moel Y Llyn 52.502819 -3.915172" -r -srtm -mr -allgrids
+-json "MoelYLlyn.json" -max 80000 -srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out "C:\Users\David\Documents\Visual Studio 2017\Projects\MapParser\GenSunMoonSky\bin\Debug" -json MoelYLlyn.json -threads 1 -a "3750" -csv "MoelYLlyn.csv" -srtm
+
+
+-srtmFolder "C:\Users\David\Desktop\SRTM Data" -osFolder "C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data" -out "testout" -threads 4 -a "3750,4000,4500,5000" -csv "MegP_GreatBritain.csv" -srtm -max 200000 -contours -country uk -nospots -CountryLong GreatBritain -json "sites.txt" -locs -county areas.txt -countyHTML uk.html
+
+
+
+-lidar -r -f "Thirteen Stone Hill Lidar.jpg" -l "53.713688 -2.356021" -a "3750" -d "Thirteen Stone Hill Lidar 53.713688 -2.356021" -grid -h 341  -max 4000
+
+
+-lidar -lidarrange 5000 -lidarfolder "f:\LIDAR\" -srtm - -r -f "Thirteen Stone Hill Lidar.jpg" -l "53.713688 -2.356021" -a "3750" -d "Thirteen Stone Hill Lidar 53.713688 -2.356021" -h 341 
+
+-lidar -lidarrange 10000 -lidarfolder "f:\LIDAR\" -srtm -contours -labels -spots -r -f "Thirteen Stone Hill Lidar.jpg" -l "53.713688 -2.356021" -a "3750" -d "Thirteen Stone Hill Lidar 53.713688 -2.356021" -h 341 
+
+-lidar -lidarrange 15000 -lidarfolder "f:\LIDAR\\" -srtm -contours -labels -spots -r -f "Thirteen Stone Hill Lidar.jpg" -l "53.713688 -2.356021" -a "3750" -d "Thirteen Stone Hill Lidar 53.713688 -2.356021" -h 343
+
+-lidar -lidarrange 15000 -lidarfolder "f:\LIDAR\\" -srtm -contours -labels -spots -r -f "Cocker Cobb Lidar.jpg" -l "53.727046 -2.395526" -a "3750" -d "Cocker Cobb Lidar 53.727046 -2.395526" -h 226
+
+
+-lidar -lidarrange 15000 -lidarfolder "f:\LIDAR\\" -r -f "tir-bach Lidar.jpg" -l "52.934418 -4.380602" -a "3750" -d "tir-bach Lidar Standing Stone (Menhir) 52.934418,-4.380602"
+
+-lidar -lidarrange 15000 -lidarfolder "f:\LIDAR\\" -r -f "tir-bach Lidar.jpg" -l "52.934959, -4.380318" -a "3750" -d "tir-bach Lidar Standing Stone (Menhir) 52.934959, -4.380318"
+
+-srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "f:\standingstonesorg\xx" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_Specials.csv" -srtm -lidar -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -max 200000 -contours -country xx -CountryLong Specials -nospots -json "f:\standingstonesorg\xx\sites.txt" -locs -county areas.txt -countyHTML xx.html
+
+-srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "f:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_GreatBritain.csv" -srtm -lidar -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -max 200000 -contours -country uk -CountryLong GreatBritain -json "f:\standingstonesorg\uk\sites.txt" -locs -county areas.txt -countyHTML uk.html
+-srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "f:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_GreatBritain.csv" -srtm -lidar -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -max 200000 -contours -country uk -CountryLong GreatBritain
+
+
+-drawJobs -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_GreatBritain.csv" -srtm -lidar -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -max 200000 -contours -country uk -CountryLong GreatBritain -match stanton-moor-4
+
+ -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_GreatBritain.csv"  -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -max 200000 -contours -country uk -CountryLong GreatBritain -match stanton-moor-4
+
+ -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_GreatBritain.csv"  -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -max 30000 -contours -country uk -CountryLong GreatBritain -match castlerigg
+
+
+ -srtm -drawJobs -contours   -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\im" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_IsleOfMan.csv"  -lidarrange 5000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\  -drawJobs -srtm -max 100000 -contours -country -nospots im -CountryLong IsleOfMan -match white
+
+ -srtm -drawJobs -contours   -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\es" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_Spain.csv"  -lidarrange 5000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\  -drawJobs -srtm -max 100000 -contours -country es -nospots -CountryLong Spain -region aragn -match barranco
+ 
+ -aaalidar -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_GreatBritain.csv"  -lidarrange 5000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -max 70000 -srtm -contours  -country uk -CountryLong GreatBritain -match "newchurch" -NegRange 5 -region anglesey
+ -aaalidar -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_GreatBritain.csv"  -lidarrange 5000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -max 70000 -srtm -contours  -country uk -CountryLong GreatBritain -match "newchurch" -NegRange 5 -region anglesey -xq
+
+
+ -stellarium -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750" -csv "CSVs\MegP_GreatBritain.csv"  -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -max 50000 -lidar -country uk -CountryLong GreatBritain -match "mitchell" -NegRange 5  -xq -mr -pp -ch -t    -AllSun -AllMoon
+
+  -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -DumpHeights "53,-4,2.777777777777778e-5,2.777777777777778e-4,51,101"
+
+  -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -DumpHeights "53.068053, -4.076761,2.777777777777778e-5,2.777777777777778e-5,101,101" > Snowdon.csv
+
+  -srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_GreatBritain.csv" -drawJobs -srtm -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -lidar -max 100000 -contours -country uk -CountryLong GreatBritain -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -match mitchell
+
+
+  -srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_GreatBritain.csv" -drawJobs -srtm -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\ -lidar -max 100000 -contours -country uk -CountryLong GreatBritain -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -match mitchell -p 180
+
+  -srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -l "54.602849 -3.098584" -a "3750" -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache f:\LIDARCACHE\  -max 20000 -contours -NegRange 5 -AllMoon -Solstice -Equinox -p 180
+
+  -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -srtm -max 10000  -NegRange 5 -xq  -nospots -AllSun -AllMoon -l "51.67241,-9.720918" -f "adrigole.jpg"
+
+  -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -srtm -max 40000  -NegRange 5 -xq  -nospots -AllSun -AllMoon -l "51.757194 -9.814921" -ProximalInterpolation -f "cashelkeelty-w-minecraft.jpg"
+
+  -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -contours -max 40000  -NegRange 5 -xq  -nospots -AllSun -AllMoon -l "54.602849 -3.098584" -ProximalInterpolation -f "castlerigg_ny29132363-minecraft.jpg"
+
+  -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -srtm -max 40000  -NegRange 5 -xq  -nospots -AllSun -AllMoon -l "51.658575 -9.067067" -ProximalInterpolation -f "lettergorman-stepped.jpg"
+
+   -ProximalInterpolation -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -srtm -max 40000  -NegRange 5 -xq  -nospots -AllSun -AllMoon -l "51.7571014074074 -9.81482840740741" -f "casheeltyw-opt-stepped.jpg"
+
+ -UpdateInterval 30 -UpdateJPG wip.jpg  -p 120 -out C:\Users\David\Documents -srtmFolder "C:\Users\David\AppData\Roaming\SRTM Data" -lidarrange 10000 -a "3750" -lidarfolder "f:\LIDAR" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\David\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "54.602849 -3.098584" -name castlerigg -d "Castlerigg Stone Circle 54.602849 -3.098584" -stellarium -pp -ch -t -max 10000 -min 70 -PosRange 20 -NegRange 5 -contours  -spots -labels -Solstice  -Equinox  -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i -ColourSea 000000 -ColourSky 00008B -ColourBase 006400 -ColourTops A52A2A -ColourDistant 696969 -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000
+
+
+  -lidarfolder "f:\LIDAR"   -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data"  -ProximalInterpolation  -l "52.566625, -2.950547" -DumpLIDAR "30"
+
+  -lidarfolder "f:\LIDAR"   -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data"  -l "52.5666, -2.9505" -CheckLIDAR 
+-lidarfolder "f:\LIDAR"   -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data"  -l "52.566627, -2.950538" -CheckLIDAR "4"  -spots -contours
+
+
+-country ie -p 120 -out C:\Users\David\Documents -srtmFolder "C:\Users\David\AppData\Roaming\SRTM Data" -lidarrange 10000 -a "3750" -lidarfolder "f:\LIDAR" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\David\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "53.69259,-6.462526" -name newgrange -d "newgrange 53.69259,-6.462526" -stellarium -pp -ch -t -max 100000 -min 70 -PosRange 20 -NegRange 5 -lidar -srtm -AllSun   -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i  
+
+-country ie -p 120 -lidar -srtm -out C:\Users\David\Documents -srtmFolder "C:\Users\David\AppData\Roaming\SRTM Data" -lidarrange 10000 -a "3750" -lidarfolder "f:\LIDAR" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\David\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "53.69259,-6.462526" -name newgrange -d "newgrange 53.69259,-6.462526" -stellarium -pp -ch -t -max 100000 -min 70 -PosRange 20 -NegRange 5  -AllSun   -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i
+
+-country uk -LAS C:\Users\David\Downloads\SO3595_P_10617_20200120_20200205.las -l "52.566644, -2.950546" -ASCSize 1000 -ASCFile "Nipstone.asc" -LIDARRes 1
+-country uk -LAS C:\Users\David\Downloads\SO3595_P_10617_20200120_20200205.las -l "52.566644, -2.950546" -ASCFile "SO3595_Patch.asc" -LIDARRes 1
+
+-country ie -p 120 -lidar -srtm -out C:\Users\David\Documents -srtmFolder "C:\Users\David\AppData\Roaming\SRTM Data" -lidarrange 10000 -a "3750" -lidarfolder "f:\LIDAR" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\David\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "53.69259,-6.462526" -name newgrange -d "newgrange 53.69259,-6.462526" -stellarium -pp -ch -t -max 100000 -min 70 -PosRange 20 -NegRange 5  -AllSun   -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i
+-country ie -p 120 -lidar -srtm -out C:\Users\David\Documents -srtmFolder "C:\Users\David\AppData\Roaming\SRTM Data" -lidarrange 10000 -a "3750" -lidarfolder "f:\LIDAR" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\David\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "54.054188,-8.37735" -name CarrowkeelCairnK -d "Carrowkeel Cairn K - 54.054188,-8.37735" -stellarium -pp -ch -t -max 100000 -min 70 -PosRange 20 -NegRange 5  -AllSun   -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i
+
+
+-country ie -p 120 -lidar -srtm -out C:\Users\David\Documents -srtmFolder "C:\Users\David\AppData\Roaming\SRTM Data" -lidarrange 10000 -a "3750" -lidarfolder "f:\LIDAR" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\David\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "54.054188,-8.37735" -name  CarrowkeelCairnK -d " Carrowkeel Cairn K - 54.054188,-8.37735" -stellarium -pp -ch -t -max 100000 -min 70 -PosRange 20 -NegRange 5  -AllSun   -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i
+
+-country ie -srtmFolder "C:\Users\David\AppData\Roaming\SRTM Data" -lidarfolder "f:\LIDAR" -lidarcache "f:\LIDARCACHE" -CreateLIDARCache
+
+
+-srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "f:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_Wales.csv"   -country uk -drawJobs -srtm -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache g:\LIDARCACHE\ -max 200000  -contours -lidar -MaxJobs 1  -CountryLong Wales  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 500
+-srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "f:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_Wales.csv"   -country uk -drawJobs -srtm -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache g:\LIDARCACHE\ -max 200000  -contours -lidar -MaxJobs 1  -CountryLong Wales  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 500  
+
+-srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "f:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_Scotland.csv"   -country uk -drawJobs -srtm -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache g:\LIDARCACHE\ -max 200000  -contours -lidar -MaxJobs 1  -CountryLong Scotland  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 50 -match "clach stei" 
+
+-srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000" -csv "CSVs\MegP_Scotland.csv"   -country uk -drawJobs -srtm -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache g:\LIDARCACHE\ -max 200000  -contours -lidar -MaxJobs 1  -CountryLong Scotland  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 50 -match "west-burra"
+
+-srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750" -csv "CSVs\MegP_Scotland.csv"   -country uk -drawJobs -srtm -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache g:\LIDARCACHE\ -max 200000   -MaxJobs 1  -CountryLong Scotland  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 50 -match "da-heights"
+
+-srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750" -csv "CSVs\MegP_Scotland.csv"   -country uk -drawJobs -srtm -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache g:\LIDARCACHE\ -max 200000   -MaxJobs 1  -CountryLong Scotland  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 50 -match "troswick"
+
+
+
+-srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "c:\standingstonesorg\uk" -threads 1 -a "3750" -csv "CSVs\MegP_Scotland.csv" -lidar -contours  -country uk -drawJobs -srtm -lidarrange 10000 -lidarfolder f:\LIDAR\ -lidarcache g:\LIDARCACHE\ -max 200000   -MaxJobs 1  -CountryLong Scotland  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 50 -match "west-burra"
+-srtmFolder "." -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -country uk -CacheOSMap 50 -CreateSRTMTiles 62000 -l "60.380195,-1.203591"
+
+
+
+
+ -UpdateInterval 30 -UpdateJPG wip_2684.jpg -r -NoLock  -p 120 -country "uk" -srtm -out C:\Users\david\OneDrive\Documents -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data" -lidarrange 10000 -lidar -a "3750" -lidarfolder "f:\LIDAR" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "60.320155 -1.701306" -name "doom-rings_hu166596" -d "doom-rings_hu166596 60.320155 -1.701306" -max 100000 -min 70 -PosRange 20 -NegRange 5 -contours  -spots -labels -Solstice  -Equinox  -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i -ColourSea 000000 -ColourSky 00008B -ColourBase 006400 -ColourTops A52A2A -ColourDistant 696969 -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.2
+
+
+ -country uk -LAS C:\Users\david\Desktop\LIDAR\National-LIDAR-Programme-Point-Cloud-2019-SX17nw\P_11828\SX1075_P_11828_20191202_20191202.las  -l "50.548277, -4.647619" -ASCFile "SX1075_Patch.asc" -LIDARRes 1
+
+
+ Panorama.exe -LAS C:\Users\david\Desktop\LIDAR\National-LIDAR-Programme-Point-Cloud-2020-SO39ne\P_10617\SO3595_P_10617_20200120_20200205.las -ASCFile Cranberry.asc -ASCSize 500 -l "52.576411, -2.938228"
+
+
+
+ panorama.exe  -r -NoLock  -p 180 -country "uk" -srtm  -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data"  -lidarfolder "d:\lidar" -lidarcache "d:\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "54.602849 -3.098584" -DumpLIDAR "0,0"
+
+
+
+ The following are to dump heights.
+panorama.exe  -lidar  -srtm  -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data"  -lidarfolder "d:\lidar" -lidarcache "d:\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "54.602849 -3.098584" -DumpHeights "0,0"
+panorama.exe  -lidar   -srtm  -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data"  -lidarfolder "c:\lidar" -lidarcache "c:\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "54.602849 -3.098584" -DumpHeights "0,0"
+C:\Users\david\source\repos\davidjhoyle\Panorama\Output\Panorama.exe -lidar   -srtm  -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data"  -lidarfolder "c:\lidar" -lidarcache "c:\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "54.602849 -3.098584" -DumpMultipleHeights "rawgpx.csv"
+C:\Users\david\source\repos\davidjhoyle\Panorama\Output\Panorama.exe -lidar   -srtm  -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data"  -lidarfolder "f:\lidar" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data"  -DumpMultipleHeights "UK_LakeDistrict2011.csv" -f UK_LakeDistrict2011.gpx
+
+
+C:\Users\david\source\repos\davidjhoyle\Panorama\Output\Panorama.exe   -srtm  -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data"  -lidarfolder "f:\lidar" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data"  -DumpMultipleHeights FR_ProvenceX.csv -f FR_ProvenceX.gpx
+
+C:\Users\david\source\repos\davidjhoyle\Panorama\Output\Panorama.exe   -srtm  -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data"  -lidarfolder "f:\lidar" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data"  -DumpMultipleHeights Etape-Du-Tour2013.csv -f Etape-Du-Tour2013.csv.gpx
+
+
+ -Skim -SkimCSV -SkimJSON -PP -Correlate -PPJSON -PPCSV -CorrelateCSV -CorrelateJSON  -srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "F:\standingstonesorg\xx" -threads 1 -a "3750,4000,4500,5000,0" -csv "CSVs\MegP_Specials.csv"   -country xx -srtm -lidarrange 12000 -lidarfolder F:\LIDAR\ -lidarcache F:\LIDARCache\ -max 200000  -contours -lidar -MaxJobs 1  -CountryLong Specials  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 20  -ColourSea 000000 -ColourSky 00008B -ColourBase 006400 -ColourTops A52A2A -ColourDistant 696969 -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3 -json "F:\standingstonesorg\xx\Specials.txt" -locs -county areasSpecials.txt -countyHTML Specials.html
+
+
+-Skim -SkimCSV -SkimJSON -PP -Correlate -PPJSON -PPCSV -CorrelateCSV -CorrelateJSON  -srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "F:\standingstonesorg\xx" -threads 1 -a "3750,4000,4500,5000,0" -csv "CSVs\MegP_Specials.csv"   -country xx -srtm -lidarrange 12000 -lidarfolder F:\LIDAR\ -lidarcache F:\LIDARCache\ -max 200000  -contours -lidar -MaxJobs 1  -CountryLong Specials  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 20  -ColourSea 000000 -ColourSky 00008B -ColourBase 006400 -ColourTops A52A2A -ColourDistant 696969 -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3 -json "F:\standingstonesorg\xx\Specials.txt" -locs -county areasSpecials.txt -countyHTML Specials.html
+
+
+-Skim -SkimCSV -SkimJSON -PP -Correlate -PPJSON -PPCSV -CorrelateCSV -CorrelateJSON  -srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "F:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000,0" -csv "CSVs\MegP_Scotland.csv"   -country uk -srtm -lidarrange 12000 -lidarfolder F:\LIDAR\ -lidarcache F:\LIDARCache\ -max 200000  -contours -lidar -MaxJobs 1  -CountryLong Scotland  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 20  -ColourSea 000000 -ColourSky 00008B -ColourBase 006400 -ColourTops A52A2A -ColourDistant 696969 -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3 -json "F:\standingstonesorg\uk\Scotland.txt" -locs -county areasScotland.txt -countyHTML Scotland.html
+
+-Skim -SkimCSV -SkimJSON -PP -Correlate -PPJSON -PPCSV -CorrelateCSV -CorrelateJSON  -srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "F:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000,0" -csv "CSVs\MegP_Wales.csv"   -country uk -srtm -lidarrange 12000 -lidarfolder F:\LIDAR\ -lidarcache F:\LIDARCache\ -max 200000  -contours -lidar -MaxJobs 1  -CountryLong Scotland  -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 20  -ColourSea 000000 -ColourSky 00008B -ColourBase 006400 -ColourTops A52A2A -ColourDistant 696969 -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3 -json "F:\standingstonesorg\uk\Wales.txt" -locs -county areasWales.txt -countyHTML Wales.html
+
+-l "53.0061938990135,-3.88975216740121" -srtmFolder "C:\Users\David\Appdata\roaming\SRTM Data" -osFolder "C:\Users\David\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -DumpHeights "50,50"
+
+
+-HiResHorizon -Skim -SkimCSV -SkimJSON -PP -Correlate -PPJSON -PPCSV -CorrelateCSV -CorrelateJSON  -srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "C:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000,0" -csv "CSVs\MegP_Wales.csv"   -country uk -srtm  -max 200000  -contours -MaxJobs 1  -CountryLong Wales -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 20  -ColourSea 000000 -ColourSky 00008B -ColourBase 006400 -ColourTops A52A2A -ColourDistant 696969 -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3 -json "C:\standingstonesorg\uk\Wales.txt" -locs -county areasWales.txt -countyHTML Wales.html
+
+-SaveDeclinPNG  -DeclinationPeakJSON -DeclinationPeakCSV -NoLock -HiResHorizon -Skim -SkimCSV -SkimJSON -PP -Correlate -PPJSON -PPCSV -CorrelateCSV -CorrelateJSON  -srtmFolder "C:\Users\david\Appdata\roaming\SRTM Data" -osFolder "C:\Users\david\Appdata\roaming\OS Terrain 50\terr50_cgml_gb\data" -out "C:\standingstonesorg\uk" -threads 1 -a "3750,4000,4500,5000,0" -csv "CSVs\MegP_Wales.csv"   -country uk -srtm  -max 200000  -contours -MaxJobs 1  -CountryLong Wales -NegRange 5 -mr -pp -ch -t -AllMoon -Solstice -Equinox -stellarium -allgrids -hzCSV  -xq -CacheOSMap 20  -ColourSea 000000 -ColourSky 00008B -ColourBase 006400 -ColourTops A52A2A -ColourDistant 696969 -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3 -json "C:\standingstonesorg\uk\Wales.txt" -locs -county areasWales.txt -countyHTML Wales.html
+
+ -r -NoLock  -p 120 -country "uk" -srtm -out C:\Users\david\OneDrive\Documents -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data" -lidarrange 13000 -a "3750" -lidarfolder "f:\lidar" -lidarcache "f:\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "52.6382413,-4.0351680" -name "Tyrgawen" -d "Tyrgawen 52.6382413, -4.0351680" -stellarium -max 140000 -min 90 -PosRange 20 -NegRange 5 -contours  -spots -labels -Solstice  -Equinox  -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i 
+
+ -r -NoLock  -p 120 -country "no" -srtm -out C:\Users\david\OneDrive\Documents -srtmFolder "c:\Users\david\AppData\Roaming\SRTM Data" -lidarrange 13000 -lidar -a "3750" -lidarfolder "d:\lidar" -lidarcache "d:\LIDARCACHE" -osFolder "D:\OS Terrain 50\terr50_cgml_gb\data" -l "61.364118 5.396911" -name "fjalerhuset-standing-stone" -d "fjalerhuset-standing-stone 61.364118 5.396911" -max 140000 -min 90 -PosRange 20 -NegRange 5 -Solstice  -Equinox  -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i -ColourSea 000000 -ColourSky 00008B -ColourBase 009500 -ColourTops B35900 -ColourDistant 8C8C8C -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3
+
+
+
+ -r -NoLock  -p 120 -country "no" -srtm -out C:\Users\david\OneDrive\Documents -LidarDebug -srtmFolder "c:\Users\david\AppData\Roaming\SRTM Data" -lidarrange 20000 -lidar -a "3750" -LIDARRes 10  -LIDARSize 100000 -lidarfolder "f:\lidar" -lidarcache "f:\LIDARCACHE" -osFolder "f:\OS Terrain 50\terr50_cgml_gb\data" -l "61.364118 5.396911" -name "fjalerhuset-standing-stone" -d "fjalerhuset-standing-stone 61.364118 5.396911" -max 140000 -min 90 -PosRange 20 -NegRange 5 -Solstice  -Equinox  -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i -ColourSea 000000 -ColourSky 00008B -ColourBase 009500 -ColourTops B35900 -ColourDistant 8C8C8C -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3
+ -r -NoLock  -p 120 -country "no" -srtm -out C:\Users\david\OneDrive\Documents -LidarDebug -srtmFolder "c:\Users\david\AppData\Roaming\SRTM Data" -lidarrange 20000 -lidar -a "3750" -LIDARRes 10  -LIDARSize 100000 -lidarfolder "f:\lidar" -lidarcache "f:\LIDARCACHE" -osFolder "f:\OS Terrain 50\terr50_cgml_gb\data" -l "61.364118 5.396911" -name "fjalerhuset-standing-stone" -d "nonshaugen-standing-stone 61.364118 5.396911" -max 140000 -min 90 -PosRange 20 -NegRange 5 -Solstice  -Equinox  -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i -ColourSea 000000 -ColourSky 00008B -ColourBase 009500 -ColourTops B35900 -ColourDistant 8C8C8C -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3
+
+ -UpdateInterval 30 -UpdateJPG wip_2276.jpg -r -NoLock  -p 120 -country "uk" -srtm -out C:\Users\david\OneDrive\Documents -srtmFolder "C:\Users\david\AppData\Roaming\SRTM Data" -lidarrange 10000 -lidar -a "3750" -lidarfolder "C:\Users\david\AppData\Roaming\LIDAR" -lidarcache "C:\Users\david\AppData\Roaming\LIDARCACHE" -osFolder "C:\Users\david\AppData\Roaming\OS Terrain 50\terr50_cgml_gb\data" -l "54.602849 -3.098584" -name "castlerigg" -d "Castlerigg Stone Circle 54.602849 -3.098584" -max 100000 -min 70 -PosRange 20 -NegRange 5 -contours  -spots -labels -Solstice  -Equinox  -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i -ColourSea 000000 -ColourSky 00008B -ColourBase 006400 -ColourTops A52A2A -ColourDistant 696969 -ColourSun FFFF00 -ColourMoon 808080 -ColourSaMText 000000 -ColourTitle FFFFFF -ColourCairns 006400 -ColourStones 2F4F4F -ColourSpotHeight 8B0000 -ColourReticleText 000000 -ColourReticleBackground FFFFFF -ColourReticleMajor 808080 -ColourReticleMinor D3D3D3 -ColourReticleHorizontal 000000 -ColourContrast 1.3
