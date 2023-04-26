@@ -98,10 +98,10 @@ namespace OpenPanoramaLib
         }
 
 
-        public static string GetLidarCacheFilename(string gridname)
+        public static string GetLidarCacheFilename(string gridname, string country)
         {
             // Is there a cached copy of the data we can use?
-            return LIDARCacheFolder + "BinCache_" + gridname + ".lid";
+            return LIDARCacheFolder + "BinCache_" + country + gridname + ".lid";
         }
 
 
@@ -272,7 +272,7 @@ namespace OpenPanoramaLib
         public static void SetCachedValuePointHeight(double x, double y, float height, countryEnum eCountry, int siz)
         {
             string gridname = GetGridName((int)x, (int)y, GetLidarSiz(), eCountry);
-            string fn = GetLidarCacheFilename(gridname);
+            string fn = GetLidarCacheFilename(gridname, eCountry.ToString());
 
             LidarBlock asc = GetCachedASC((int)x, (int)y, siz);
             if (asc == null)
@@ -1098,7 +1098,7 @@ namespace OpenPanoramaLib
                     aline = tr.ReadLine().ToLower();
                     if (aline.Contains("nodata_value"))
                     {
-                        asc.NODATA_value = Convert.ToInt32(aline.Replace("nodata_value", ""));
+                        asc.NODATA_value = (int)Convert.ToDouble(aline.Replace("nodata_value", ""));
                         if (asc.NODATA_value != -9999)
                         {
                             Console.WriteLine("ProcessZIPs asc.NODATA_value " + asc.NODATA_value);
@@ -1385,9 +1385,15 @@ namespace OpenPanoramaLib
             // Index Scottish TIF DTM files...
             if (lowerfilename.Contains("scotland") && lowerfilename.Contains(".tif") && lowerfilename.Contains("dtm"))
             {
-                if (lowerfilename.Contains("_50cm_") || lowerfilename.Contains("_1m_"))
+                if (lowerfilename.Contains("_50cm_") || lowerfilename.Contains("_1m_") || lowerfilename.Contains("_25cm_"))
                 {
+                    // Tiles can have long or short names - handle this here.
+                    string longtilename = lowerfilename.Substring(lowerfilename.LastIndexOf("\\") + 1, 6);
                     string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("\\") + 1, 4);
+                    if (longtilename.IndexOf('_') > 0)
+                    {
+                        tilename = longtilename.Substring(0, 3) + longtilename.Substring(4, 1);
+                    }
                     if (!myTileFilenames.ContainsKey(tilename))
                     {
                         myTileFilenames.Add(tilename, new List<string>());
@@ -2125,7 +2131,7 @@ namespace OpenPanoramaLib
             string gridname = GetGridName(xllcorner, yllcorner, GetLidarSiz(), eCountry);
 
             // Is there a cached copy of the data we can use?
-            string binASC = GetLidarCacheFilename(gridname);
+            string binASC = GetLidarCacheFilename(gridname, eCountry.ToString());
 
             if (infillandcache)
             {

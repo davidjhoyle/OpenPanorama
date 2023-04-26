@@ -872,7 +872,7 @@ namespace OpenPanoramaLib
             const string llName = "EPSG:4326"; // WGS 84 - Latitude Longitude - GPS System.
             const string UKLidarName = "EPSG:27700"; // UK Grid
             const string NorwayLidarName = "EPSG:25833"; // EPSG:25833 - ETRS89 / UTM zone 33N;
-            const string IELidarName = "IRENET95"; // "EPSG:2157"; // Ireland - no idea if this is correct or not.
+            const string IELidarName = "EPSG:2157"; // "IRENET95"; // Ireland - no idea if this is correct or not.
 
             string LidarName = UKLidarName;
 
