@@ -20,6 +20,8 @@ using BitMiracle;
 using BitMiracle.LibTiff;
 using BitMiracle.LibTiff.Classic;
 using System.Reflection.Metadata;
+using static System.Net.Mime.MediaTypeNames;
+using System.Collections;
 
 
 namespace OpenPanoramaLib
@@ -495,7 +497,12 @@ namespace OpenPanoramaLib
                 tif.height = nHeight;
 
                 //float[,] heightMap = new float[nWidth, nHeight];
-                tif.pixels = new float[nWidth, nHeight];
+                tif.pixels = new float[nHeight, nWidth ];
+
+                if (nHeight != nWidth)
+                {
+                    Console.WriteLine("TIF " + fn + " Width " + nWidth + " Height " + nHeight);
+                }
 
                 //33550(0x830e) - GEOTIFF_MODELPIXELSCALETAG
                 //33922(0x8482) - GEOTIFF_MODELTIEPOINTTAG
@@ -556,6 +563,13 @@ namespace OpenPanoramaLib
 
                 double startW = originLon + dW / 2.0;
                 double startH = originLat + dH / 2.0;
+                if (dH < 0)
+                {
+                    dH = -dH;
+                    startH -= dH * nHeight;
+                    originLat -= dH * nHeight;
+                }
+
 
                 FieldValue[] tileByteCountsTag = tif.bmtiff.GetField(TiffTag.TILEBYTECOUNTS);
                 long[] tileByteCounts = tileByteCountsTag[0].TolongArray();
@@ -578,6 +592,7 @@ namespace OpenPanoramaLib
                 tif.tfw.yllcorner = startH; // - tif.decoder.Height;// F -  x, y map coordinates
 
 
+
                 int tileWidthCount = nWidth / tilew;
                 int remainingWidth = nWidth - tileWidthCount * tilew;
                 if (remainingWidth > 0)
@@ -592,6 +607,7 @@ namespace OpenPanoramaLib
                     tileHeightCount++;
                 }
 
+
                 int tileSize = tif.bmtiff.TileSize();
                 for (int iw = 0; iw < nWidth; iw += tilew)
                 {
@@ -601,19 +617,34 @@ namespace OpenPanoramaLib
                         tif.bmtiff.ReadTile(buffer, 0, iw, ih, 0, 0);
                         for (int itw = 0; itw < tilew; itw++)
                         {
-                            int iwhm = ih + itw;
+                            int iwhm = iw + itw;
                             if (iwhm > nWidth - 1)
                             {
                                 break;
                             }
                             for (int ith = 0; ith < tileh; ith++)
                             {
-                                int iyhm = iw + ith;
-                                if (iyhm > nHeight - 1)
+                                //int iyhm = ih + ith;
+                                int iyhm = nHeight - ih - ith - 1;
+
+                                if (iyhm > nHeight - 1 || iyhm < 0)
                                 {
                                     break;
                                 }
-                                tif.pixels[iyhm, iwhm] = BitConverter.ToSingle(buffer, (itw * tileh + ith) * 4);
+                                try
+                                {
+                                    tif.pixels[iyhm, iwhm] = BitConverter.ToSingle(buffer, (itw + tileh * ith) * 4);
+                                    if (tif.pixels[iyhm, iwhm] > 0)
+                                    {
+                                        string aaa = "tif.pixels[ " + iyhm + ", " + iwhm + " ] = " + tif.pixels[iyhm, iwhm];
+                                        string bbb = aaa;
+                                        //Console.WriteLine(tif.pixels[iyhm, iwhm]);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    throw;
+                                }
 
                                 //Console.WriteLine(heightMap[itw, ith]);
                             }
@@ -941,9 +972,9 @@ namespace OpenPanoramaLib
                 {
                     double dstX = xllcorner + x * tfw.xScale;
 
-                    if (tif.pixels[x,y] > -10)
+                    if (tif.pixels[y,x] > -10)
                     {
-                        SetCachedValuePointHeight(dstX, dstY, tif.pixels[x, y], eCountry, (int)(nrows * tfw.xScale));
+                        SetCachedValuePointHeight(dstX, dstY, tif.pixels[y,x], eCountry, (int)(nrows * tfw.xScale));
                     }
                 }
             }
@@ -993,23 +1024,27 @@ namespace OpenPanoramaLib
 
                 if (dstIndexY >= 0 && dstIndexY < theLidarBlock.nrows)
                 {
-                    double dstX = srxIndxStartX * tfw.xScale + xllcorner - theLidarBlock.xllcorner;
-                    if (dstX < 0)
-                    {
-                        //dstX = 0;
-                    }
-                    double incX = theLidarBlock.cellsize;
+                    //double dstX = srxIndxStartX * tfw.xScale + xllcorner - theLidarBlock.xllcorner;
+                    //if (dstX < 0)
+                    //{
+                    //    //dstX = 0;
+                    //}
+                    //double incX = theLidarBlock.cellsize;
 
                     for (int x = 0; x < srcLenX; x++)
                     {
-                        if (tif.pixels[x,y] > -10 && tif.pixels[x, y] < 10000) // On the earth all Lidar data above 10000m is wrong and should be ignored...
+                        double dstX = xllcorner + (double)x * tfw.xScale;
+
+                        if (tif.pixels[y,x] > -10 && tif.pixels[y,x] < 10000) // On the earth all Lidar data above 10000m is wrong and should be ignored...
                         {
-                            int intdstX = (int)(dstX / theLidarBlock.cellsize);
-                            if (intdstX >= 0 && intdstX < theLidarBlock.values[dstIndexY].Length)
+                            //int intdstX = (int)(dstX / theLidarBlock.cellsize);
+                            int dstIndexX = (int)((dstX - theLidarBlock.xllcorner) / theLidarBlock.cellsize);
+
+                            if (dstIndexX >= 0 && dstIndexX < theLidarBlock.values[dstIndexY].Length)
                             {
-                                if (theLidarBlock.values[dstIndexY][intdstX] < -10)
+                                if (theLidarBlock.values[dstIndexY][dstIndexX] < -10)
                                 {
-                                    theLidarBlock.values[dstIndexY][intdstX] = tif.pixels[x, y];
+                                    theLidarBlock.values[dstIndexY][dstIndexX] = tif.pixels[y, x];
                                     theLidarBlock.unset_points -= 1;
                                 }
                             }
@@ -1019,7 +1054,7 @@ namespace OpenPanoramaLib
                             // Console.WriteLine("ReadProcessTIFBlock Bad Data Point " + tif.filename + " " + values[x] + " x " + x + " y " + y + " dstx" + dstX + " dstY " + dstIndexY );
                         }
 
-                        dstX += incX;
+                        //dstX += incX;
                     }
                 }
             }
@@ -1390,7 +1425,7 @@ namespace OpenPanoramaLib
                     // Tiles can have long or short names - handle this here.
                     string longtilename = lowerfilename.Substring(lowerfilename.LastIndexOf("\\") + 1, 6);
                     string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("\\") + 1, 4);
-                    if (longtilename.IndexOf('_') > 0)
+                    if (longtilename.IndexOf('_') <= 0 && longtilename.IndexOf('n') <= 0 && longtilename.IndexOf('e') <= 0 && longtilename.IndexOf('s') <= 0 && longtilename.IndexOf('w') <= 0)
                     {
                         tilename = longtilename.Substring(0, 3) + longtilename.Substring(4, 1);
                     }

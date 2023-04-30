@@ -510,15 +510,17 @@ namespace OpenPanoramaLib
 
             HorizonVector hv = new HorizonVector();
 
-            for (int hi = 0; hi < CrackedHeights.Length; hi++)
+            for (int hi = 0; hi < 0 ; hi++) // CrackedHeights.Length
             {
                 //var loc = spot.Element(osNameSpace + "geometry").Value.ToString();
-                //string h = spot.Element(osNameSpace + "propertyValue").Value.ToString();
+                // string h = spot.Element(osNameSpace + "propertyValue").Value.ToString();
 
                 double z = CrackedHeights[hi];
 
                 for (int i = 0; i < CrackedXs[hi].Length; i += 1)
                 {
+                    continue;
+
                     int nearest_X = 0;
                     int nearest_y = 0;
                     int nearest_z = 0;

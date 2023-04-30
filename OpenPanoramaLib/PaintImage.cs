@@ -1047,6 +1047,22 @@ namespace OpenPanoramaLib
         }
 
 
+    //        using (var paint = new SKPaint())
+    //using (var path = new SKPath())
+    //{
+    //    paint.Style = SKPaintStyle.Stroke;
+    //    paint.Color = SKColors.Black;
+    //    paint.StrokeWidth = 5;
+
+    //    path.MoveTo(10, 10);
+    //    path.LineTo(100, 10);
+    //    path.MoveTo(10, 20);
+    //    path.LineTo(100, 20);
+
+    //    canvas.DrawPath(path, paint);
+    //}
+
+
 
         public void DrawLineDouble(double gradient, Pen mypn, bool sea, Graphics profGraph, double x1double, double y1double, double z1, double x2double, double y2double, double z2, double height, HorizonVector hv)
         {
@@ -1110,40 +1126,45 @@ namespace OpenPanoramaLib
             int y = y1;
             int stepCount = 0;
 
-            for (int x = x1; x <= x2; x++)
+            //using (var path = new SKPath())
             {
-                if (steep)
+                for (int x = x1; x <= x2; x++)
                 {
-                    double elevation = y1double + (((double)y) / rjParams.pixels - x1double) * myslope;
-                    if (elevation > Math.Max(y1double, y2double))
+                    if (steep)
                     {
-                        elevation = Math.Max(y1double, y2double);
+                        double elevation = y1double + (((double)y) / rjParams.pixels - x1double) * myslope;
+                        if (elevation > Math.Max(y1double, y2double))
+                        {
+                            elevation = Math.Max(y1double, y2double);
+                        }
+                        if (elevation < Math.Min(y1double, y2double))
+                        {
+                            elevation = Math.Min(y1double, y2double);
+                        }
+
+
+                        VerticalLine(slopeangle, mypn, sea, profGraph, y, x, (zzstart + stepCount * dz), height, hv, elevation);
                     }
-                    if (elevation < Math.Min(y1double, y2double))
+                    else
                     {
-                        elevation = Math.Min(y1double, y2double);
+                        double elevation = y1double + (((double)x) / rjParams.pixels - x1double) * myslope;
+                        if (elevation > Math.Max(y1double, y2double))
+                        {
+                            elevation = Math.Max(y1double, y2double);
+                        }
+                        if (elevation < Math.Min(y1double, y2double))
+                        {
+                            elevation = Math.Min(y1double, y2double);
+                        }
+                        VerticalLine(slopeangle, mypn, sea, profGraph, x, y, (zzstart + stepCount * dz), height, hv, elevation);
                     }
-                    VerticalLine(slopeangle, mypn, sea, profGraph, y, x, (zzstart + stepCount * dz), height, hv, elevation);
-                }
-                else
-                {
-                    double elevation = y1double + (((double)x) / rjParams.pixels - x1double) * myslope;
-                    if (elevation > Math.Max(y1double, y2double))
+                    stepCount += 1;
+                    error = error - dy;
+                    if (error < 0)
                     {
-                        elevation = Math.Max(y1double, y2double);
+                        y += ystep;
+                        error += dx;
                     }
-                    if (elevation < Math.Min(y1double, y2double))
-                    {
-                        elevation = Math.Min(y1double, y2double);
-                    }
-                    VerticalLine(slopeangle, mypn, sea, profGraph, x, y, (zzstart + stepCount * dz), height, hv, elevation);
-                }
-                stepCount += 1;
-                error = error - dy;
-                if (error < 0)
-                {
-                    y += ystep;
-                    error += dx;
                 }
             }
         }
