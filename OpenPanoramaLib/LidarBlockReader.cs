@@ -636,8 +636,8 @@ namespace OpenPanoramaLib
                                     tif.pixels[iyhm, iwhm] = BitConverter.ToSingle(buffer, (itw + tileh * ith) * 4);
                                     if (tif.pixels[iyhm, iwhm] > 0)
                                     {
-                                        string aaa = "tif.pixels[ " + iyhm + ", " + iwhm + " ] = " + tif.pixels[iyhm, iwhm];
-                                        string bbb = aaa;
+                                        //string aaa = "tif.pixels[ " + iyhm + ", " + iwhm + " ] = " + tif.pixels[iyhm, iwhm];
+                                        //string bbb = aaa;
                                         //Console.WriteLine(tif.pixels[iyhm, iwhm]);
                                     }
                                 }
@@ -1024,20 +1024,12 @@ namespace OpenPanoramaLib
 
                 if (dstIndexY >= 0 && dstIndexY < theLidarBlock.nrows)
                 {
-                    //double dstX = srxIndxStartX * tfw.xScale + xllcorner - theLidarBlock.xllcorner;
-                    //if (dstX < 0)
-                    //{
-                    //    //dstX = 0;
-                    //}
-                    //double incX = theLidarBlock.cellsize;
-
                     for (int x = 0; x < srcLenX; x++)
                     {
                         double dstX = xllcorner + (double)x * tfw.xScale;
 
                         if (tif.pixels[y,x] > -10 && tif.pixels[y,x] < 10000) // On the earth all Lidar data above 10000m is wrong and should be ignored...
                         {
-                            //int intdstX = (int)(dstX / theLidarBlock.cellsize);
                             int dstIndexX = (int)((dstX - theLidarBlock.xllcorner) / theLidarBlock.cellsize);
 
                             if (dstIndexX >= 0 && dstIndexX < theLidarBlock.values[dstIndexY].Length)
@@ -1049,12 +1041,6 @@ namespace OpenPanoramaLib
                                 }
                             }
                         }
-                        else
-                        {
-                            // Console.WriteLine("ReadProcessTIFBlock Bad Data Point " + tif.filename + " " + values[x] + " x " + x + " y " + y + " dstx" + dstX + " dstY " + dstIndexY );
-                        }
-
-                        //dstX += incX;
                     }
                 }
             }
