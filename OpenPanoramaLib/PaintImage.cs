@@ -764,7 +764,7 @@ namespace OpenPanoramaLib
 
                             pi.ProcessSingleImage(rjs, rjParams.ages[y], PiRes[rs], thehorizonLatLon, theZBuffer, passingPoints);
                             pi.SaveImage(tmpfil);
-                            pi.SaveImage(tmpfil.Replace( ".jpg", "_2.png"));
+                            //pi.SaveImage(tmpfil.Replace( ".jpg", "_2.png"));
                             Console.WriteLine("Written File " + tmpfil);
 
                             if (passingPoints.Count > 0 && this.rjParams.createPassingPoints)
