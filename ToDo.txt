@@ -23,3 +23,6 @@ https://dmwproductionblob.blob.core.windows.net/cogs/wg_lidar_1m_dsm_32bit_cog.t
 https://dmwproductionblob.blob.core.windows.net/cogs/wales_lidar_dtm_1m_32bit_cog.tif
 https://dmwproductionblob.blob.core.windows.net/cogs/wales_lidar_dsm_1m_hillshade_cog.tif
 https://dmwproductionblob.blob.core.windows.net/cogs/wg_lidar_2020_22_dtm_hillshade_cog.tif
+
+
+Fix Label Text Additions

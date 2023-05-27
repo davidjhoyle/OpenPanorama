@@ -213,49 +213,8 @@ namespace OpenPanoramaLib
             double Gradient = 0;
 
 
-            //XElement[] contours = null;
-
-            //contours = allContourLines.ToArray();
-            //XElement[] seacontours = allSeaContourLines.ToArray();
-
-            //int[] heights = new int[contours.Length + seacontours.Length];
-            //int[][] xs = new int[contours.Length + seacontours.Length][];
-            //int[][] ys = new int[contours.Length + seacontours.Length][];
-
             ContourHint chint = new ContourHint();
             chint.valid = false;
-
-            //// Crack the entire OS block in one go...
-            //for (int i = 0; i < contours.Length; i++)
-            //{
-            //    var posList = contours[i].Element(osNameSpace + "geometry").Value.ToString();
-            //    heights[i] = (int)Convert.ToDouble(contours[i].Element(osNameSpace + "propertyValue").Value.ToString());
-            //    string[] ptStrs = posList.Split(splitter);
-            //    xs[i] = new int[ptStrs.Length / 2];
-            //    ys[i] = new int[ptStrs.Length / 2];
-
-            //    for (int j = 0; j < xs[i].Length; j++)
-            //    {
-            //        xs[i][j] = (int)Convert.ToDouble(ptStrs[j * 2]);
-            //        ys[i][j] = (int)Convert.ToDouble(ptStrs[j * 2 + 1]);
-            //    }
-            //}
-
-            //// Add in the sea contours to the heights...
-            //for (int i = 0; i < seacontours.Length; i++)
-            //{
-            //    var posList = seacontours[i].Element(osNameSpace + "geometry").Value.ToString();
-            //    heights[i + contours.Length] = 0;
-            //    string[] ptStrs = posList.Split(splitter);
-            //    xs[i + contours.Length] = new int[ptStrs.Length / 2];
-            //    ys[i + contours.Length] = new int[ptStrs.Length / 2];
-
-            //    for (int j = 0; j < xs[i + contours.Length].Length; j++)
-            //    {
-            //        xs[i + contours.Length][j] = (int)Convert.ToDouble(ptStrs[j * 2]);
-            //        ys[i + contours.Length][j] = (int)Convert.ToDouble(ptStrs[j * 2 + 1]);
-            //    }
-            //}
 
 
             for (int hi = 0; hi < CrackedHeights.Length; hi++)
@@ -614,8 +573,8 @@ namespace OpenPanoramaLib
                 poly[i] = new PointF();
             }
 
-            ContourHint chint = new ContourHint();
-            chint.valid = false;
+            //ContourHint chint = new ContourHint();
+            //chint.valid = false;
 
             HorizonVector hv = new HorizonVector();
 
@@ -642,12 +601,12 @@ namespace OpenPanoramaLib
                 int ElevationInt = (int)(Elevation * pi.rjParams.pixels + pi.rjParams.pixels * pi.rjParams.negativeRange);
 
                 // Can we see the spot or not?
-                if (Elevation > 0 &&
+                if (ElevationInt > 0 &&
                     AnglePixels > 0 && AnglePixels < pi.ZBuffer.Count() &&
-                    Elevation < pi.ZBuffer[0].Count() &&
-                    pi.ZBuffer[(int)Angle][(int)Elevation] > distance)
+                    ElevationInt < pi.ZBuffer[0].Count() &&
+                    pi.ZBuffer[(int)Angle][(int)ElevationInt] > distance)
                 {
-                    chint.valid = false;
+                    //chint.valid = false;
 
                     int SpotSiz = 5;
 
