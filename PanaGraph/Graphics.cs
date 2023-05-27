@@ -18,7 +18,7 @@ namespace PanaGraph
     public class Graphics
     {
         public SKCanvas me = null;
-
+        public SKPath path = null;
 
         public delegate bool DrawImageAbort(IntPtr callbackdata);
 
@@ -28,13 +28,6 @@ namespace PanaGraph
             g.me = new SKCanvas(im.bm);
             return g;
         }
-
-        //public static Graphics FromImage(Image im)
-        //{
-        //    Graphics g = new Graphics();
-        //    g.me = new SKCanvas(im.me);
-        //    return g;
-        //}
 
 
         public void Clear(Color c)

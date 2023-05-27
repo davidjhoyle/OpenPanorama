@@ -16,6 +16,7 @@ namespace PanaGraph
         public int height = 0;
 
         public SKBitmap bm;
+        public PaintVerticalLineUnsafe linePainter;
 
         public int Width
         {
@@ -40,6 +41,7 @@ namespace PanaGraph
             this.width = awidth;
             this.height = aheight;
             bm = new SKBitmap(Width, Height);
+            linePainter = new PaintVerticalLineUnsafe(bm);
         }
 
 
@@ -48,6 +50,7 @@ namespace PanaGraph
             bm = SKBitmap.Decode(filename);
             this.width = bm.Width;
             this.height = bm.Height;
+            linePainter = new PaintVerticalLineUnsafe(bm);
         }
 
 

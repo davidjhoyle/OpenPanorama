@@ -22,6 +22,7 @@ using BitMiracle.LibTiff.Classic;
 using System.Reflection.Metadata;
 using static System.Net.Mime.MediaTypeNames;
 using System.Collections;
+using System.Drawing;
 
 
 namespace OpenPanoramaLib
@@ -41,9 +42,7 @@ namespace OpenPanoramaLib
         const string NOprefix = "norway\\"; // Basisdata_6601-1_Celle_25833_DTM10-2021UTM33_TIFF.zip
         const string NOpatchesprefix = "norwaypatches\\"; // Basisdata_6601-1_Celle_25833_DTM10-2021UTM33_TIFF.zip
 
-        //const string filename = "sj8877_DTM_1M.asc";
-
-        //static double ZNoiseLimit = 20;
+        static readonly string[] WalesSquares = new string[] { "sh", "sj", "sm", "sn", "so", "sr", "ss", "st" };
 
 
         static Dictionary<int, LidarBlockCacheLine> cachelines = new Dictionary<int, LidarBlockCacheLine>();
@@ -416,237 +415,263 @@ namespace OpenPanoramaLib
 
 
 
-        //public static LidarTFW MSFTGetTWFfromTIF(BitmapMetadata metadata, ref countryEnum cc)
-        //{
-        //    LidarTFW tfw = null;
-
-        //    try
-        //    {
-        //        const string ModelPixelScaleTagQuery = "/ifd/{ushort=33550}";
-        //        const string ModelTiepointTagQuery = "/ifd/{ushort=33922}";
-        //        const string GeoKeysQuery = "/ifd/{ushort=34737}";
-
-        //        double[] ModelPixelScaleTag = (double[])metadata.GetQuery(ModelPixelScaleTagQuery);
-        //        double[] ModelTiepointTag = (double[])metadata.GetQuery(ModelTiepointTagQuery);
-        //        string GeoKeys = (string)metadata.GetQuery(GeoKeysQuery);
-
-        //        if (ModelPixelScaleTag != null)
-        //        {
-        //            tfw = new LidarTFW();
-        //            tfw.xScale = ModelPixelScaleTag[0];
-        //            tfw.rot1 = 0;
-        //            tfw.rot2 = 0;
-        //            tfw.NegY = -ModelPixelScaleTag[1];     // E = negative of y-scale; dimension of a pixel in map units in y direction
-        //            tfw.xllcorner = ModelTiepointTag[3]; ;// C -  x, y map coordinates
-        //            tfw.yllcorner = ModelTiepointTag[4]; // - tif.decoder.Height;// F -  x, y map coordinates
-        //        }
-
-        //        cc = countryEnum.unknown;
-
-        //        if (GeoKeys != null)
-        //        {
-        //            if (GeoKeys.IndexOf("OSGB") >= 0)
-        //            {
-        //                cc = countryEnum.uk;
-        //            }
-        //            else if (GeoKeys.IndexOf("IRENET95") >= 0) // "IRENET95 / Irish Transverse Mercator|IRENET95|"
-        //            {
-        //                cc = countryEnum.ie;
-        //            }
-        //            else if (GeoKeys.IndexOf("ETRS_1989") >= 0)
-        //            {
-        //                cc = countryEnum.no;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("MSFTGetTWFfromTIF Caught Exception " + ex.Message + " " + ex.StackTrace);
-        //    }
-
-        //    return tfw;
-        //}
 
 
-        public static LidarTIF ReadTIF(string fn, Stream stream)
+
+
+        public static LidarTIF ReadTIFBounded(string fn, Stream stream, bool seekable, int xllcorner, int yllcorner, int siz)
         {
             //Console.WriteLine("Read TIF " + fn );
+
+            // Round to the start of the ASC grid.
+            //double axll2 = (xllcorner / siz) * siz;
+            //double ayll2 = (yllcorner / siz) * siz;
+
+            xllcorner = (xllcorner / siz) * siz;
+            yllcorner = (yllcorner / siz) * siz;
+
+            //int ixll = (int)(Math.Floor((double)xllcorner / siz) * siz);
+            //int iyll = (int)(Math.Floor((double)yllcorner / siz) * siz);
+
 
             if (fn != null && stream == null)
             {
                 stream = new FileStream(fn, FileMode.Open, FileAccess.Read);
+                seekable = true;
             }
 
             LidarTIF tif = new LidarTIF();
             tif.filename = fn;
             tif.tifstream = new TiffStream();
-            using (MemoryStream ms = new MemoryStream())
+            MemoryStream ms = null;
+            if (!seekable)
             {
+                ms = new MemoryStream();
                 stream.CopyTo(ms);
                 ms.Position = 0;
+                stream = ms;
+            }
 
-                tif.bmtiff = Tiff.ClientOpen(fn, "r", ms, tif.tifstream);
+            tif.bmtiff = Tiff.ClientOpen(fn, "r", stream, tif.tifstream);
+            tif.cc = countryEnum.unknown;
 
-                tif.cc = countryEnum.unknown;
-                
-                //Image size
-                int nWidth = tif.bmtiff.GetField(TiffTag.IMAGEWIDTH)[0].ToInt();
-                int nHeight = tif.bmtiff.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
+            //Image size
+            int nTIFWidth = tif.bmtiff.GetField(TiffTag.IMAGEWIDTH)[0].ToInt();
+            int nTIFHeight = tif.bmtiff.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
 
-                tif.width = nWidth;
-                tif.height = nHeight;
+            bool largeTIF = nTIFWidth > siz || nTIFHeight > siz;
 
-                //float[,] heightMap = new float[nWidth, nHeight];
-                tif.pixels = new float[nHeight, nWidth ];
+            if (largeTIF)
+            {
+                //nTIFWidth = siz;
+                //nTIFHeight = siz;
+                tif.width = siz;
+                tif.height = siz;
+            }
+            else
+            {
+                tif.width = nTIFWidth;
+                tif.height = nTIFHeight;
+            }
 
-                if (nHeight != nWidth)
+
+            // Allocate and initialise the data
+            tif.pixels = new float[tif.height, tif.width];
+            for (int y = 0; y < tif.height; y++)
+            {
+                for (int x = 0; x < tif.width; x++)
                 {
-                    Console.WriteLine("TIF " + fn + " Width " + nWidth + " Height " + nHeight);
+                    tif.pixels[y, x] = LidarBlock.NODATA_const;
                 }
+            }
 
-                //33550(0x830e) - GEOTIFF_MODELPIXELSCALETAG
-                //33922(0x8482) - GEOTIFF_MODELTIEPOINTTAG
-                //34735(0x87af) - GEOTIFF_GEOKEYDIRECTORYTAG
-                //34736(0x87b0) - GEOTIFF_GEODOUBLEPARAMSTAG
-                //34737(0x87b1) - GEOTIFF_GEOASCIIPARAMSTAG
-                //42112(0xa480) - No Idea
-                //42113(0xa481) - No Idea
+            if (nTIFHeight != nTIFWidth)
+            {
+                Console.WriteLine("TIF " + fn + " Width " + nTIFWidth + " Height " + nTIFHeight);
+            }
 
-                /*
-                 * Another Tag 1
-                +		Value	{byte[136]}	object {byte[]}
+            //33550(0x830e) - GEOTIFF_MODELPIXELSCALETAG
+            //33922(0x8482) - GEOTIFF_MODELTIEPOINTTAG
+            //34735(0x87af) - GEOTIFF_GEOKEYDIRECTORYTAG
+            //34736(0x87b0) - GEOTIFF_GEODOUBLEPARAMSTAG
+            //34737(0x87b1) - GEOTIFF_GEOASCIIPARAMSTAG
+            //42112(0xa480) - No Idea
+            //42113(0xa481) - No Idea
 
-                Another Tag 2
-                +		[1]	{:R¢Fß?bXÙTXA¹3µr@	BitMiracle.LibTiff.Classic.FieldValue
+            /*
+                * Another Tag 1
+            +		Value	{byte[136]}	object {byte[]}
 
-                Another Tag 3
-                +		[1]	{PCS Name = British_National_Grid|GCS Name = GCS_OSGB_1936|Datum = D_OSGB_1936|Ellipsoid = Airy_1830|Primem = Greenwich||ESRI PE String = PROJCS["British_National_Grid",GEOGCS["GCS_OSGB_1936",DATUM["D_OSGB_1936",SPHEROID["Airy_1830",6377563.396,299.3249646]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",400000.0],PARAMETER["False_Northing",-100000.0],PARAMETER["Central_Meridian",-2.0],PARAMETER["Scale_Factor",0.9996012717],PARAMETER["Latitude_Of_Origin",49.0],UNIT["Meter",1.0]]|	BitMiracle.LibTiff.Classic.FieldValue
+            Another Tag 2
+            +		[1]	{:R¢Fß?bXÙTXA¹3µr@	BitMiracle.LibTiff.Classic.FieldValue
 
-                Another Tag 4
-                -		[1]	{<GDALMetadata>
-                  <Item name="DataType">Generic</Item>
-                  <Item name="PyramidResamplingType" domain="Esri">AVERAGE</Item>
-                  <Item name="BandName" sample="0">Band_1</Item>
-                  <Item name="RepresentationType" sample="0">ATHEMATIC</Item>
-                  <Item name="STATISTICS_COVARIANCES" sample="0">41146.60973943795</Item>
-                  <Item name="STATISTICS_MAXIMUM" sample="0">930.39001464844</Item>
-                  <Item name="STATISTICS_MEAN" sample="0">456.75267080621</Item>
-                  <Item name="STATISTICS_MINIMUM" sample="0">71.282005310059</Item>
-                  <Item name="STATISTICS_SKIPFACTORX" sample="0">1</Item>
-                  <Item name="STATISTICS_SKIPFACTORY" sample="0">1</Item>
-                  <Item name="STATISTICS_STDDEV" sample="0">202.84627119925</Item>
-                </GDALMetadata>
-                    BitMiracle.LibTiff.Classic.FieldValue
+            Another Tag 3
+            +		[1]	{PCS Name = British_National_Grid|GCS Name = GCS_OSGB_1936|Datum = D_OSGB_1936|Ellipsoid = Airy_1830|Primem = Greenwich||ESRI PE String = PROJCS["British_National_Grid",GEOGCS["GCS_OSGB_1936",DATUM["D_OSGB_1936",SPHEROID["Airy_1830",6377563.396,299.3249646]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",400000.0],PARAMETER["False_Northing",-100000.0],PARAMETER["Central_Meridian",-2.0],PARAMETER["Scale_Factor",0.9996012717],PARAMETER["Latitude_Of_Origin",49.0],UNIT["Meter",1.0]]|	BitMiracle.LibTiff.Classic.FieldValue
 
-                Another Tag 5
-                +		[1]	{-3.4028234663852886e+38	BitMiracle.LibTiff.Classic.FieldValue
+            Another Tag 4
+            -		[1]	{<GDALMetadata>
+                <Item name="DataType">Generic</Item>
+                <Item name="PyramidResamplingType" domain="Esri">AVERAGE</Item>
+                <Item name="BandName" sample="0">Band_1</Item>
+                <Item name="RepresentationType" sample="0">ATHEMATIC</Item>
+                <Item name="STATISTICS_COVARIANCES" sample="0">41146.60973943795</Item>
+                <Item name="STATISTICS_MAXIMUM" sample="0">930.39001464844</Item>
+                <Item name="STATISTICS_MEAN" sample="0">456.75267080621</Item>
+                <Item name="STATISTICS_MINIMUM" sample="0">71.282005310059</Item>
+                <Item name="STATISTICS_SKIPFACTORX" sample="0">1</Item>
+                <Item name="STATISTICS_SKIPFACTORY" sample="0">1</Item>
+                <Item name="STATISTICS_STDDEV" sample="0">202.84627119925</Item>
+            </GDALMetadata>
+                BitMiracle.LibTiff.Classic.FieldValue
 
-                 */
+            Another Tag 5
+            +		[1]	{-3.4028234663852886e+38	BitMiracle.LibTiff.Classic.FieldValue
 
-                FieldValue[] modelPixelScaleTag = tif.bmtiff.GetField(TiffTag.GEOTIFF_MODELPIXELSCALETAG);
-                FieldValue[] modelTiePointTag = tif.bmtiff.GetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG);
-                FieldValue[] anotherTag1 = tif.bmtiff.GetField(TiffTag.GEOTIFF_GEOKEYDIRECTORYTAG);
-                FieldValue[] anotherTag2 = tif.bmtiff.GetField(TiffTag.GEOTIFF_GEODOUBLEPARAMSTAG);
-                FieldValue[] anotherTag3 = tif.bmtiff.GetField(TiffTag.GEOTIFF_GEOASCIIPARAMSTAG);
-                FieldValue[] anotherTag4 = tif.bmtiff.GetField((TiffTag) 42112);
-                FieldValue[] anotherTag5 = tif.bmtiff.GetField((TiffTag) 42113);
+                */
 
-                byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
-                double dW = BitConverter.ToDouble(modelPixelScale, 0);
-                double dH = BitConverter.ToDouble(modelPixelScale, 8) * -1;
-                //double dH = BitConverter.ToDouble(modelPixelScale, 8);
+            FieldValue[] modelPixelScaleTag = tif.bmtiff.GetField(TiffTag.GEOTIFF_MODELPIXELSCALETAG);
+            FieldValue[] modelTiePointTag = tif.bmtiff.GetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG);
+            FieldValue[] anotherTag1 = tif.bmtiff.GetField(TiffTag.GEOTIFF_GEOKEYDIRECTORYTAG);
+            FieldValue[] anotherTag2 = tif.bmtiff.GetField(TiffTag.GEOTIFF_GEODOUBLEPARAMSTAG);
+            FieldValue[] anotherTag3 = tif.bmtiff.GetField(TiffTag.GEOTIFF_GEOASCIIPARAMSTAG);
+            FieldValue[] anotherTag4 = tif.bmtiff.GetField((TiffTag)42112);
+            FieldValue[] anotherTag5 = tif.bmtiff.GetField((TiffTag)42113);
+
+            byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
+            double dW = BitConverter.ToDouble(modelPixelScale, 0);
+            double dH = BitConverter.ToDouble(modelPixelScale, 8) * -1;
 
 
-                byte[] modelTransformation = modelTiePointTag[1].GetBytes();
-                double originLon = BitConverter.ToDouble(modelTransformation, 24);
-                double originLat = BitConverter.ToDouble(modelTransformation, 32);
+            byte[] modelTransformation = modelTiePointTag[1].GetBytes();
+            double originLon = BitConverter.ToDouble(modelTransformation, 24);
+            double originLat = BitConverter.ToDouble(modelTransformation, 32);
 
-                double startW = originLon + dW / 2.0;
-                double startH = originLat + dH / 2.0;
+            double startW = originLon + dW / 2.0;
+            double startH = originLat + dH / 2.0;
+
+            if (largeTIF)
+            {
+                startW = xllcorner + dW / 2.0;
+                startH = yllcorner + dH / 2.0;
+
                 if (dH < 0)
                 {
                     dH = -dH;
-                    startH -= dH * nHeight;
-                    originLat -= dH * nHeight;
+                    //startH -= dH * siz;
+                    originLat -= dH * nTIFHeight;
                 }
-
-
-                FieldValue[] tileByteCountsTag = tif.bmtiff.GetField(TiffTag.TILEBYTECOUNTS);
-                long[] tileByteCounts = tileByteCountsTag[0].TolongArray();
-
-                FieldValue[] bitsPerSampleTag = tif.bmtiff.GetField(TiffTag.BITSPERSAMPLE);
-                int bytesPerSample = bitsPerSampleTag[0].ToInt() / 8;
-
-                FieldValue[] tilewtag = tif.bmtiff.GetField(TiffTag.TILEWIDTH);
-                FieldValue[] tilehtag = tif.bmtiff.GetField(TiffTag.TILELENGTH);
-                int tilew = tilewtag[0].ToInt();
-                int tileh = tilehtag[0].ToInt();
-
-
-                tif.tfw = new LidarTFW();
-                tif.tfw.xScale = dW;
-                tif.tfw.rot1 = 0;
-                tif.tfw.rot2 = 0;
-                tif.tfw.NegY = dH;     // E = negative of y-scale; dimension of a pixel in map units in y direction
-                tif.tfw.xllcorner = startW; // C -  x, y map coordinates
-                tif.tfw.yllcorner = startH; // - tif.decoder.Height;// F -  x, y map coordinates
-
-
-
-                int tileWidthCount = nWidth / tilew;
-                int remainingWidth = nWidth - tileWidthCount * tilew;
-                if (remainingWidth > 0)
+            }
+            else
+            {
+                if (dH < 0)
                 {
-                    tileWidthCount++;
+                    dH = -dH;
+                    startH -= dH * nTIFHeight;
+                    originLat -= dH * nTIFHeight;
                 }
+            }
 
-                int tileHeightCount = nHeight / tileh;
-                int remainingHeight = nHeight - tileHeightCount * tileh;
-                if (remainingHeight > 0)
+            FieldValue[] tileByteCountsTag = tif.bmtiff.GetField(TiffTag.TILEBYTECOUNTS);
+            long[] tileByteCounts = tileByteCountsTag[0].TolongArray();
+
+            FieldValue[] bitsPerSampleTag = tif.bmtiff.GetField(TiffTag.BITSPERSAMPLE);
+            int bytesPerSample = bitsPerSampleTag[0].ToInt() / 8;
+
+            FieldValue[] tilewtag = tif.bmtiff.GetField(TiffTag.TILEWIDTH);
+            FieldValue[] tilehtag = tif.bmtiff.GetField(TiffTag.TILELENGTH);
+            int tilew = tilewtag[0].ToInt();
+            int tileh = tilehtag[0].ToInt();
+
+
+            tif.tfw = new LidarTFW();
+            tif.tfw.xScale = dW;
+            tif.tfw.rot1 = 0;
+            tif.tfw.rot2 = 0;
+            tif.tfw.NegY = dH;     // E = negative of y-scale; dimension of a pixel in map units in y direction
+            tif.tfw.xllcorner = startW; // C -  x, y map coordinates
+            tif.tfw.yllcorner = startH; // - tif.decoder.Height;// F -  x, y map coordinates
+
+
+
+            int tileWidthCount = nTIFWidth / tilew;
+            int remainingWidth = nTIFWidth - tileWidthCount * tilew;
+            if (remainingWidth > 0)
+            {
+                tileWidthCount++;
+            }
+
+            int tileHeightCount = nTIFHeight / tileh;
+            int remainingHeight = nTIFHeight - tileHeightCount * tileh;
+            if (remainingHeight > 0)
+            {
+                tileHeightCount++;
+            }
+
+            int offsetX = 0;
+            int offsetY = 0;
+            int endX = nTIFWidth;
+            int endY = nTIFHeight;
+
+            if ( largeTIF)
+            {
+                offsetX = (int) (xllcorner - originLon);
+                offsetY = (int) (yllcorner - originLat);
+                endX = offsetX + siz;
+                endY = offsetY + siz;
+            }
+
+            int tileSize = tif.bmtiff.TileSize();
+            for (int iw = 0; iw < nTIFWidth; iw += tilew)
+            {
+                if (iw + tilew < offsetX || iw > endX)
                 {
-                    tileHeightCount++;
+                    continue;
                 }
-
-
-                int tileSize = tif.bmtiff.TileSize();
-                for (int iw = 0; iw < nWidth; iw += tilew)
+                for (int ih = 0; ih < nTIFHeight; ih += tileh)
                 {
-                    for (int ih = 0; ih < nHeight; ih += tileh)
+                    int tmpih = nTIFHeight - ih - 1;
+                    if (tmpih + tileh < offsetY || tmpih + tileh > endY)
                     {
-                        byte[] buffer = new byte[tileSize];
-                        tif.bmtiff.ReadTile(buffer, 0, iw, ih, 0, 0);
-                        for (int itw = 0; itw < tilew; itw++)
+                        continue;
+                    }
+
+                    byte[] buffer = new byte[tileSize];
+                    tif.bmtiff.ReadTile(buffer, 0, iw, ih, 0, 0);
+                    for (int itw = 0; itw < tilew; itw++)
+                    {
+                        int iwhm = iw + itw - offsetX;
+                        if (iwhm >= tif.width)
                         {
-                            int iwhm = iw + itw;
-                            if (iwhm > nWidth - 1)
+                            break;
+                        }
+                        if ( iwhm < 0)
+                        {
+                            continue;
+                        }
+                        for (int ith = 0; ith < tileh; ith++)
+                        {
+                            //int iyhm = ih + ith;
+
+                            int iyhm = (nTIFHeight - (ih + ith + 1)) - offsetY;
+                            //int iwhm = (nTIFHeight - (ih + ith + 1)) - offsetX;
+
+                            //int iyhm = ih + ith - offsetY;
+
+                            if (iyhm >= tif.height)
                             {
                                 break;
                             }
-                            for (int ith = 0; ith < tileh; ith++)
+                            if ( iyhm < 0)
                             {
-                                //int iyhm = ih + ith;
-                                int iyhm = nHeight - ih - ith - 1;
-
-                                if (iyhm > nHeight - 1 || iyhm < 0)
-                                {
-                                    break;
-                                }
-                                try
-                                {
-                                    tif.pixels[iyhm, iwhm] = BitConverter.ToSingle(buffer, (itw + tileh * ith) * 4);
-                                    if (tif.pixels[iyhm, iwhm] > 0)
-                                    {
-                                        //string aaa = "tif.pixels[ " + iyhm + ", " + iwhm + " ] = " + tif.pixels[iyhm, iwhm];
-                                        //string bbb = aaa;
-                                        //Console.WriteLine(tif.pixels[iyhm, iwhm]);
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    throw;
-                                }
-
-                                //Console.WriteLine(heightMap[itw, ith]);
+                                continue;
+                            }
+                            try
+                            {
+                                tif.pixels[iyhm, iwhm] = BitConverter.ToSingle(buffer, (itw + tileh * ith ) * 4);
+                            }
+                            catch (Exception e)
+                            {
+                                throw;
                             }
                         }
                     }
@@ -656,274 +681,189 @@ namespace OpenPanoramaLib
         }
 
 
-        //private static void DumpValueCollecion<T>(TiffValueCollection<T> values)
-        //{
-        //    if (values.IsEmpty)
-        //    {
-        //        // Do nothing
-        //    }
-        //    else if (values.Count == 1)
-        //    {
-        //        Console.Write(" Value = " + values.GetFirstOrDefault());
-        //    }
-        //    else
-        //    {
-        //        Console.Write(" Values = [");
-        //        for (int i = 0; i < values.Count; i++)
-        //        {
-        //            Console.Write(values[i]);
-        //            if (i != values.Count - 1)
-        //            {
-        //                Console.Write(", ");
-        //            }
-        //        }
-        //        Console.Write("]");
-        //    }
-        //}
+
+        public static LidarTIF ReadTIF(string fn, Stream stream, bool seekable)
+        {
+            //Console.WriteLine("Read TIF " + fn );
+
+            if (fn != null && stream == null)
+            {
+                stream = new FileStream(fn, FileMode.Open, FileAccess.Read);
+                seekable = true;
+            }
+
+            LidarTIF tif = new LidarTIF();
+            tif.filename = fn;
+            tif.tifstream = new TiffStream();
+            MemoryStream ms = null;
+            if (!seekable)
+            {
+                ms = new MemoryStream();
+                stream.CopyTo(ms);
+                ms.Position = 0;
+                stream = ms;
+            }
+
+            tif.bmtiff = Tiff.ClientOpen(fn, "r", stream, tif.tifstream);
+
+            tif.cc = countryEnum.unknown;
+                
+            //Image size
+            int nWidth = tif.bmtiff.GetField(TiffTag.IMAGEWIDTH)[0].ToInt();
+            int nHeight = tif.bmtiff.GetField(TiffTag.IMAGELENGTH)[0].ToInt();
+
+            tif.width = nWidth;
+            tif.height = nHeight;
+
+            tif.pixels = new float[nHeight, nWidth ];
+
+            if (nHeight != nWidth)
+            {
+                Console.WriteLine("TIF " + fn + " Width " + nWidth + " Height " + nHeight);
+            }
+
+            //33550(0x830e) - GEOTIFF_MODELPIXELSCALETAG
+            //33922(0x8482) - GEOTIFF_MODELTIEPOINTTAG
+            //34735(0x87af) - GEOTIFF_GEOKEYDIRECTORYTAG
+            //34736(0x87b0) - GEOTIFF_GEODOUBLEPARAMSTAG
+            //34737(0x87b1) - GEOTIFF_GEOASCIIPARAMSTAG
+            //42112(0xa480) - No Idea
+            //42113(0xa481) - No Idea
+
+            /*
+                * Another Tag 1
+            +		Value	{byte[136]}	object {byte[]}
+
+            Another Tag 2
+            +		[1]	{:R¢Fß?bXÙTXA¹3µr@	BitMiracle.LibTiff.Classic.FieldValue
+
+            Another Tag 3
+            +		[1]	{PCS Name = British_National_Grid|GCS Name = GCS_OSGB_1936|Datum = D_OSGB_1936|Ellipsoid = Airy_1830|Primem = Greenwich||ESRI PE String = PROJCS["British_National_Grid",GEOGCS["GCS_OSGB_1936",DATUM["D_OSGB_1936",SPHEROID["Airy_1830",6377563.396,299.3249646]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",400000.0],PARAMETER["False_Northing",-100000.0],PARAMETER["Central_Meridian",-2.0],PARAMETER["Scale_Factor",0.9996012717],PARAMETER["Latitude_Of_Origin",49.0],UNIT["Meter",1.0]]|	BitMiracle.LibTiff.Classic.FieldValue
+
+            Another Tag 4
+            -		[1]	{<GDALMetadata>
+                <Item name="DataType">Generic</Item>
+                <Item name="PyramidResamplingType" domain="Esri">AVERAGE</Item>
+                <Item name="BandName" sample="0">Band_1</Item>
+                <Item name="RepresentationType" sample="0">ATHEMATIC</Item>
+                <Item name="STATISTICS_COVARIANCES" sample="0">41146.60973943795</Item>
+                <Item name="STATISTICS_MAXIMUM" sample="0">930.39001464844</Item>
+                <Item name="STATISTICS_MEAN" sample="0">456.75267080621</Item>
+                <Item name="STATISTICS_MINIMUM" sample="0">71.282005310059</Item>
+                <Item name="STATISTICS_SKIPFACTORX" sample="0">1</Item>
+                <Item name="STATISTICS_SKIPFACTORY" sample="0">1</Item>
+                <Item name="STATISTICS_STDDEV" sample="0">202.84627119925</Item>
+            </GDALMetadata>
+                BitMiracle.LibTiff.Classic.FieldValue
+
+            Another Tag 5
+            +		[1]	{-3.4028234663852886e+38	BitMiracle.LibTiff.Classic.FieldValue
+
+                */
+
+            FieldValue[] modelPixelScaleTag = tif.bmtiff.GetField(TiffTag.GEOTIFF_MODELPIXELSCALETAG);
+            FieldValue[] modelTiePointTag = tif.bmtiff.GetField(TiffTag.GEOTIFF_MODELTIEPOINTTAG);
+            FieldValue[] anotherTag1 = tif.bmtiff.GetField(TiffTag.GEOTIFF_GEOKEYDIRECTORYTAG);
+            FieldValue[] anotherTag2 = tif.bmtiff.GetField(TiffTag.GEOTIFF_GEODOUBLEPARAMSTAG);
+            FieldValue[] anotherTag3 = tif.bmtiff.GetField(TiffTag.GEOTIFF_GEOASCIIPARAMSTAG);
+            FieldValue[] anotherTag4 = tif.bmtiff.GetField((TiffTag) 42112);
+            FieldValue[] anotherTag5 = tif.bmtiff.GetField((TiffTag) 42113);
+
+            byte[] modelPixelScale = modelPixelScaleTag[1].GetBytes();
+            double dW = BitConverter.ToDouble(modelPixelScale, 0);
+            double dH = BitConverter.ToDouble(modelPixelScale, 8) * -1;
 
 
-        //public static void TIFInfo(string fn, Stream stream)
-        //{
-        //    Console.WriteLine("TIFInfo " + fn);
-        //    TiffFileReader tiff = TiffFileReader.Open(stream);
-        //    TiffImageFileDirectory ifd = tiff.ReadImageFileDirectory();
-        //    TiffFieldReader fieldReader = tiff.CreateFieldReader();
+            byte[] modelTransformation = modelTiePointTag[1].GetBytes();
+            double originLon = BitConverter.ToDouble(modelTransformation, 24);
+            double originLat = BitConverter.ToDouble(modelTransformation, 32);
 
-        //    foreach (var entry in ifd)
-        //    {
-        //        Console.WriteLine("Item " + entry.Tag + " " + entry.Type + " " + entry.ValueCount);
-
-        //        switch (entry.Type)
-        //        {
-        //            case TiffFieldType.Byte:
-        //                Console.Write(" Binary data not shown.");
-        //                break;
-        //            case TiffFieldType.ASCII:
-        //                TiffValueCollection<string> valuesAscii = fieldReader.ReadASCIIField(entry, skipTypeValidation: true);
-        //                if (valuesAscii.IsEmpty)
-        //                {
-        //                    // Do nothing
-        //                }
-        //                else if (valuesAscii.Count == 1)
-        //                {
-        //                    Console.Write(" Value = " + valuesAscii.GetFirstOrDefault());
-        //                }
-        //                else
-        //                {
-        //                    Console.WriteLine();
-        //                    for (int i = 0; i < valuesAscii.Count; i++)
-        //                    {
-        //                        Console.Write($"  [{i}] = {valuesAscii[i]}");
-        //                    }
-        //                }
-        //                break;
-        //            case TiffFieldType.Short:
-        //                TiffValueCollection<ushort> valuesShort = fieldReader.ReadShortField(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesShort);
-        //                break;
-        //            case TiffFieldType.Long:
-        //                TiffValueCollection<uint> valuesLong = fieldReader.ReadLongField(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesLong);
-        //                break;
-        //            case TiffFieldType.Rational:
-        //                TiffValueCollection<TiffRational> valuesRational = fieldReader.ReadRationalField(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesRational);
-        //                break;
-        //            case TiffFieldType.SByte:
-        //                Console.Write(" Binary data not shown.");
-        //                break;
-        //            case TiffFieldType.Undefined:
-        //                Console.Write(" Binary data not shown.");
-        //                break;
-        //            case TiffFieldType.SShort:
-        //                TiffValueCollection<short> valuesSShort = fieldReader.ReadSShortField(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesSShort);
-        //                break;
-        //            case TiffFieldType.SLong:
-        //                TiffValueCollection<int> valuesSLong = fieldReader.ReadSLongField(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesSLong);
-        //                break;
-        //            case TiffFieldType.SRational:
-        //                TiffValueCollection<TiffSRational> valuesSRational = fieldReader.ReadSRationalField(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesSRational);
-        //                break;
-        //            case TiffFieldType.Float:
-        //                TiffValueCollection<float> valuesFloat = fieldReader.ReadFloatField(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesFloat);
-        //                break;
-        //            case TiffFieldType.Double:
-        //                TiffValueCollection<double> valuesDouble = fieldReader.ReadDoubleField(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesDouble);
-        //                break;
-        //            case TiffFieldType.IFD:
-        //                TiffValueCollection<TiffStreamOffset> valuesIfd = fieldReader.ReadIFDField(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesIfd);
-        //                break;
-        //            case TiffFieldType.Long8:
-        //                TiffValueCollection<ulong> valuesLong8 = fieldReader.ReadLong8Field(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesLong8);
-        //                break;
-        //            case TiffFieldType.SLong8:
-        //                TiffValueCollection<long> valuesSLong8 = fieldReader.ReadSLong8Field(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesSLong8);
-        //                break;
-        //            case TiffFieldType.IFD8:
-        //                TiffValueCollection<TiffStreamOffset> valuesIfd8 = fieldReader.ReadIFD8Field(entry, skipTypeValidation: true);
-        //                DumpValueCollecion(valuesIfd8);
-        //                break;
-        //            default:
-        //                Console.Write(" Unsupported field type.");
-        //                break;
-        //        }
-        //        Console.WriteLine("");
-        //    }
-
-        //    Console.WriteLine("TIFInfo Complete " + fn);
-        //}
+            double startW = originLon + dW / 2.0;
+            double startH = originLat + dH / 2.0;
+            if (dH < 0)
+            {
+                dH = -dH;
+                startH -= dH * nHeight;
+                originLat -= dH * nHeight;
+            }
 
 
+            FieldValue[] tileByteCountsTag = tif.bmtiff.GetField(TiffTag.TILEBYTECOUNTS);
+            long[] tileByteCounts = tileByteCountsTag[0].TolongArray();
+
+            FieldValue[] bitsPerSampleTag = tif.bmtiff.GetField(TiffTag.BITSPERSAMPLE);
+            int bytesPerSample = bitsPerSampleTag[0].ToInt() / 8;
+
+            FieldValue[] tilewtag = tif.bmtiff.GetField(TiffTag.TILEWIDTH);
+            FieldValue[] tilehtag = tif.bmtiff.GetField(TiffTag.TILELENGTH);
+            int tilew = tilewtag[0].ToInt();
+            int tileh = tilehtag[0].ToInt();
 
 
-        //// LINQPad script
-        //// References: System.Xaml, WindowsBase, PresentationCore
-        //// Namespaces: System.Windows.Media.Imaging
-
-        ////void Main()
-        ////{
-        ////    string path = @"(image_path)";
-        ////    Uri imageUri = new Uri(path);
-
-        ////    var decoder = BitmapDecoder.Create(imageUri, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-
-        ////    // Global metadata
-        ////    DumpMetadata(decoder.Metadata);
-
-        ////    // Metadata for each frame
-        ////    DumpAllMetadata(decoder.Frames);
-        ////}
-
-        //static void DumpAllMetadata(IEnumerable<BitmapFrame> frames)
-        //{
-        //    int i = 0;
-        //    foreach (var f in frames)
-        //    {
-        //        using (var writer = new StringWriter())
-        //        {
-        //            DumpMetadata((BitmapMetadata)f.Metadata, writer);
-        //            //writer.ToString().Dump("Frame " + i++);
-        //        }
-        //    }
-        //}
-
-        //static void DumpMetadata(BitmapMetadata metadata)
-        //{
-        //    DumpMetadata(metadata, 0, Console.Out);
-        //}
-
-        //static void DumpMetadata(BitmapMetadata metadata, TextWriter writer)
-        //{
-        //    DumpMetadata(metadata, 0, writer);
-        //}
-
-        //static void DumpMetadata(BitmapMetadata metadata, int indentLevel)
-        //{
-        //    DumpMetadata(metadata, indentLevel, Console.Out);
-        //}
-
-        //static void DumpMetadata(BitmapMetadata metadata, int indentLevel, TextWriter writer)
-        //{
-        //    if (metadata == null)
-        //    {
-        //        writer.WriteLine("(No metadata)");
-        //        return;
-        //    }
-        //    string indent = new string('\t', indentLevel);
-        //    foreach (var propertyName in metadata)
-        //    {
-        //        object value = metadata.GetQuery(propertyName);
-
-        //        BitmapMetadata metdata = (BitmapMetadata) value;
-
-        //        foreach ( var res in metdata)
-        //        {
-        //            string sgsgsg = "sdssda";
-        //        }
-
-        //        BitmapMetadata complexProperty = value as BitmapMetadata;
-
-
-        //        BitmapMetadata metdata2 = (BitmapMetadata)value;
-
-        //        foreach (var res2 in metdata2)
-        //        {
-        //            string sgsgsg = "sdssda";
-        //            object value2 = metadata.GetQuery(propertyName + res2);
-        //            string sgsgsg2 = "sdssda";
-        //        }
-
-
-        //        if (complexProperty != null)
-        //        {
-        //            writer.WriteLine("{0}{1} =", indent, propertyName);
-        //            DumpMetadata(complexProperty, indentLevel + 1, writer);
-        //        }
-        //        else
-        //        {
-        //            Type type = null;
-        //            if (value != null)
-        //                type = value.GetType();
-        //            writer.WriteLine("{0}{1} = {2} ({3})", indent, propertyName, value, type);
-        //        }
-
-        //    }
-        //}
-
-
-        //// https://stackoverflow.com/questions/14876989/how-to-read-pixels-in-four-corners-of-a-bitmapsource
-        ////public static float GetPixel(ImageProcessor.Core.Processors.BitmapSource bitmap, int x, int y)
-        //public static float GetPixel(BitmapSource bitmap, int x, int y)
-        //{
-        //    //Color color;
-        //    var bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
-        //    var bytes = new byte[bytesPerPixel];
-        //    var rect = new Int32Rect(x, y, 1, 1);
-        //    float myFloat = (float)3.4028231e+38; // NoData...
-
-        //    if (bitmap.Format == PanaGraph.Media.PixelFormats.Gray32Float)
-        //    {
-        //        bitmap.CopyPixels(rect, bytes, bytesPerPixel, 0);
-        //        myFloat = System.BitConverter.ToSingle(bytes, 0);
-        //    }
-
-        //    return myFloat;
-        //}
+            tif.tfw = new LidarTFW();
+            tif.tfw.xScale = dW;
+            tif.tfw.rot1 = 0;
+            tif.tfw.rot2 = 0;
+            tif.tfw.NegY = dH;     // E = negative of y-scale; dimension of a pixel in map units in y direction
+            tif.tfw.xllcorner = startW; // C -  x, y map coordinates
+            tif.tfw.yllcorner = startH; // - tif.decoder.Height;// F -  x, y map coordinates
 
 
 
-        //// https://stackoverflow.com/questions/14876989/how-to-read-pixels-in-four-corners-of-a-bitmapsource
-        //public static bool GetRowOfPixels(BitmapSource bitmap, int y, float[] row, int startX)
-        //{
-        //    //Color color;
-        //    var bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
-        //    var bytes = new byte[bytesPerPixel * row.Length];
-        //    var rect = new Int32Rect(startX, y, row.Length, 1);
-        //    //float myFloat = (float)3.4028231e+38; // NoData...
+            int tileWidthCount = nWidth / tilew;
+            int remainingWidth = nWidth - tileWidthCount * tilew;
+            if (remainingWidth > 0)
+            {
+                tileWidthCount++;
+            }
 
-        //    if (bitmap.Format == PanaGraph.Media.PixelFormats.Gray32Float)
-        //    {
-        //        bitmap.CopyPixels(rect, bytes, bytesPerPixel * row.Length, 0);
-        //        for (int i = 0; i < row.Length; i++)
-        //        {
-        //            row[i] = System.BitConverter.ToSingle(bytes, i * bytesPerPixel);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        string formt = "Format " + bitmap.Format;
-        //    }
+            int tileHeightCount = nHeight / tileh;
+            int remainingHeight = nHeight - tileHeightCount * tileh;
+            if (remainingHeight > 0)
+            {
+                tileHeightCount++;
+            }
 
-        //    return true;
-        //}
+
+            int tileSize = tif.bmtiff.TileSize();
+            for (int iw = 0; iw < nWidth; iw += tilew)
+            {
+                for (int ih = 0; ih < nHeight; ih += tileh)
+                {
+                    byte[] buffer = new byte[tileSize];
+                    tif.bmtiff.ReadTile(buffer, 0, iw, ih, 0, 0);
+                    for (int itw = 0; itw < tilew; itw++)
+                    {
+                        int iwhm = iw + itw;
+                        if (iwhm > nWidth - 1)
+                        {
+                            break;
+                        }
+                        for (int ith = 0; ith < tileh; ith++)
+                        {
+                            //int iyhm = ih + ith;
+                            int iyhm = nHeight - ih - ith - 1;
+
+                            if (iyhm > nHeight - 1 || iyhm < 0)
+                            {
+                                break;
+                            }
+                            try
+                            {
+                                tif.pixels[iyhm, iwhm] = BitConverter.ToSingle(buffer, (itw + tileh * ith) * 4);
+                            }
+                            catch (Exception e)
+                            {
+                                throw;
+                            }
+                        }
+                    }
+                }
+            }
+            return tif;
+        }
+
+
 
 
         public static void ReadAndCacheLidarBlock(LidarBlock blk, countryEnum eCountry)
@@ -1403,6 +1343,27 @@ namespace OpenPanoramaLib
                 }
             }
 
+            // The large Wales TIF file goes in ahead of anything else...
+            if (lowerfilename.Contains("wales_lidar_dtm_1m_32bit_cog.tif"))
+            {
+                foreach (string mySquare in WalesSquares)
+                {
+                    for (int x = 0; x < 10; x++)
+                    {
+                        for (int y = 0; y < 10; y++)
+                        {
+                            string tilename = mySquare + x.ToString("D1") + y.ToString("D1");
+                            if (!myTileFilenames.ContainsKey(tilename))
+                            {
+                                myTileFilenames.Add(tilename, new List<string>());
+                            }
+                            List<string> tilefiles = myTileFilenames[tilename];
+                            tilefiles.Insert(0, lowerfilename);
+                        }
+                    }
+                }
+            }
+
             // Index Scottish TIF DTM files...
             if (lowerfilename.Contains("scotland") && lowerfilename.Contains(".tif") && lowerfilename.Contains("dtm"))
             {
@@ -1740,8 +1701,8 @@ namespace OpenPanoramaLib
                                                     Console.WriteLine("TIF File " + entry.FullName + " in ZIP " + filename);
 
                                                     Stream stream = entry.Open();
-                                                    tif = ReadTIF(fn, stream);
-                                                    //tif = MSFTReadTIF(fn, stream);
+                                                    //tif = ReadTIF(fn, stream, false);
+                                                    tif = ReadTIFBounded(fn, stream, false, xllcorner,yllcorner,siz);
                                                     if (tif.tfw != null)
                                                     {
                                                         tfw = tif.tfw;
@@ -1793,8 +1754,8 @@ namespace OpenPanoramaLib
                                     Console.WriteLine("TIF File " + filename + " NO ZIP");
 
                                     FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
-                                    tif = ReadTIF(filename, (Stream)stream);
-                                    //tif = MSFTReadTIF(filename, (Stream)stream);
+                                    //tif = ReadTIF(filename, (Stream)stream, true);
+                                    tif = ReadTIFBounded(filename, (Stream) stream, true, xllcorner, yllcorner, siz);
                                     if (tif != null && tif.tfw != null)
                                     {
                                         tfw = tif.tfw;

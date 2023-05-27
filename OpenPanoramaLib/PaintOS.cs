@@ -4,6 +4,7 @@ using System.Collections.Generic;
 //using System.Drawing;
 //using System.Drawing;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -121,11 +122,16 @@ namespace OpenPanoramaLib
                                     pi.UpdateWorkInProgress();
                                 }
 
-                                //if (pi.rjParams.drwSpots)
-                                //{
-                                    DrawSpotHeights(pi, profGraph, xdoc, lat, lon, hght, eCountry, pi.rjParams.drwSpots);
+                                if (pi.rjParams.drwContours)
+                                {
+                                    DrawSpotHeights(pi, profGraph, xdoc, lat, lon, hght, eCountry);
                                     pi.UpdateWorkInProgress();
-                                //}
+                                }
+
+                                if (pi.rjParams.drwSpots)
+                                {
+                                    DrawSpotHeightLabels(pi, profGraph, xdoc, lat, lon, hght, eCountry);
+                                }
                             }
                         }
                     }
@@ -190,7 +196,7 @@ namespace OpenPanoramaLib
                     {
                         hv.setHVContext(HorizonVector.HorizonSource.OSSeaContour, Azimuth, Elevation, ll.lat, ll.lon, distance, z, oldAzimuth, oldElevation, oldll.lat, oldll.lon, oldDistance, oldHeight);
                         //WrappedDrawLine(99999, null, true, profGraph, AngleInt, ElevationInt, distance, oldAzimuthInt, oldElevationInt, oldDistance, z, hv );
-                        pi.WrappedDrawLineDouble(99999, null, true, profGraph, Azimuth, Elevation, distance, oldAzimuth, oldElevation, oldDistance, z, hv);
+                        pi.WrappedDrawLineDouble(pi.myBitmap, 99999, null, true, profGraph, Azimuth, Elevation, distance, oldAzimuth, oldElevation, oldDistance, z, hv);
                     }
 
                     oldAzimuth = Azimuth;
@@ -321,7 +327,7 @@ namespace OpenPanoramaLib
                             {
                                 hv.setHVContext(HorizonVector.HorizonSource.OSContourDiagonal, Azimuth, Elevation, ll.lat, ll.lon, distance, z, Angle2, Elevation2, ll2.lat, ll2.lon, distance2, nearest_z);
                                 //WrappedDrawLine(Gradient, null, false, profGraph, AzimuthInt, ElevationInt, distance, Angle2Int, Elevation2Int, distance2, z, hv);
-                                pi.WrappedDrawLineDouble(Gradient, null, false, profGraph, Azimuth, Elevation, distance, Angle2, Elevation2, distance2, z, hv);
+                                pi.WrappedDrawLineDouble(pi.myBitmap, Gradient, null, false, profGraph, Azimuth, Elevation, distance, Angle2, Elevation2, distance2, z, hv);
                             }
                         }
                         else
@@ -354,7 +360,7 @@ namespace OpenPanoramaLib
 
                             hv.setHVContext(HorizonVector.HorizonSource.OSLandContour, Azimuth, Elevation, ll.lat, ll.lon, distance, z, oldAzimuth, oldElevation, oldll.lat, oldll.lon, oldDistance, oldHeight);
                             //WrappedDrawLine(avGrad, null, false, profGraph, AzimuthInt, ElevationInt, distance, oldAzimuthInt, oldElevationInt, oldDistance, z, hv);
-                            pi.WrappedDrawLineDouble(avGrad, null, false, profGraph, Azimuth, Elevation, distance, oldAzimuth, oldElevation, oldDistance, z, hv);
+                            pi.WrappedDrawLineDouble(pi.myBitmap, avGrad, null, false, profGraph, Azimuth, Elevation, distance, oldAzimuth, oldElevation, oldDistance, z, hv);
                         }
                     }
 
@@ -481,8 +487,7 @@ namespace OpenPanoramaLib
 
 
 
-
-        public void DrawSpotHeights(PaintImage pi, Graphics profGraph, XDocument xdoc, double lat, double lon, double hght, countryEnum eCountry, bool AddLabels)
+        public void DrawSpotHeights(PaintImage pi, Graphics profGraph, XDocument xdoc, double lat, double lon, double hght, countryEnum eCountry)
         {
             XNamespace xsiNameSpace = "http://www.w3.org/2001/XMLSchema-instance";
             XNamespace osNameSpace = "http://namespaces.ordnancesurvey.co.uk/elevation/contours/v1.0";
@@ -510,148 +515,183 @@ namespace OpenPanoramaLib
 
             HorizonVector hv = new HorizonVector();
 
-            for (int hi = 0; hi < 0 ; hi++) // CrackedHeights.Length
+            foreach (XElement spot in allSpotHeights)
             {
-                //var loc = spot.Element(osNameSpace + "geometry").Value.ToString();
-                // string h = spot.Element(osNameSpace + "propertyValue").Value.ToString();
+                var loc = spot.Element(osNameSpace + "geometry").Value.ToString();
+                string h = spot.Element(osNameSpace + "propertyValue").Value.ToString();
 
-                double z = CrackedHeights[hi];
+                string[] ptStrs = loc.Split(splitter);
+                double x = Convert.ToDouble(ptStrs[0]);
+                double y = Convert.ToDouble(ptStrs[1]);
+                double z = Convert.ToDouble(h);
 
-                for (int i = 0; i < CrackedXs[hi].Length; i += 1)
+                OsGridRef osgr = new OsGridRef(x, y);
+                ll = osgr.toLatLon(eCountry);
+
+                double Angle = LatLonConversions.bearing(lat, lon, ll.lat, ll.lon) * 180 / Math.PI;
+                double distance = LatLonConversions.distHaversine(lat, lon, ll.lat, ll.lon);
+
+                double dip = PaintImage.CalculateDip(distance);
+                double Elevation = Math.Atan((z - hght - dip) / distance) * 180 / Math.PI;
+                int AnglePixels = (int)(Angle * pi.rjParams.pixels);
+
+                int ElevationInt = (int)(Elevation * pi.rjParams.pixels + pi.rjParams.pixels * pi.rjParams.negativeRange);
+
+                // Can we see the spot or not?
+                if (Elevation > 0 &&
+                    AnglePixels > 0 && AnglePixels < pi.ZBuffer.Count() &&
+                    Elevation < pi.ZBuffer[0].Count() &&
+                    pi.ZBuffer[(int)Angle][(int)Elevation] > distance)
                 {
-                    continue;
-
                     int nearest_X = 0;
                     int nearest_y = 0;
                     int nearest_z = 0;
 
-                    double x = CrackedXs[hi][i];
-                    double y = CrackedYs[hi][i];
-
-                    OsGridRef osgr = new OsGridRef(x, y);
-                    ll = osgr.toLatLon(eCountry);
-
-                    double Azimuth = LatLonConversions.bearing(lat, lon, ll.lat, ll.lon) * 180 / Math.PI;
-                    double distance = LatLonConversions.distHaversine(lat, lon, ll.lat, ll.lon);
-
-                    double dip = PaintImage.CalculateDip(distance);
-                    double Elevation = Math.Atan((z - hght - dip) / distance) * 180 / Math.PI;
-
                     chint.valid = false;
 
 
-                    //string[] ptStrs = loc.Split(splitter);
-                    //double x = Convert.ToDouble(ptStrs[0]);
-                    //double y = Convert.ToDouble(ptStrs[1]);
-                    //double z = Convert.ToDouble(h);
+                    // If LIDAR Enabled then don't draw within the LIDAR range.
+                    if ((pi.rjParams.drwLIDAR && distance < pi.rjParams.lidarrange - 100) && !pi.rjParams.drwAllContours)
+                    {
+                    }
+                    else
+                    {
+                        // Minor optimisation - don't bother with contours below the horizon... and don't draw closer than rjParams.minDistance (70) metres...
+                        if (ElevationInt > 0 && distance >= pi.rjParams.minDistance)
+                        {
+                            double min_dist = 0;
+                            int zint = (((int)z) / 10) * 10 + 10;
+                            bool nearest = GetNearestLowerPoint(CrackedHeights, CrackedXs, CrackedYs, zint, (int)x, (int)y, ref nearest_X, ref nearest_y, ref nearest_z, ref min_dist, chint);
+                            if (nearest)
+                            {
+                                OsGridRef osgr2 = new OsGridRef(nearest_X, nearest_y);
+                                var ll2 = osgr2.toLatLon(eCountry);
 
-                    ////ll = OGBLatLng.NEtoLL(x, y);
-                    //OsGridRef osgr = new OsGridRef(x, y);
-                    //ll = osgr.toLatLon(eCountry);
+                                double Angle2 = LatLonConversions.bearing(lat, lon, ll2.lat, ll2.lon) * 180 / Math.PI;
+                                double distance2 = LatLonConversions.distHaversine(lat, lon, ll2.lat, ll2.lon);
 
-                    //double Angle = LatLonConversions.bearing(lat, lon, ll.lat, ll.lon);
-                    //double distance = LatLonConversions.distHaversine(lat, lon, ll.lat, ll.lon);
+                                double dip2 = PaintImage.CalculateDip(distance2);
+                                double Elevation2 = Math.Atan((nearest_z - hght - dip2) / distance2) * 180 / Math.PI;
 
-                    //double dip = PaintImage.CalculateDip(distance);
-                    //Double Elevation = Math.Atan((z - hght - dip) / distance);
+                                double Gradient = min_dist / (z - nearest_z);
+                                if (distance >= pi.rjParams.minDistance && distance2 >= pi.rjParams.minDistance && !pi.rjParams.proximalInterpolation)
+                                {
+                                    hv.setHVContext(HorizonVector.HorizonSource.OSTrig, Angle, Elevation, ll.lat, ll.lon, distance, z, Angle2, Elevation2, ll2.lat, ll2.lon, distance2, nearest_z);
+                                    pi.WrappedDrawLineDouble(pi.myBitmap, Gradient, null, false, profGraph, Angle, Elevation, distance, Angle2, Elevation2, distance2, z, hv);
+                                }
+                            }
+                            else
+                            {
+                                //infostuff += " GetNearestLowerPoint false " + heights[hi] + " x " + xs[hi][i] +  " y " + ys[hi][i];
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-                    double Angle = Azimuth * pi.rjParams.pixels;
-                    Elevation = Elevation * 180 / Math.PI * pi.rjParams.pixels + pi.rjParams.pixels * pi.rjParams.negativeRange;
+
+        public void DrawSpotHeightLabels(PaintImage pi, Graphics profGraph, XDocument xdoc, double lat, double lon, double hght, countryEnum eCountry)
+        {
+            XNamespace xsiNameSpace = "http://www.w3.org/2001/XMLSchema-instance";
+            XNamespace osNameSpace = "http://namespaces.ordnancesurvey.co.uk/elevation/contours/v1.0";
+            XNamespace gmlNameSpace = "http://www.opengis.net/gml/3.2";
+            char[] splitter = { ' ' };
+
+            var allSpotHeights = xdoc.Descendants(osNameSpace + "SpotHeight");
+
+            // OGBLatLng ll;
+            LatLon_OsGridRef ll;
+
+            Pen pn = new Pen(PaintImage.colourSpotHeight, 1);
+            Pen markerpn = new Pen(PaintImage.colourSpotHeight, 1);
+            SolidBrush txtbrsh = new SolidBrush(PaintImage.colourSpotHeight);
+
+
+            PointF[] poly = new PointF[3];
+            for (int i = 0; i < poly.Length; i++)
+            {
+                poly[i] = new PointF();
+            }
+
+            ContourHint chint = new ContourHint();
+            chint.valid = false;
+
+            HorizonVector hv = new HorizonVector();
+
+            foreach(XElement spot in allSpotHeights )
+            {
+                var loc = spot.Element(osNameSpace + "geometry").Value.ToString();
+                string h = spot.Element(osNameSpace + "propertyValue").Value.ToString();
+
+                string[] ptStrs = loc.Split(splitter);
+                double x = Convert.ToDouble(ptStrs[0]);
+                double y = Convert.ToDouble(ptStrs[1]);
+                double z = Convert.ToDouble(h);
+
+                OsGridRef osgr = new OsGridRef(x, y);
+                ll = osgr.toLatLon(eCountry);
+
+                double Angle = LatLonConversions.bearing(lat, lon, ll.lat, ll.lon) * 180 / Math.PI;
+                double distance = LatLonConversions.distHaversine(lat, lon, ll.lat, ll.lon);
+
+                double dip = PaintImage.CalculateDip(distance);
+                double Elevation = Math.Atan((z - hght - dip) / distance) * 180 / Math.PI;
+                int AnglePixels = (int) ( Angle * pi.rjParams.pixels );
+
+                int ElevationInt = (int)(Elevation * pi.rjParams.pixels + pi.rjParams.pixels * pi.rjParams.negativeRange);
+
+                // Can we see the spot or not?
+                if (Elevation > 0 &&
+                    AnglePixels > 0 && AnglePixels < pi.ZBuffer.Count() &&
+                    Elevation < pi.ZBuffer[0].Count() &&
+                    pi.ZBuffer[(int)Angle][(int)Elevation] > distance)
+                {
+                    chint.valid = false;
+
                     int SpotSiz = 5;
 
-                    // Can we see the spot or not?
-                    if (Elevation > 0 &&
-                        Angle > 0 && Angle < pi.ZBuffer.Count() &&
-                        Elevation < pi.ZBuffer[0].Count() &&
-                        pi.ZBuffer[(int)Angle][(int)Elevation] > distance)
+                    profGraph.DrawLine(pn, (float)(AnglePixels - SpotSiz), (float)(pi.lowest_elevation_height - ElevationInt), (float)(AnglePixels + SpotSiz), (float)(pi.lowest_elevation_height - ElevationInt));
+                    profGraph.DrawLine(pn, (float)AnglePixels, (float)((pi.lowest_elevation_height - ElevationInt) - SpotSiz), (float)AnglePixels, (float)((pi.lowest_elevation_height - ElevationInt) + SpotSiz));
+
+                    // Add txt for spot heights above 1 degrees.
+                    if (Elevation >= 1 && pi.rjParams.drawLocations)
                     {
-                        // If LIDAR Enabled then don't draw within the LIDAR range.
-                        if ((pi.rjParams.drwLIDAR && distance < pi.rjParams.lidarrange - 100) && !pi.rjParams.drwAllContours)
-                        {
-                        }
-                        else
-                        {
-                            int ElevationInt = (int)(Elevation * pi.rjParams.pixels + pi.rjParams.pixels * pi.rjParams.negativeRange);
+                        string val = (int) z + " " + ll.lat.ToString("0.00000") + ", " + ll.lon.ToString("0.00000");
 
-                            // Minor optimisation - don't bother with contours below the horizon... and don't draw closer than rjParams.minDistance (70) metres...
-                            if (ElevationInt > 0 && distance >= pi.rjParams.minDistance)
+                        StringFormat sf = new StringFormat();
+                        sf.LineAlignment = StringAlignment.Near;
+                        sf.Alignment = StringAlignment.Center;
+
+                        int txtwidth = (int)pi.rjParams.pixels; // This should fit in about 1 degree of width...
+
+
+                        int txtheight = 12;
+                        int yy = (int)(pi.lowest_elevation_height - ElevationInt - txtheight - SpotSiz);
+                        int xx = (int)(AnglePixels - txtwidth / 2);
+                        int start_yy = yy;
+
+                        // Make sure the label is visible.
+                        if (xx < 0) xx = 0;
+                        if (xx + txtwidth >= pi.ImageRawWidth) xx = pi.ImageRawWidth - txtwidth;
+
+                        for (int lx = 0; lx < txtwidth; lx++)
+                        {
+                            if (pi.labelStack[xx + lx] - txtheight <= yy)
                             {
-                                double min_dist = 0;
-                                bool nearest = GetNearestLowerPoint(CrackedHeights, CrackedXs, CrackedYs, CrackedHeights[hi], CrackedXs[hi][i], CrackedYs[hi][i], ref nearest_X, ref nearest_y, ref nearest_z, ref min_dist, chint);
-                                if (nearest)
-                                {
-                                    OsGridRef osgr2 = new OsGridRef(nearest_X, nearest_y);
-                                    var ll2 = osgr2.toLatLon(eCountry);
-
-                                    double Angle2 = LatLonConversions.bearing(lat, lon, ll2.lat, ll2.lon) * 180 / Math.PI;
-                                    double distance2 = LatLonConversions.distHaversine(lat, lon, ll2.lat, ll2.lon);
-
-                                    double dip2 = PaintImage.CalculateDip(distance2);
-                                    double Elevation2 = Math.Atan((nearest_z - hght - dip2) / distance2) * 180 / Math.PI;
-
-                                    int Angle2Int = (int)(Angle2 * pi.rjParams.pixels);
-                                    int Elevation2Int = (int)(Elevation2 * pi.rjParams.pixels + pi.rjParams.pixels * pi.rjParams.negativeRange);
-
-                                    double Gradient = min_dist / (CrackedHeights[hi] - nearest_z);
-                                    if (distance >= pi.rjParams.minDistance && distance2 >= pi.rjParams.minDistance && !pi.rjParams.proximalInterpolation)
-                                    {
-                                        hv.setHVContext(HorizonVector.HorizonSource.OSTrig, Azimuth, Elevation, ll.lat, ll.lon, distance, z, Angle2, Elevation2, ll2.lat, ll2.lon, distance2, nearest_z);
-                                        //WrappedDrawLine(Gradient, null, false, profGraph, AzimuthInt, ElevationInt, distance, Angle2Int, Elevation2Int, distance2, z, hv);
-                                        pi.WrappedDrawLineDouble(Gradient, null, false, profGraph, Azimuth, Elevation, distance, Angle2, Elevation2, distance2, z, hv);
-                                    }
-                                }
-                                else
-                                {
-                                    //infostuff += " GetNearestLowerPoint false " + heights[hi] + " x " + xs[hi][i] +  " y " + ys[hi][i];
-                                }
+                                yy = pi.labelStack[xx + lx] - txtheight - 1;
                             }
                         }
 
-                        if (AddLabels)
+                        if (yy > start_yy - pi.rjParams.pixels)
                         {
-                            profGraph.DrawLine(pn, (float)(Angle - SpotSiz), (float)(pi.lowest_elevation_height - Elevation), (float)(Angle + SpotSiz), (float)(pi.lowest_elevation_height - Elevation));
-                            profGraph.DrawLine(pn, (float)Angle, (float)((pi.lowest_elevation_height - Elevation) - SpotSiz), (float)Angle, (float)((pi.lowest_elevation_height - Elevation) + SpotSiz));
-
-                            // Add txt for spot heights above 1 degrees.
-                            if (Elevation > 0 * pi.rjParams.pixels && pi.rjParams.drawLocations)
+                            for (int lx = 0; lx < txtwidth; lx++)
                             {
-                                string val = (int) z + " " + ll.lat.ToString("0.00000") + ", " + ll.lon.ToString("0.00000");
-
-                                StringFormat sf = new StringFormat();
-                                sf.LineAlignment = StringAlignment.Near;
-                                sf.Alignment = StringAlignment.Center;
-
-                                int txtwidth = (int)pi.rjParams.pixels; // This should fit in about 1 degree of width...
-
-
-                                int txtheight = 12;
-                                int yy = (int)(pi.lowest_elevation_height - Elevation - txtheight + SpotSiz);
-                                int xx = (int)(Angle - txtwidth / 2);
-                                int start_yy = yy;
-
-                                // Make sure the label is visible.
-                                if (xx < 0) xx = 0;
-                                if (xx + txtwidth >= pi.ImageRawWidth) xx = pi.ImageRawWidth - txtwidth;
-
-                                for (int lx = 0; lx < txtwidth; lx++)
-                                {
-                                    if (pi.labelStack[xx + lx] - txtheight <= yy)
-                                    {
-                                        yy = pi.labelStack[xx + lx] - txtheight - 1;
-                                    }
-                                }
-
-                                if (yy > start_yy - pi.rjParams.pixels)
-                                {
-                                    for (int lx = 0; lx < txtwidth; lx++)
-                                    {
-                                        pi.labelStack[xx + lx] = yy;
-                                    }
-
-                                    Rectangle rct = new Rectangle(xx, yy, txtwidth, txtheight + 1);
-                                    profGraph.DrawString(val, new Font(FontFamily.GenericSansSerif, txtheight, FontStyle.Regular), txtbrsh, rct, sf);
-                                }
+                                pi.labelStack[xx + lx] = yy;
                             }
+
+                            Rectangle rct = new Rectangle(xx, yy, txtwidth, txtheight + 1);
+                            profGraph.DrawString(val, new Font(FontFamily.GenericSansSerif, txtheight, FontStyle.Regular), txtbrsh, rct, sf);
                         }
                     }
                 }

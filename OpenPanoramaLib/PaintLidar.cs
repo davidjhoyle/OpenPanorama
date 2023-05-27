@@ -223,7 +223,7 @@ namespace OpenPanoramaLib
                 int elevation2Int = (int)(elevation2 * rjParams.pixels + rjParams.pixels * rjParams.negativeRange);
 
                 //WrappedDrawLine(steepest, null, sea, profGraph, angleInt, elevationInt, distance, angle2Int, elevation2Int, distance2, z, hv);
-                pi.WrappedDrawLineDouble(steepest, null, sea, profGraph, angle, elevation, distance, angle2, elevation2, distance2, z, hv);
+                pi.WrappedDrawLineDouble(pi.myBitmap,steepest, null, sea, profGraph, angle, elevation, distance, angle2, elevation2, distance2, z, hv);
             }
 
             return true;

@@ -239,7 +239,7 @@ namespace OpenPanoramaLib
                                     {
                                         hv.setHVContext(HorizonVector.HorizonSource.SRTMProximal, prevAngle, prevElevation, prevy, prevx, prevDistance, z, Angle2, Elevation2, latout1, lonout1, distance2, z);
                                         //WrappedDrawLine(steepest, null, sea, profGraph, prevAngleInt, prevElevationInt,prevDistance, Angle2Int, Elevation2Int, distance2, z, hv);
-                                        pi.WrappedDrawLineDouble(steepest, null, sea, profGraph, prevAngle, prevElevation, prevDistance, Angle2, Elevation2, distance2, z, hv);
+                                        pi.WrappedDrawLineDouble(pi.myBitmap, steepest, null, sea, profGraph, prevAngle, prevElevation, prevDistance, Angle2, Elevation2, distance2, z, hv);
                                     }
 
                                     prevy = latout1;
@@ -299,7 +299,7 @@ namespace OpenPanoramaLib
                                     if (ElevationInt > 0 || Elevation2Int > 0)
                                     {
                                         hv.setHVContext(HorizonVector.HorizonSource.SRTMLinear, Angle, Elevation, latout1, lonout1, distance, z, Angle2, Elevation2, latout2, lonout2, distance2, z2);
-                                        pi.WrappedDrawLineDouble(steepest, null, sea, profGraph, Angle, Elevation, distance, Angle2, Elevation2, distance2, z, hv);
+                                        pi.WrappedDrawLineDouble(pi.myBitmap, steepest, null, sea, profGraph, Angle, Elevation, distance, Angle2, Elevation2, distance2, z, hv);
                                     }
                                 }
                             }

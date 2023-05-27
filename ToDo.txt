@@ -1,0 +1,25 @@
+﻿
+
+•	Move all landscape processing into a dedicated set of sources away from the rest
+•	Draw into a bitmap that I manage rather than using the slow drawing primitives
+•	Separate OS spot heights into spot height text additions and spot height landscape drawing
+•	Add support for very large LIDAR files - support for Why Cloud Optimized GeoTIFF? https://www.cogeo.org/
+
+
+https://datamap.gov.wales/maps/lidar-viewer/
+Downloading LiDAR data
+
+There are several options for the downloading of LiDAR data.
+
+The URL links for the Historic LiDAR Archive tiles and the Welsh Government 2020-2022 dataset tiles are available in the feature information pop up panel that appears when clicking on the map when the Historic LiDAR Archive or Welsh Government 2020-2022 tile index layer visibility is turned on.
+
+Alternatively, the How to download LiDAR data guide explains how to use the raster data plug in to download available Historic LiDAR Archive data.
+
+Links to the DTM and DSM datasets 32 bit, 16 bit and hillshade Cloud Optimized GeoTIFFs (COGs) are listed below. Please note that these are very large files and that downloading the full data can take an extremely long time and a large amount of storage. The COG links can, however, be copied and pasted into GIS such as QGIS as a raster layer. Read more about COGs
+
+https://dmwproductionblob.blob.core.windows.net/cogs/wg_lidar_2020_22_dtm_16bit_cog.tif
+https://dmwproductionblob.blob.core.windows.net/cogs/wg_lidar_2020_22_dsm_16bit_cog.tif
+https://dmwproductionblob.blob.core.windows.net/cogs/wg_lidar_1m_dsm_32bit_cog.tif
+https://dmwproductionblob.blob.core.windows.net/cogs/wales_lidar_dtm_1m_32bit_cog.tif
+https://dmwproductionblob.blob.core.windows.net/cogs/wales_lidar_dsm_1m_hillshade_cog.tif
+https://dmwproductionblob.blob.core.windows.net/cogs/wg_lidar_2020_22_dtm_hillshade_cog.tif

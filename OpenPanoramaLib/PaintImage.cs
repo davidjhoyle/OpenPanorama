@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using PanaGraph;
 using SkiaSharp;
 using System.Runtime.Intrinsics.X86;
+using System.IO;
 
 namespace OpenPanoramaLib
 {
@@ -99,6 +100,8 @@ namespace OpenPanoramaLib
 
         public static string CopyrightNotice { set { copyrightNotice = value; } get { return copyrightNotice; } }
 
+        static Pen SeaPen = new Pen(PaintImage.ColourSea2);
+
 
         public static Color GetColor(string s)
         {
@@ -169,6 +172,8 @@ namespace OpenPanoramaLib
                     }
                 }
             }
+
+            SeaPen = new Pen(PaintImage.ColourSea2);
         }
 
 
@@ -191,7 +196,7 @@ namespace OpenPanoramaLib
         /// <param name="lon1"></param>
         /// <param name="lat2"></param>
         /// <param name="lon2"></param>
-        public void WrappedDrawLineDouble(double gradient, Pen mypn, bool sea, Graphics profGraph, double x1, double y1, double z1, double x2, double y2, double z2, double height, HorizonVector hv)
+        public void WrappedDrawLineDouble(Image pi, double gradient, Pen mypn, bool sea, Graphics profGraph, double x1, double y1, double z1, double x2, double y2, double z2, double height, HorizonVector hv)
         {
             double diffX = Math.Abs(x1 - x2);
 
@@ -218,12 +223,12 @@ namespace OpenPanoramaLib
                     x1adjust2 = 360;
                     x2adjust2 = 0;
                 }
-                DrawLineDouble(gradient, mypn, sea, profGraph, x1 + x1adjust1, y1, z1, x2 + x2adjust1, y2, z2, height, hv);
-                DrawLineDouble(gradient, mypn, sea, profGraph, x1 + x1adjust2, y1, z1, x2 + x2adjust2, y2, z2, height, hv);
+                DrawLineDouble(pi,gradient, mypn, sea, profGraph, x1 + x1adjust1, y1, z1, x2 + x2adjust1, y2, z2, height, hv);
+                DrawLineDouble(pi,gradient, mypn, sea, profGraph, x1 + x1adjust2, y1, z1, x2 + x2adjust2, y2, z2, height, hv);
             }
             else
             {
-                DrawLineDouble(gradient, mypn, sea, profGraph, x1, y1, z1, x2, y2, z2, height, hv);
+                DrawLineDouble(pi, gradient, mypn, sea, profGraph, x1, y1, z1, x2, y2, z2, height, hv);
             }
         }
 
@@ -879,9 +884,13 @@ namespace OpenPanoramaLib
             SeaHorizon sh = SeaHorizon.GetHorizonForHeight((int)myHeight);
             double angle = sh.elevation * rjParams.pixels;
 
-            // Fill the foreground in gray - sea...
+            // Fill the foreground in the sea colour - sea...
             SolidBrush seaBrush = new SolidBrush(colourSea1);
             profGraph.FillRectangle(seaBrush, 0, (int)(zero_hght - angle), ImageRawWidth, lowest_elevation_height);
+
+            //byte[] mybites = myBitmap.bm.Bytes;
+
+
 
             // Sort the Z Buffer
             int maxy = (int)(angle + rjParams.pixels * rjParams.negativeRange);
@@ -946,7 +955,7 @@ namespace OpenPanoramaLib
         {
             Graphics profGraph = Graphics.FromImage(myBitmap);
 
-            // Fill the foreground in gray - sea...
+            // Fill the foreground in gray...
             SolidBrush brsh = new SolidBrush(colourBase);
             profGraph.FillRectangle(brsh, 0, lowest_elevation_height, ImageRawWidth, lowest_elevation_height);
 
@@ -955,7 +964,7 @@ namespace OpenPanoramaLib
 
 
 
-        public void VerticalLine(double slopeangle, Pen mypn, bool sea, Graphics profGraph, int x, int y, double z, double height, HorizonVector hv, double elevation = 0)
+        public void VerticalLine(Image pi, double slopeangle, Pen mypn, bool sea, Graphics profGraph, int x, int y, double z, double height, HorizonVector hv, double elevation = 0)
         {
             if (MaxElevation != null && x >= 0 && x < MaxElevation.Length && MaxElevation[x] < elevation)
             {
@@ -991,80 +1000,41 @@ namespace OpenPanoramaLib
                 }
 
 
-                if (ZBuffer[x][y] > z || rjParams.allWireframes)
+                if (ZBuffer[x][y] > z)
                 {
-                    int endy = 0;
-                    Pen pn = mypn;
-                    if (mypn == null)
+                    int endy = y;
+
+                    for (int yy = y; yy >= 0; yy--)
                     {
-                        if (sea)
+                        if (ZBuffer[x][yy] > z)
                         {
-                            pn = new Pen(PaintImage.ColourSea2);
-                        }
-                        else
-                        {
-                            double lat = 45;
-                            if (hv != null)
-                            {
-                                lat = hv.latitude1;
-                            }
-                            pn = pc.GetPenForDistance(slopeangle, z, height, lat);
-                        }
-                    }
-
-                    if (rjParams.allWireframes)
-                    {
-                        SolidBrush brsh = new SolidBrush(pn.Color);
-                        profGraph.FillRectangle(brsh, x, lowest_elevation_height - y, 1, 1);
-                    }
-
-
-                    if (ZBuffer[x][y] > z)
-                    {
-                        for (int yy = y; yy >= 0; yy--)
-                        {
-                            if (ZBuffer[x][yy] < z)
-                            {
-                                endy = yy;
-                                break;
-                            }
-
+                            endy = yy;
                             ZBuffer[x][yy] = (float)z;
                         }
-
-                        if (rjParams.wireframe)
-                        {
-                            SolidBrush brsh = new SolidBrush(pn.Color);
-                            profGraph.FillRectangle(brsh, x, lowest_elevation_height - y, 1, 1);
-                        }
                         else
                         {
-                            profGraph.DrawLine(pn, x, lowest_elevation_height - y, x, lowest_elevation_height - endy);
+                            break;
                         }
+
+                        //this.myBitmap.bm.SetPixel(x, yy, mypn.paint.Color);
+                    }
+
+                    if (pi.linePainter != null)
+                    {
+                        pi.linePainter.VerticalLine(x, lowest_elevation_height - y, lowest_elevation_height - endy, (uint) mypn.paint.Color);
+                    }
+                    else
+                    {
+                        profGraph.path.MoveTo(x, lowest_elevation_height - y);
+                        profGraph.path.LineTo(x, lowest_elevation_height - endy);
                     }
                 }
             }
         }
 
 
-    //        using (var paint = new SKPaint())
-    //using (var path = new SKPath())
-    //{
-    //    paint.Style = SKPaintStyle.Stroke;
-    //    paint.Color = SKColors.Black;
-    //    paint.StrokeWidth = 5;
 
-    //    path.MoveTo(10, 10);
-    //    path.LineTo(100, 10);
-    //    path.MoveTo(10, 20);
-    //    path.LineTo(100, 20);
-
-    //    canvas.DrawPath(path, paint);
-    //}
-
-
-
-        public void DrawLineDouble(double gradient, Pen mypn, bool sea, Graphics profGraph, double x1double, double y1double, double z1, double x2double, double y2double, double z2, double height, HorizonVector hv)
+        public void DrawLineDouble(Image pi, double gradient, Pen mypn, bool sea, Graphics profGraph, double x1double, double y1double, double z1, double x2double, double y2double, double z2, double height, HorizonVector hv)
         {
             double slopeangle = Math.Atan(gradient);
             double myslope = 9999999999999999;
@@ -1081,53 +1051,78 @@ namespace OpenPanoramaLib
                 myslope = 0;
             }
 
+
+            Pen pn = mypn;
+            if (mypn == null)
+            {
+                if (sea)
+                {
+                    pn = SeaPen;
+                }
+                else
+                {
+                    double lat = 45;
+                    if (hv != null)
+                    {
+                        lat = hv.latitude1;
+                    }
+                    pn = pc.GetPenForDistance(slopeangle, (z2 + z1)/2, height, lat);
+                }
+            }
+
             int x1 = (int)(x1double * rjParams.pixels);
             int y1 = (int)((y1double + rjParams.negativeRange) * rjParams.pixels);
             int x2 = (int)(x2double * rjParams.pixels);
             int y2 = (int)((y2double + rjParams.negativeRange) * rjParams.pixels);
 
-            bool steep = Math.Abs(y2 - y1) > Math.Abs(x2 - x1);
-            if (steep)
+            if (rjParams.wireframe)
             {
-                int t;
-                t = x1; // swap x0 and y0
-                x1 = y1;
-                y1 = t;
-                t = x2; // swap x1 and y1
-                x2 = y2;
-                y2 = t;
+                profGraph.DrawLine(pn, x1, y1, x2, y2);
             }
-
-            if (x1 > x2)
+            else
             {
-                int t;
-                t = x1; // swap x0 and x1
-                x1 = x2;
-                x2 = t;
-                t = y1; // swap y0 and y1
-                y1 = y2;
-                y2 = t;
+                profGraph.path = new SKPath();
 
-                double tz = z1;
-                z1 = z2;
-                z2 = tz;
-            }
+                bool steep = Math.Abs(y2 - y1) > Math.Abs(x2 - x1);
+                if (steep)
+                {
+                    int t;
+                    t = x1; // swap x0 and y0
+                    x1 = y1;
+                    y1 = t;
+                    t = x2; // swap x1 and y1
+                    x2 = y2;
+                    y2 = t;
+                }
 
-            int steps = x2 - x1 + 1;
-            double dz = (z2 - z1) / steps;
-            double myZ = z1;
+                if (x1 > x2)
+                {
+                    int t;
+                    t = x1; // swap x0 and x1
+                    x1 = x2;
+                    x2 = t;
+                    t = y1; // swap y0 and y1
+                    y1 = y2;
+                    y2 = t;
 
-            int dx = x2 - x1;
-            int dy = Math.Abs(y2 - y1);
-            int error = dx / 2;
-            int ystep = (y1 < y2) ? 1 : -1;
-            double zzstart = z1;
+                    double tz = z1;
+                    z1 = z2;
+                    z2 = tz;
+                }
 
-            int y = y1;
-            int stepCount = 0;
+                int steps = x2 - x1 + 1;
+                double dz = (z2 - z1) / steps;
+                double myZ = z1;
 
-            //using (var path = new SKPath())
-            {
+                int dx = x2 - x1;
+                int dy = Math.Abs(y2 - y1);
+                int error = dx / 2;
+                int ystep = (y1 < y2) ? 1 : -1;
+                double zzstart = z1;
+
+                int y = y1;
+                int stepCount = 0;
+
                 for (int x = x1; x <= x2; x++)
                 {
                     if (steep)
@@ -1142,8 +1137,7 @@ namespace OpenPanoramaLib
                             elevation = Math.Min(y1double, y2double);
                         }
 
-
-                        VerticalLine(slopeangle, mypn, sea, profGraph, y, x, (zzstart + stepCount * dz), height, hv, elevation);
+                        VerticalLine(pi,slopeangle, pn, sea, profGraph, y, x, (zzstart + stepCount * dz), height, hv, elevation);
                     }
                     else
                     {
@@ -1156,7 +1150,7 @@ namespace OpenPanoramaLib
                         {
                             elevation = Math.Min(y1double, y2double);
                         }
-                        VerticalLine(slopeangle, mypn, sea, profGraph, x, y, (zzstart + stepCount * dz), height, hv, elevation);
+                        VerticalLine(pi,slopeangle, pn, sea, profGraph, x, y, (zzstart + stepCount * dz), height, hv, elevation);
                     }
                     stepCount += 1;
                     error = error - dy;
@@ -1166,97 +1160,99 @@ namespace OpenPanoramaLib
                         error += dx;
                     }
                 }
+
+                //profGraph.me.DrawPath(profGraph.path, pn.paint);
             }
         }
 
 
 
-        static bool prev_sea = false;
-        static int prev_x1 = -1;
-        static int prev_y1 = -1;
-        static double prev_z = -1;
-        static int prev_x0 = -1;
-        static int prev_y0 = -1;
+        //static bool prev_sea = false;
+        //static int prev_x1 = -1;
+        //static int prev_y1 = -1;
+        //static double prev_z = -1;
+        //static int prev_x0 = -1;
+        //static int prev_y0 = -1;
 
 
-        public void DrawLine(double gradient, Pen mypn, bool sea, Graphics profGraph, int x1, int y1, double z1, int x2, int y2, double z2, double height, HorizonVector hv)
-        {
-            double slopeangle = Math.Atan(gradient);
+        //public void DrawLine(double gradient, Pen mypn, bool sea, Graphics profGraph, int x1, int y1, double z1, int x2, int y2, double z2, double height, HorizonVector hv)
+        //{
+        //    double slopeangle = Math.Atan(gradient);
 
-            if ((sea == prev_sea) && (x1 == prev_x0) && (y1 == prev_y0) && (z1 == prev_z) && (x2 == prev_x1) && (y2 == prev_y1))
-            {
-                return;
-            }
-            else
-            {
-                prev_sea = sea;
-                prev_x0 = x1;
-                prev_y0 = y1;
-                prev_z = z1;
-                prev_x1 = x2;
-                prev_y1 = y2;
-            }
+        //    if ((sea == prev_sea) && (x1 == prev_x0) && (y1 == prev_y0) && (z1 == prev_z) && (x2 == prev_x1) && (y2 == prev_y1))
+        //    {
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        prev_sea = sea;
+        //        prev_x0 = x1;
+        //        prev_y0 = y1;
+        //        prev_z = z1;
+        //        prev_x1 = x2;
+        //        prev_y1 = y2;
+        //    }
 
-            bool steep = Math.Abs(y2 - y1) > Math.Abs(x2 - x1);
-            if (steep)
-            {
-                int t;
-                t = x1; // swap x0 and y0
-                x1 = y1;
-                y1 = t;
-                t = x2; // swap x1 and y1
-                x2 = y2;
-                y2 = t;
-            }
+        //    bool steep = Math.Abs(y2 - y1) > Math.Abs(x2 - x1);
+        //    if (steep)
+        //    {
+        //        int t;
+        //        t = x1; // swap x0 and y0
+        //        x1 = y1;
+        //        y1 = t;
+        //        t = x2; // swap x1 and y1
+        //        x2 = y2;
+        //        y2 = t;
+        //    }
 
-            if (x1 > x2)
-            {
-                int t;
-                t = x1; // swap x0 and x1
-                x1 = x2;
-                x2 = t;
-                t = y1; // swap y0 and y1
-                y1 = y2;
-                y2 = t;
+        //    if (x1 > x2)
+        //    {
+        //        int t;
+        //        t = x1; // swap x0 and x1
+        //        x1 = x2;
+        //        x2 = t;
+        //        t = y1; // swap y0 and y1
+        //        y1 = y2;
+        //        y2 = t;
 
-                double tz = z1;
-                z1 = z2;
-                z2 = tz;
-            }
+        //        double tz = z1;
+        //        z1 = z2;
+        //        z2 = tz;
+        //    }
 
-            int steps = x2 - x1 + 1;
-            double dz = (z2 - z1) / steps;
-            double myZ = z1;
+        //    int steps = x2 - x1 + 1;
+        //    double dz = (z2 - z1) / steps;
+        //    double myZ = z1;
 
-            int dx = x2 - x1;
-            int dy = Math.Abs(y2 - y1);
-            int error = dx / 2;
-            int ystep = (y1 < y2) ? 1 : -1;
-            double zzstart = z1;
-            zzstart = z1;
+        //    int dx = x2 - x1;
+        //    int dy = Math.Abs(y2 - y1);
+        //    int error = dx / 2;
+        //    int ystep = (y1 < y2) ? 1 : -1;
+        //    double zzstart = z1;
+        //    zzstart = z1;
 
-            int y = y1;
-            int stepCount = 0;
+        //    int y = y1;
+        //    int stepCount = 0;
 
-            for (int x = x1; x <= x2; x++)
-            {
-                if (steep)
-                {
-                    VerticalLine(slopeangle, mypn, sea, profGraph, y, x, (zzstart + stepCount * dz), height, hv);
-                }
-                else
-                {
-                    VerticalLine(slopeangle, mypn, sea, profGraph, x, y, (zzstart + stepCount * dz), height, hv);
-                }
-                stepCount += 1;
-                error = error - dy;
-                if (error < 0)
-                {
-                    y += ystep;
-                    error += dx;
-                }
-            }
-        }
+        //    for (int x = x1; x <= x2; x++)
+        //    {
+        //        if (steep)
+        //        {
+        //            VerticalLine(slopeangle, mypn, sea, profGraph, y, x, (zzstart + stepCount * dz), height, hv);
+        //        }
+        //        else
+        //        {
+        //            VerticalLine(slopeangle, mypn, sea, profGraph, x, y, (zzstart + stepCount * dz), height, hv);
+        //        }
+        //        stepCount += 1;
+        //        error = error - dy;
+        //        if (error < 0)
+        //        {
+        //            y += ystep;
+        //            error += dx;
+        //        }
+        //    }
+        //}
 
 
 
@@ -1399,8 +1395,8 @@ namespace OpenPanoramaLib
 
                     //WrappedDrawLine( 99999, pn, false, profGraph, (int)(Angle + WidthAngleDelta), (int)(Elevation - HeightAngleDelta), distance, (int)(Angle ), (int)(Elevation), distance, z, null);
                     //WrappedDrawLine( 99999, pn, false, profGraph, (int)(Angle), (int)(Elevation), distance, (int)(Angle - WidthAngleDelta), (int)(Elevation - HeightAngleDelta), distance, z, null);
-                    WrappedDrawLineDouble(99999, pn, false, profGraph, Angle + WidthAngleDelta, Elevation - HeightAngleDelta, distance, Angle, Elevation, distance, z, null);
-                    WrappedDrawLineDouble(99999, pn, false, profGraph, Angle, Elevation, distance, Angle - WidthAngleDelta, Elevation - HeightAngleDelta, distance, z, null);
+                    WrappedDrawLineDouble(myBitmap, 99999, pn, false, profGraph, Angle + WidthAngleDelta, Elevation - HeightAngleDelta, distance, Angle, Elevation, distance, z, null);
+                    WrappedDrawLineDouble(myBitmap, 99999, pn, false, profGraph, Angle, Elevation, distance, Angle - WidthAngleDelta, Elevation - HeightAngleDelta, distance, z, null);
                 }
             }
 
