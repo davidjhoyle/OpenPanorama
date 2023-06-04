@@ -67,7 +67,7 @@ namespace OpenPanoramaLib
         public static double colourContrast = 1.3;
 
 
-        static string copyrightNotice = "Copyright(c) David Hoyle 2022, https://www.standingstones.org";
+        static string copyrightNotice = "Copyright(c) David Hoyle 2023, https://www.standingstones.org";
 
         public static Color ColourSea1 { set { colourSea1 = value; } get { return colourSea1; } }
         public static Color ColourSea2 { set { colourSea2 = value; } get { return colourSea2; } }
@@ -1673,9 +1673,11 @@ namespace OpenPanoramaLib
                         if (rjParams.pixels >= 60 && x2 > 0 && y2 > 0)
                         {
                             Rectangle txtrct = new Rectangle((int)x1, (int)y1, (int)x2, (int)y2 / 2);
-                            profGraph.DrawString(MoonOrSun, new Font(FontFamily.GenericSansSerif, y2 / 6, FontStyle.Regular), txtbrsh, txtrct, sf);
+                            //profGraph.DrawString(MoonOrSun, new Font(FontFamily.GenericSansSerif, y2 / 6, FontStyle.Regular), txtbrsh, txtrct, sf);
+                            profGraph.DrawString(MoonOrSun, new Font(FontFamily.GenericSansSerif, y2 / 4, FontStyle.Regular), txtbrsh, txtrct, sf);
                             txtrct = new Rectangle((int)x1, (int)(y1 + y2 / 2), (int)x2, (int)y2 / 2);
-                            profGraph.DrawString(desc, new Font(FontFamily.GenericSansSerif, y2 / 6, FontStyle.Regular), txtbrsh, txtrct, sf);
+                            //profGraph.DrawString(desc, new Font(FontFamily.GenericSansSerif, y2 / 6, FontStyle.Regular), txtbrsh, txtrct, sf);
+                            profGraph.DrawString(desc, new Font(FontFamily.GenericSansSerif, y2 / 4, FontStyle.Regular), txtbrsh, txtrct, sf);
                         }
                     }
                 }

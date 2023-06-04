@@ -17,7 +17,8 @@ namespace PanaGraph
 
         public SKBitmap bm;
         public PaintVerticalLineUnsafe linePainter;
-        public static int jPGQuality = 80;
+        public static int jPGQuality = 90;
+        public static bool jPGSavePNG = true;
 
 
         public int Width
@@ -97,12 +98,14 @@ namespace PanaGraph
             SKEncodedImageFormat fmt = SKEncodedImageFormat.Jpeg;
             if (lowers.Contains("jpg"))
             {
-                fmt = SKEncodedImageFormat.Jpeg;
-
-                //using (Stream binwrite = File.Create(f + ".png"))
-                //{
-                //    bm.Encode(binwrite, SKEncodedImageFormat.Png, jPGQuality);
-                //}
+                if (jPGSavePNG)
+                {
+                    fmt = SKEncodedImageFormat.Png;
+                }
+                else
+                {
+                    fmt = SKEncodedImageFormat.Jpeg;
+                }
             }
             else if (lowers.Contains("png"))
             {

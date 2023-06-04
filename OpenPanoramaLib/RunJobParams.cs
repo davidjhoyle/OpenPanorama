@@ -734,6 +734,10 @@ namespace OpenPanoramaLib
                                 minSkimAzDelta = Convert.ToDouble(args[++i]);
                                 break;
 
+                            case "-NoJPGPNG":
+                                PanaGraph.Image.jPGSavePNG = false;
+                                break;
+
                             default:
                                 found = false;
                                 string sggsgs = args[i];
