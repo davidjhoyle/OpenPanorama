@@ -17,7 +17,7 @@ namespace PanaGraph
 
         public SKBitmap bm;
         public PaintVerticalLineUnsafe linePainter;
-        public static int jPGQuality = 50;
+        public static int jPGQuality = 80;
 
 
         public int Width
