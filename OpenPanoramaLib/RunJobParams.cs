@@ -64,7 +64,7 @@ namespace OpenPanoramaLib
         public string jsonfile;
         public string sidfiles;
         public int maxDistance = 10000;
-        public int minDistance = 70;
+        public int minDistance = 50;
         public string TemplateFile;
         public string description = null;
         public string[] csvBulkFiles = null;
@@ -343,6 +343,10 @@ namespace OpenPanoramaLib
                             break;
                         case "-SkimJSON":
                             SkimJSON = true;
+                            break;
+
+                        case "-NoJPGPNG":
+                            PanaGraph.Image.jPGSavePNG = false;
                             break;
 
                         default:
@@ -732,10 +736,6 @@ namespace OpenPanoramaLib
                                 break;
                             case "-minSkimAzDelta":
                                 minSkimAzDelta = Convert.ToDouble(args[++i]);
-                                break;
-
-                            case "-NoJPGPNG":
-                                PanaGraph.Image.jPGSavePNG = false;
                                 break;
 
                             default:
