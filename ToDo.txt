@@ -26,3 +26,6 @@ https://dmwproductionblob.blob.core.windows.net/cogs/wg_lidar_2020_22_dtm_hillsh
 
 
 Fix Label Text Additions
+
+Add JPG quality parameter = jPGQuality
+Renumber all specials so they don't conflict with others...

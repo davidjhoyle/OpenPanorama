@@ -381,6 +381,10 @@ namespace OpenPanoramaLib
                                 filename = args[++i].Replace(",", "");
                                 break;
 
+                            case "-Q":
+                                PanaGraph.Image.jPGQuality = Convert.ToInt32(args[++i]);
+                                break;
+
                             case "-name":
                                 name = args[++i].Replace(",", "");
                                 break;
