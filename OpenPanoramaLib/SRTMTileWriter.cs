@@ -50,7 +50,7 @@ namespace OpenPanoramaLib
 
             // N27E036.hgt;
             string altlonstr = ZipMapDataHandler.GetSRTMFilePrefixNameForLatLon(lat, lon);
-            string filename = path + "\\" + altlonstr + ".hgt";
+            string filename = path + "/" + altlonstr + ".hgt";
 
             Console.WriteLine("SaveTile " + filename + " Points set " + totalpointsset + " Out of " + ZipMapDataHandler.gridSize * ZipMapDataHandler.gridSize + " = " + 100 * totalpointsset / (ZipMapDataHandler.gridSize * ZipMapDataHandler.gridSize) + "%");
 

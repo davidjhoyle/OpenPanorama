@@ -99,7 +99,7 @@ namespace OpenPanoramaLib
             //altitude = 443
             //timezone = Europe/Berlin
 
-            string INIFile = ZipFolder + "\\landscape.ini";
+            string INIFile = ZipFolder + "/landscape.ini";
             using (StreamWriter outfile = new System.IO.StreamWriter(INIFile))
             {
                 Console.WriteLine("Create INI File " + INIFile);
@@ -159,7 +159,7 @@ namespace OpenPanoramaLib
             string tmp = "";
             if (ZipFolder != null)
             {
-                tmp += ZipFolder + "\\";
+                tmp += ZipFolder + "/";
             }
 
             return (tmp + filename + "_" + x + ".png").ToLower();
@@ -170,7 +170,7 @@ namespace OpenPanoramaLib
 
         static public void CreateStellariumFogFile(string ZipFolder)
         {
-            string PNGFile = (ZipFolder + "\\foggy.png").ToLower();
+            string PNGFile = (ZipFolder + "/foggy.png").ToLower();
             Image foggy = new Image(100, 100);
             Graphics gr = Graphics.FromImage(foggy);
 
@@ -192,7 +192,7 @@ namespace OpenPanoramaLib
 
             if (folder != null && folder.Length > 0)
             {
-                PNGFile += folder + "\\";
+                PNGFile += folder + "/";
             }
 
             PNGFile = (PNGFile + site.Filename + ".png").ToLower();
@@ -212,10 +212,11 @@ namespace OpenPanoramaLib
             for (int x = 0; x < count; x++)
             {
                 outbitmap[x] = new Image(InputBitmap.Width / count, outputHeight);
-                srcRect = new Rectangle(x * InputBitmap.Width / count, 0, InputBitmap.Width / count + 5, outputHeight + 5);
+                srcRect = new Rectangle(x * InputBitmap.Width / count, 0, InputBitmap.Width / count, outputHeight);
 
                 Graphics OutGr = Graphics.FromImage(outbitmap[x]);
 
+                
                 OutGr.DrawImage(InputBitmap, 0, 0, srcRect, GraphicsUnit.Pixel);
 
                 // Copyright notice...
@@ -238,7 +239,7 @@ namespace OpenPanoramaLib
             // InputBitmap.Height - 4 - (120 * 2), 4, 3);
             Graphics grndGr = Graphics.FromImage(grndBit);
             grndGr.DrawImage(InputBitmap, 0, 0, srcRect, GraphicsUnit.Pixel);
-            grndBit.Save(ZipFolder + "\\" + grnd);
+            grndBit.Save(ZipFolder + "/" + grnd);
 
             Console.WriteLine("Created PNG File " + grnd);
 
@@ -274,7 +275,7 @@ namespace OpenPanoramaLib
         static public bool CheckStellariumFile(bool siteFolder, StoneSite site, string basefolder)
         {
             string SiteFolder = PaintImage.getFolderName(siteFolder, site.County, site.MonType, site.Name, site.GridRef);
-            string zipFile = SiteFolder + "\\" + site.Filename + ".zip";
+            string zipFile = SiteFolder + "/" + site.Filename + ".zip";
             zipFile = zipFile.Replace("--", "-").Replace("--", "-");
 
             if (File.Exists(zipFile))
@@ -291,7 +292,7 @@ namespace OpenPanoramaLib
         static public bool DeleteStellariumFile(bool siteFolder, StoneSite site, string basefolder)
         {
             string SiteFolder = PaintImage.getFolderName(siteFolder, site.County, site.MonType, site.Name, site.GridRef);
-            string zipFile = SiteFolder + "\\" + site.Filename + ".zip";
+            string zipFile = SiteFolder + "/" + site.Filename + ".zip";
             zipFile = zipFile.Replace("--", "-").Replace("--", "-");
 
             if (File.Exists(zipFile))
@@ -317,7 +318,7 @@ namespace OpenPanoramaLib
 
             if (SiteFolder.Length > 0)
             {
-                zipFile = SiteFolder + "\\";
+                zipFile = SiteFolder + "/";
             }
             zipFile += site.Filename + ".zip";
             zipFile = zipFile.Replace("--", "-").Replace("--", "-");

@@ -29,18 +29,18 @@ namespace OpenPanoramaLib
 {
     public class LidarBlockReader
     {
-        static string LidarFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\LIDAR\\";
-        static string LIDARCacheFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\LIDARCACHE\\";
+        static string LidarFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/LIDAR/";
+        static string LIDARCacheFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/LIDARCACHE/";
 
         static int LidarSiz = 10000;
         static double LidarRes = 1;
         const string extension = "LIDAR-DTM-1m-2019-SK26nw.zip";
-        const string ENprefix = "england\\"; // LIDAR-DTM-1m-2019-SK26nw.zip
-        const string CYprefix = "wales\\"; // 2m_res_SR_dtm.zip
-        const string SCprefix = "scotland\\";
-        const string IEprefix = "ie\\"; // 2m_res_SR_dtm.zip
-        const string NOprefix = "norway\\"; // Basisdata_6601-1_Celle_25833_DTM10-2021UTM33_TIFF.zip
-        const string NOpatchesprefix = "norwaypatches\\"; // Basisdata_6601-1_Celle_25833_DTM10-2021UTM33_TIFF.zip
+        const string ENprefix = "england/"; // LIDAR-DTM-1m-2019-SK26nw.zip
+        const string CYprefix = "wales/"; // 2m_res_SR_dtm.zip
+        const string SCprefix = "scotland/";
+        const string IEprefix = "ie/"; // 2m_res_SR_dtm.zip
+        const string NOprefix = "norway/"; // Basisdata_6601-1_Celle_25833_DTM10-2021UTM33_TIFF.zip
+        const string NOpatchesprefix = "norwaypatches/"; // Basisdata_6601-1_Celle_25833_DTM10-2021UTM33_TIFF.zip
 
         static readonly string[] WalesSquares = new string[] { "sh", "sj", "sm", "sn", "so", "sr", "ss", "st" };
 
@@ -83,18 +83,18 @@ namespace OpenPanoramaLib
         public static void SelectFolder(string fn)
         {
             LidarFolder = fn;
-            if (LidarFolder.Length > 0 && LidarFolder[LidarFolder.Length - 1] != '\\')
+            if (LidarFolder.Length > 0 && (LidarFolder[LidarFolder.Length - 1] != '/' || LidarFolder[LidarFolder.Length - 1] != '\\'))
             {
-                LidarFolder += "\\";
+                LidarFolder += "/";
             }
         }
 
         public static void SelectCacheFolder(string fn)
         {
             LIDARCacheFolder = fn;
-            if (LIDARCacheFolder.Length > 0 && LIDARCacheFolder[LIDARCacheFolder.Length - 1] != '\\')
+            if (LIDARCacheFolder.Length > 0 && (LIDARCacheFolder[LIDARCacheFolder.Length - 1] != '/' || LIDARCacheFolder[LIDARCacheFolder.Length - 1] != '\\'))
             {
-                LIDARCacheFolder += "\\";
+                LIDARCacheFolder += "/";
             }
         }
 
@@ -1330,7 +1330,7 @@ namespace OpenPanoramaLib
                 // Index Norway TIF DTM files...
                 if (eCountry == countryEnum.no && lowerfilename.Contains("norway") && lowerfilename.Contains("_tiff") && lowerfilename.Contains("dtm") && !lowerfilename.Contains("nhs"))
                 {
-                    string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("\\") + 11, 4);
+                    string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("/") + 11, 4);
                     if (!myTileFilenames.ContainsKey(tilename))
                     {
                         myTileFilenames.Add(tilename, new List<string>());
@@ -1370,8 +1370,8 @@ namespace OpenPanoramaLib
                 if (lowerfilename.Contains("_50cm_") || lowerfilename.Contains("_1m_") || lowerfilename.Contains("_25cm_"))
                 {
                     // Tiles can have long or short names - handle this here.
-                    string longtilename = lowerfilename.Substring(lowerfilename.LastIndexOf("\\") + 1, 6);
-                    string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("\\") + 1, 4);
+                    string longtilename = lowerfilename.Substring(lowerfilename.LastIndexOf("/") + 1, 6);
+                    string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("/") + 1, 4);
                     if (longtilename.IndexOf('_') <= 0 && longtilename.IndexOf('n') <= 0 && longtilename.IndexOf('e') <= 0 && longtilename.IndexOf('s') <= 0 && longtilename.IndexOf('w') <= 0)
                     {
                         tilename = longtilename.Substring(0, 3) + longtilename.Substring(4, 1);

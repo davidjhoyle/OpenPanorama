@@ -948,8 +948,8 @@ namespace OpenPanoramaLib
             Console.WriteLine("\t-allgrids (Create files with no grid, grid and fine grid in one go)");
             Console.WriteLine("\t-stellarium (Generate Stellarium ZIP file)");
             Console.WriteLine("\t-out OutputFolder");
-            Console.WriteLine("\t-srtmFolder <folder> - SRTM Source folder name, e.g. %USERPROFILE%\\Appdata\\roaming\\SRTM Data");
-            Console.WriteLine("\t-osFolder <folder> - OS Maps 50M data FOlder e.g. %USERPROFILE%\\Appdata\\roaming\\OS Terrain 50");
+            Console.WriteLine("\t-srtmFolder <folder> - SRTM Source folder name, e.g. %USERPROFILE%/Appdata/roaming/SRTM Data");
+            Console.WriteLine("\t-osFolder <folder> - OS Maps 50M data FOlder e.g. %USERPROFILE%/Appdata/roaming/OS Terrain 50");
             Console.WriteLine("\t-p Pixels (pixels per degree - default 120)");
             Console.WriteLine("\t-oldcsv <oldcsvfile> - Not really used any more");
             Console.WriteLine("\t-json JSONOutFile (Create JSON File)");
@@ -1015,7 +1015,7 @@ namespace OpenPanoramaLib
             Console.WriteLine("\t-DumpMultipleHeights <latlon.csv> - Where string is a file of latitude and longitudes");
             Console.WriteLine("\t-DumpLIDAR <string> - Where string is count,increment[,eastcount,eastincrement]");
             Console.WriteLine("\t-CheckLIDAR - Read a LIDAR Block and OS Map Data block and check all spot heights against the LIDAR height");
-            Console.WriteLine("\t-LidarDebug - Enabel debug mode of LIDAR data");
+            Console.WriteLine("\t-LidarDebug - Enable debug mode of LIDAR data");
             Console.WriteLine("\t-MaxJobs <number> - Stop processesing after at most N jobs");
             Console.WriteLine("\t-ProximalInterpolation - Perform Proximal Interpolation rather than Linear (Minecraft mode)");
             Console.WriteLine("\t-ObserverHeight <height> - Observer eye height (1.5m)");
@@ -1059,7 +1059,7 @@ namespace OpenPanoramaLib
 
             Console.WriteLine("\t-minCorrelationValue metres - Remove correlated items below this value - 1/square of Aziumth difference (0.5)");
             Console.WriteLine("\t-minCorrelationValueSlopeWeighted metres - Remove correlated items with normalised slope below this value (default 0)");
-            Console.WriteLine("\t-minCorrelationValueElevDiffWeighted metres - Remove correlated items with height to neighnours below this (default 0)");
+            Console.WriteLine("\t-minCorrelationValueElevDiffWeighted metres - Remove correlated items with height to neighbours below this (default 0)");
             Console.WriteLine("\t-minCorrelationValueWeighted metres - Remove correlated items with value * slope below this (default 0.2))");
 
             return;

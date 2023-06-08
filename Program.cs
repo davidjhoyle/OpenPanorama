@@ -226,8 +226,8 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                 }
             }
 
-            string countiesfilename = PaintImage.outfolder + "\\" + theCountyFile;
-            string countiesHTMLfilename = PaintImage.outfolder + "\\" + theCountyHTML;
+            string countiesfilename = PaintImage.outfolder + "/" + theCountyFile;
+            string countiesHTMLfilename = PaintImage.outfolder + "/" + theCountyHTML;
 
             string gpxurl = rjs[0].rjParams.blobStoreURL + CC + "0/";
 
@@ -297,7 +297,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
 
             foreach (string area in allCounties.Keys)
             {
-                string filename = PaintImage.outfolder + "\\" + area + ".gpx";
+                string filename = PaintImage.outfolder + "/" + area + ".gpx";
 
                 Console.WriteLine("Create GPX Geo Points File " + filename + " Count = " + allCounties[area]);
                 System.IO.StreamWriter outfile = new System.IO.StreamWriter(filename);
@@ -545,6 +545,12 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                         fields[f] = fields[f].Trim();
                     }
 
+                    //fields[3] = fields[3].Replace("/", "-").Replace("(", "-").Replace(")", "-").Replace("--", "-").Replace("--", "-").Replace("--", "-");
+                    //while (fields[3].EndsWith("-"))
+                    //{
+                    //    fields[3] = fields[3].Substring(0, fields[3].Length - 1);
+                    //}
+
                     try
                     {
                         SunMoonRunJob rj = new SunMoonRunJob(fields[0], fields[1], Convert.ToInt32(fields[2]), fields[3], fields[4],
@@ -579,7 +585,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
 
                                     if (rjParms.sidfiles != null && rjParms.sidfiles.Length > 0)
                                     {
-                                        string sidsfilename = rjParms.sidfiles + "\\" + rj.url + ".json";
+                                        string sidsfilename = rjParms.sidfiles + "/" + rj.url + ".json";
                                         Console.WriteLine("Open SID File, Out = " + sidsfilename + " " + rj.name + " " + rj.county + " " + rjParms.myCountryLong);
                                         System.IO.StreamWriter sidfile = new System.IO.StreamWriter(sidsfilename);
                                         dumpJSONDetails(true, sidfile, rj);
@@ -867,7 +873,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
         static public void PeakProcessAndCorrelate(bool siteFolder, StoneSite stonestite, SunMoonRunJob job)
         {
             string SiteFolder = PaintImage.getFolderName(siteFolder, stonestite.County, stonestite.MonType, stonestite.Name, stonestite.GridRef);
-            string baseFile = SiteFolder + "\\" + stonestite.Filename;
+            string baseFile = SiteFolder + "/" + stonestite.Filename;
             baseFile = baseFile.Replace("--", "-").Replace("--", "-");
 
             string gpxFile = baseFile + ".gpx";

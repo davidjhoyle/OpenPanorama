@@ -266,7 +266,7 @@ namespace OpenPanoramaLib
                 for (int i = 0; i < folder.Length; i++)
                 {
                     tmp = folder;
-                    if (tmp[i] == '\\')
+                    if (tmp[i] == '/' || tmp[i] == '\\')
                     {
                         tmp = tmp.Substring(0, i);
                         FileSystem.CreateDirectory(tmp);
@@ -283,7 +283,7 @@ namespace OpenPanoramaLib
 
         static public string cleanfilename(string filename)
         {
-            return filename.Replace(",", "").Replace("'", "").Replace("(", " ").Replace(")", " ").Replace("/", "").Replace("?", "").Replace("  ", " ").Replace(" \\", "\\").Replace("--", "-").Replace("--", "-").Replace("--", "-");
+            return filename.Replace(",", "").Replace("'", "").Replace("(", " ").Replace(")", " ").Replace("?", "").Replace("  ", " ").Replace(" \\", "\\").Replace("--", "-").Replace("--", "-").Replace("--", "-");
         }
 
 
@@ -301,19 +301,23 @@ namespace OpenPanoramaLib
             {
                 if (foldername.Length > 0)
                 {
-                    foldername += "\\";
+                    foldername += "/";
                 }
                 foldername += county;
             }
 
-            if (montype != null && montype.Length > 0)
+            if (montype != null)
             {
-                if (foldername.Length > 0)
-                {
-                    foldername += "\\";
-                }
+                montype = montype.Replace("/", "-").Replace("(", "-").Replace(")", "").Replace("--", "-").Replace("--", "-").Replace("--", "-");
+                if (montype.Length > 0)
+                { 
+                    if (foldername.Length > 0)
+                    {
+                        foldername += "/";
+                    }
 
-                foldername += montype.Replace(" ", "-");
+                    foldername += montype.Replace(" ", "-");
+                }
             }
 
             foldername = cleanfilename(foldername).ToLower();
@@ -323,7 +327,7 @@ namespace OpenPanoramaLib
             {
                 if (foldername.Length > 0)
                 {
-                    foldername += "\\";
+                    foldername += "/";
                 }
 
                 foldername += name + "_" + mapref;
@@ -347,7 +351,7 @@ namespace OpenPanoramaLib
             string filename = "";
             if (foldername != null && foldername.Length > 0)
             {
-                filename += foldername + "\\";
+                filename += foldername + "/";
             }
             filename += cleanfilename(name + "_" + mapref + ".jpg").ToLower();
             filename = filename.Replace(" ", "-").Replace("--", "-");
@@ -490,7 +494,10 @@ namespace OpenPanoramaLib
                 PaintOS os = new PaintOS();
                 lidar.NewPaintLIDAR(this,rjParams.lat, rjParams.lon, rjParams.height, rjParams.eCountry);
                 srtm.PaintSRTMHeights(this, rjParams.lat, rjParams.lon, rjParams.height);
+                ZipMapDataHandler.SRTMFlushCache();
                 os.PaintSpotHeightsAndContours(this, rjParams.lat, rjParams.lon, rjParams.height, rjParams.eCountry);
+                ZipMapDataHandler.OSFlushCache();
+
                 PaintForeground();
             }
 

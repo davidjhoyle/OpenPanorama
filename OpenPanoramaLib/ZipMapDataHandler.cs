@@ -32,9 +32,9 @@ namespace OpenPanoramaLib
 
     public class ZipMapDataHandler
     {
-        static string foldername = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\OS Terrain 50\\terr50_cgml_gb\\data\\";
+        static string foldername = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/OS Terrain 50/terr50_cgml_gb/data/";
         const string extension = "_OST50CONT_20180509.zip";
-        static string SRTMFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SRTM Data";
+        static string SRTMFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/SRTM Data";
 
         static Dictionary<string, DateTime> failedtileCacheLines = new Dictionary<string, DateTime>();
 
@@ -105,7 +105,7 @@ namespace OpenPanoramaLib
 
         public static void getSRTMDataPatches(string filename)
         {
-            using (StreamReader r = new StreamReader(GetFolder(false) + "\\" + filename))
+            using (StreamReader r = new StreamReader(GetFolder(false) + "/" + filename))
             {
                 string json = r.ReadToEnd();
                 srtmDataPatches = JsonConvert.DeserializeObject<Dictionary<string, List<SRTMDataPatch>>>(json);
@@ -128,7 +128,7 @@ namespace OpenPanoramaLib
             srtmDataPatches["EmptyTilename4"] = new List<SRTMDataPatch>();
 
             // serialize JSON directly to a file
-            using (StreamWriter file = File.CreateText(GetFolder(false) + "\\" + filename))
+            using (StreamWriter file = File.CreateText(GetFolder(false) + "/" + filename))
             {
                 Console.WriteLine("saveSRTMDataPatches JSON File " + filename);
                 Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
@@ -192,6 +192,26 @@ namespace OpenPanoramaLib
                         {
                             if (entry.Name.EndsWith(".hgt"))
                             {
+                                if (byteOffset >= 0)
+                                {
+                                    // Now check the patches the loaded tile.
+                                    if (srtmDataPatches.ContainsKey(fileprefix))
+                                    {
+                                        foreach (var patch in srtmDataPatches[fileprefix])
+                                        {
+                                            if (patch.latpart == laty && patch.lonpart == longy )
+                                            {
+                                                Console.WriteLine("Patched Data " + fileprefix + " Lat " + laty + " Long " + longy + " Height " + patch.z);
+
+                                                data = new Int16[1][];
+                                                data[0] = new Int16[1];
+                                                data[0][0] = (short)patch.z;
+                                                return data;
+                                            }
+                                        }
+                                    }
+                                }
+
                                 Console.WriteLine("Read Height File " + entry.Name);
                                 using (Stream stream = entry.Open())
                                 {
@@ -329,6 +349,18 @@ namespace OpenPanoramaLib
 
 
 
+        public static void SRTMFlushCache()
+        {
+            tileCacheLines.Clear();
+            GeneralUtilClasses.RunGC();
+        }
+
+        public static void OSFlushCache()
+        {
+            xdocCacheLines.Clear();
+            GeneralUtilClasses.RunGC();
+        }
+
         //using (FileStream zipToOpen = new FileStream(@"c:\users\exampleuser\release.zip", FileMode.Open))
 
         public XDocument NewGetOSVectorData(string GridRef)
@@ -337,7 +369,7 @@ namespace OpenPanoramaLib
             // "SH 69880 00431"
             string[] gridStrs = GridRef.Split(splitter);
 
-            string gridfolder = foldername + "\\" + gridStrs[0];
+            string gridfolder = foldername + "/" + gridStrs[0];
             string filesearcher = gridStrs[0] + gridStrs[1][0] + gridStrs[2][0] + "_OST50CONT_*.zip";
             // C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data\sn\sn34_OST50CONT_*.zip
             XDocument doc = null;
@@ -457,9 +489,9 @@ namespace OpenPanoramaLib
         {
             char[] splitter = { ' ' };
             // "SH 69880 00431"
-            string[] gridStrs = GridRef.Split(splitter);
+            string[] gridStrs = GridRef.ToLower().Split(splitter);
 
-            string gridfolder = foldername + "\\" + gridStrs[0];
+            string gridfolder = foldername + "/" + gridStrs[0];
             string gridy = gridStrs[0] + gridStrs[1][0] + gridStrs[2][0];
             string filesearcher = gridy + "_OST50CONT_*.zip";
             // C:\Users\David\Desktop\OS Terrain 50\terr50_cgml_gb\data\sn\sn34_OST50CONT_*.zip
@@ -530,6 +562,7 @@ namespace OpenPanoramaLib
                                                 xdocCacheLines.Remove(oldest);
                                                 //Console.WriteLine("Evicted Cache Item " + oldest + " Time " + oldestTime);
                                                 Console.Write(" -");
+                                                GeneralUtilClasses.RunGC();
                                             }
                                         }
 
