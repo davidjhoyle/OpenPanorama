@@ -349,6 +349,10 @@ namespace OpenPanoramaLib
                             PanaGraph.Image.jPGSavePNG = false;
                             break;
 
+                        case "-CacheClean":
+                            ZipMapDataHandler.SetAggressiveCacheClean(true);
+                            break;
+
                         default:
                             found = false;
                             break;
@@ -978,11 +982,14 @@ namespace OpenPanoramaLib
             Console.WriteLine("\t-CacheLIDAR N (Number of LIDAR tiles to cache (400MB per tile, default 4)");
             Console.WriteLine("\t-CacheSRTM N (Number of SRTM tiles to cache (26MB per tile, default 12)");
             Console.WriteLine("\t-CacheOSMap N (Number of OS Map tiles to cache (few MB each, default 500)");
+            Console.WriteLine("\t-CacheClean - Clean caches frequently and also run GC to reduce memory usage");
             Console.WriteLine("\t-LIDARSize N (Size of LIDAR blocks in M (default 10000)");
             Console.WriteLine("\t-LIDAROptim Attempt to optimise some LIDAR drawing (don't use)");
             Console.WriteLine("\t-CreateLIDARCache");
             Console.WriteLine("\t-Wireframe - Switch to wireframe drawing mode");
             Console.WriteLine("\t-AllWireframes - Draw all wireframes and ignore hidden surface removal");
+
+            
 
             Console.WriteLine("\t-ColourSea <RGB> - Default is Hex RGB (e.g. 000000) for Black");
             Console.WriteLine("\t-ColourSea1 <RGB> - Default is Hex RGB (e.g. 000000) for Black");

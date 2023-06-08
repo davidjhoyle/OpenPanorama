@@ -493,6 +493,7 @@ namespace OpenPanoramaLib
                 PaintLidar lidar = new PaintLidar();
                 PaintOS os = new PaintOS();
                 lidar.NewPaintLIDAR(this,rjParams.lat, rjParams.lon, rjParams.height, rjParams.eCountry);
+                LidarBlockReader.CleanLIDARCache();
                 srtm.PaintSRTMHeights(this, rjParams.lat, rjParams.lon, rjParams.height);
                 ZipMapDataHandler.SRTMFlushCache();
                 os.PaintSpotHeightsAndContours(this, rjParams.lat, rjParams.lon, rjParams.height, rjParams.eCountry);

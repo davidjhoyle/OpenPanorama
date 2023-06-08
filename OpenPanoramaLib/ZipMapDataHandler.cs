@@ -45,7 +45,7 @@ namespace OpenPanoramaLib
 
         static Dictionary<string, List<SRTMDataPatch>> srtmDataPatches = new Dictionary<string, List<SRTMDataPatch>>();
         static public ulong lastAccessTicker = 1;
-
+        static public bool aggressiveCacheClean = false;
 
         public ZipMapDataHandler()
         {
@@ -82,6 +82,12 @@ namespace OpenPanoramaLib
         {
             OSDataCacheMaxLines = siz;
         }
+
+        public static void SetAggressiveCacheClean(bool val)
+        {
+            aggressiveCacheClean = val;
+        }
+        
 
         public static string GetSRTMFilePrefixNameForLatLon(int latInt, int lonInt)
         {
@@ -351,14 +357,20 @@ namespace OpenPanoramaLib
 
         public static void SRTMFlushCache()
         {
-            tileCacheLines.Clear();
-            GeneralUtilClasses.RunGC();
+            if (aggressiveCacheClean)
+            {
+                tileCacheLines.Clear();
+                GeneralUtilClasses.RunGC();
+            }
         }
 
         public static void OSFlushCache()
         {
-            xdocCacheLines.Clear();
-            GeneralUtilClasses.RunGC();
+            if (aggressiveCacheClean)
+            {
+                xdocCacheLines.Clear();
+                GeneralUtilClasses.RunGC();
+            }
         }
 
         //using (FileStream zipToOpen = new FileStream(@"c:\users\exampleuser\release.zip", FileMode.Open))

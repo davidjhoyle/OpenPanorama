@@ -49,6 +49,7 @@ namespace OpenPanoramaLib
         static List<string> allLIDARCacheFiles = new List<string>();
         static int maxlines = 4;
         static public ulong lastAccessTicker = 1;
+        static bool aggressiveCacheClean = false;
 
 
         public LidarBlockReader()
@@ -58,6 +59,21 @@ namespace OpenPanoramaLib
         public static void SetLIDARCacheSize(int siz)
         {
             maxlines = siz;
+        }
+
+        public static void SetAggressiveCacheClean(bool val)
+        {
+            aggressiveCacheClean = val;
+        }
+
+
+        public static void CleanLIDARCache()
+        {
+            if (aggressiveCacheClean)
+            {
+                CacheLidarFileEvictAll();
+                GeneralUtilClasses.RunGC();
+            }
         }
 
         public static int GetLidarSiz()
