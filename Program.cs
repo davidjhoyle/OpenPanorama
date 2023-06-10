@@ -185,7 +185,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                 }
                 outfile.WriteLine("\"Name\": \"" + PaintImage.cleanfilename(bits[0]) + "\",");
                 outfile.WriteLine("\"CC\": \"" + cc + "\",");
-                outfile.WriteLine("\"MonType\": \"" + PaintImage.cleanfilename(bits[1]) + "\",");
+                outfile.WriteLine("\"MonType\": \"" + PaintImage.cleanfilename(bits[1].Replace("/","").Replace("--","-")) + "\",");
                 outfile.WriteLine("\"County\": \"" + PaintImage.cleanfilename(bits[2]) + "\",");
                 outfile.WriteLine("\"GridRef\": \"" + bits[3] + "\",");
                 outfile.WriteLine("\"Filename\": \"" + PaintImage.cleanfilename(bits[0] + "_" + bits[3]).ToLower() + "\",");
