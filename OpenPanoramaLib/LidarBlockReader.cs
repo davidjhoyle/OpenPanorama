@@ -2160,8 +2160,8 @@ namespace OpenPanoramaLib
 
             Console.WriteLine("ProcessZIPs Quality " + quality + "%, Processing Time " + (endLIDAR - startLIDAR));
 
-            //If the total number of missing points is 10% or more or it took > 2min to process, save the ASC block for later use - the cache file size is huge so best not to keep if possible.
-            if (quality < 90 || (endLIDAR - startLIDAR) > TimeSpan.FromMinutes(2))
+            //If the total number of missing points is 10% or more or it took > 30secs to process, save the ASC block for later use - the cache file size is huge so best not to keep if possible.
+            if ( (endLIDAR - startLIDAR) > TimeSpan.FromSeconds(30))
             {
                 if (infillandcache)
                 {

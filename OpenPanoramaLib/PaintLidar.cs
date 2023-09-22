@@ -54,20 +54,20 @@ namespace OpenPanoramaLib
             // Drawing Vertically First...
             SetCacheHint(pi, lat, lon, false, eCountry);
 
-            int MinDist = 50;
+            int MinDist = pi.rjParams.minDistance;
 
 
             for (int quad = 0; quad < 4; quad++)
             {
                 int dx = 1;
-                int dy = 1;
+                int dy = -1;
                 if ((quad & 1) != 0)
                 {
-                    dx = -1;
+                    dx = -dx;
                 }
                 if (quad >= 2)
                 {
-                    dy = -1;
+                    dy = -dy;
                 }
                 // Draw from 50m outwards...
                 for (int x = 0; x < pi.rjParams.lidarrange; x += LIDAR_CellSize)
