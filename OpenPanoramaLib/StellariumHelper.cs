@@ -229,10 +229,10 @@ namespace OpenPanoramaLib
                 Console.Write(" " + x);
             }
             Console.WriteLine("");
-
+                
             // Create the Ground
             Image grndBit = new Image(16, 16);
-            Rectangle dstRect = new Rectangle(0, 0, 16, 16);
+            //Rectangle dstRect = new Rectangle(0, 0, 16, 16);
             srcRect = new Rectangle(200, outputHeight - 18, 16, 16);
 
 

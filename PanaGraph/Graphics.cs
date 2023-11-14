@@ -132,8 +132,9 @@ namespace PanaGraph
         {
             //Console.WriteLine("DrawImage Native Call Here " + x + ", " + y);
 
-            SKRect dst = new SKRect( x, y, srcRect.Width, srcRect.Height);
-            SKRect src = new SKRect(srcRect.X, srcRect.Y, srcRect.X + srcRect.Width, srcRect.Height);
+            //SKRect dst = new SKRect( x, y, srcRect.Width, srcRect.Height);
+            SKRect dst = new SKRect(x, y, x + srcRect.Width, y + srcRect.Height);
+            SKRect src = new SKRect(srcRect.X, srcRect.Y, srcRect.X + srcRect.Width, srcRect.Y + srcRect.Height);
 
             me.DrawBitmap( image.bm, src, dst);
         }

@@ -355,15 +355,34 @@ namespace OpenPanoramaLib
         public static string GetGridName(int xll, int yll, int siz, countryEnum eCountry)
         {
             string gridname = "";
-            if (eCountry == countryEnum.no)
+            if (eCountry == countryEnum.no )
             {
-                if (xll < 0)
+                switch( siz )
                 {
-                    gridname = "" + ((int)yll / 100000).ToString("00") + "m" + ((int)(-xll / 100000 + 1)).ToString("0");
-                }
-                else
-                {
-                    gridname = "" + ((int)yll / 100000).ToString("00") + "" + ((int)(xll / 100000)).ToString("00");
+                    case 10000:
+                        if (xll < 0)
+                        {
+                            gridname = "" + ((int)yll / siz).ToString("00") + "m" + ((int)(-xll / siz + 1)).ToString("0");
+                        }
+                        else
+                        {
+                            gridname = "" + ((int)yll / siz).ToString("00") + "" + ((int)(xll / siz)).ToString("00");
+                        }
+                        break;
+
+                    case 100000:
+                        if (xll < 0)
+                        {
+                            gridname = "" + ((int)yll / siz).ToString("00") + "m" + ((int)(-xll / siz + 1)).ToString("0");
+                        }
+                        else
+                        {
+                            gridname = "" + ((int)yll / siz).ToString("00") + "" + ((int)(xll / siz)).ToString("00");
+                        }
+                        break;
+                    default:
+                        throw new Exception("Bad Norway size " + siz);
+                        break;
                 }
             }
             else if (eCountry == countryEnum.ie)
@@ -1162,7 +1181,10 @@ namespace OpenPanoramaLib
 
 
 
-        public static void IndexSingleLidarFile(countryEnum eCountry, string container_or_tif_filename, ref int ll, RunJobParams rjParams)
+
+
+
+        public static void SharpCompressIndexSingleLidarFile(countryEnum eCountry, string container_or_tif_filename, ref int ll, RunJobParams rjParams)
         {
             string lowerfilename = container_or_tif_filename.ToLower();
 
@@ -1343,8 +1365,333 @@ namespace OpenPanoramaLib
                     }
                 }
 
+
+                if (eCountry == countryEnum.no && lowerfilename.Contains("norway"))
+                {
+                    //SharpCompress.Readers.Zip.ZipReader zip = SharpCompress.Readers.Zip.ZipReader.Open( ;
+
+                    string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("/") + 11, 4);
+
+                    // File name is of format DTM1_1718-1820_UTM33_20220924.zip
+                    string[] parts = tilename.Split("_");
+
+                    if (!myTileFilenames.ContainsKey(tilename))
+                    {
+                        myTileFilenames.Add(tilename, new List<string>());
+                    }
+                    if (rjParams.LidarDebug)
+                    {
+                        Console.WriteLine("Add Lidar file " + lowerfilename);
+                    }
+                    myTileFilenames[tilename].Add(lowerfilename);
+                }
+
+
                 // Index Norway TIF DTM files...
                 if (eCountry == countryEnum.no && lowerfilename.Contains("norway") && lowerfilename.Contains("_tiff") && lowerfilename.Contains("dtm") && !lowerfilename.Contains("nhs"))
+                {
+                    string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("/") + 11, 4);
+                    if (!myTileFilenames.ContainsKey(tilename))
+                    {
+                        myTileFilenames.Add(tilename, new List<string>());
+                    }
+                    if (rjParams.LidarDebug)
+                    {
+                        Console.WriteLine("Add Lidar file " + lowerfilename);
+                    }
+                    myTileFilenames[tilename].Add(lowerfilename);
+                }
+            }
+
+            // The large Wales TIF file goes in ahead of anything else...
+            if (lowerfilename.Contains("wales_lidar_dtm_1m_32bit_cog.tif"))
+            {
+                foreach (string mySquare in WalesSquares)
+                {
+                    for (int x = 0; x < 10; x++)
+                    {
+                        for (int y = 0; y < 10; y++)
+                        {
+                            string tilename = mySquare + x.ToString("D1") + y.ToString("D1");
+                            if (!myTileFilenames.ContainsKey(tilename))
+                            {
+                                myTileFilenames.Add(tilename, new List<string>());
+                            }
+                            List<string> tilefiles = myTileFilenames[tilename];
+                            tilefiles.Insert(0, lowerfilename);
+                        }
+                    }
+                }
+            }
+
+            // Index Scottish TIF DTM files...
+            if (lowerfilename.Contains("scotland") && lowerfilename.Contains(".tif") && lowerfilename.Contains("dtm"))
+            {
+                if (lowerfilename.Contains("_50cm_") || lowerfilename.Contains("_1m_") || lowerfilename.Contains("_25cm_"))
+                {
+                    // Tiles can have long or short names - handle this here.
+                    string longtilename = lowerfilename.Substring(lowerfilename.LastIndexOf("/") + 1, 6);
+                    string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("/") + 1, 4);
+                    if (longtilename.IndexOf('_') <= 0 && longtilename.IndexOf('n') <= 0 && longtilename.IndexOf('e') <= 0 && longtilename.IndexOf('s') <= 0 && longtilename.IndexOf('w') <= 0)
+                    {
+                        tilename = longtilename.Substring(0, 3) + longtilename.Substring(4, 1);
+                    }
+                    if (!myTileFilenames.ContainsKey(tilename))
+                    {
+                        myTileFilenames.Add(tilename, new List<string>());
+                    }
+                    if (rjParams.LidarDebug)
+                    {
+                        Console.WriteLine("Add Lidar file " + lowerfilename);
+                    }
+                    myTileFilenames[tilename].Add(lowerfilename);
+                }
+            }
+
+
+        }
+
+
+
+        public static void IndexSingleLidarFile(countryEnum eCountry, string container_or_tif_filename, ref int ll, RunJobParams rjParams)
+        {
+            string lowerfilename = container_or_tif_filename.ToLower();
+
+            if (container_or_tif_filename.Contains(".zip"))
+            {
+                if (lowerfilename.Contains("england") || lowerfilename.Contains("patches"))
+                {
+                    int zipindx = lowerfilename.IndexOf(".zip");
+                    if (lowerfilename.Contains("patches"))
+                    {
+                        Console.WriteLine("Adding ASC file " + lowerfilename + " zipindx " + zipindx);
+                    }
+
+                    if (zipindx > 6)
+                    {
+                        string tilename = lowerfilename.Substring(zipindx - 6, 4);
+                        if (lowerfilename.Contains("patches") || rjParams.LidarDebug)
+                        {
+                            Console.WriteLine("Adding ASC file " + lowerfilename + " tilename " + tilename);
+                        }
+
+                        if (!myTileFilenames.ContainsKey(tilename))
+                        {
+                            myTileFilenames.Add(tilename, new List<string>());
+                        }
+
+                        List<string> tilefiles = myTileFilenames[tilename];
+                        if (lowerfilename.ToLower().Contains("national-lidar-programme") || lowerfilename.Contains("patches"))
+                        {
+                            if (lowerfilename.Contains("patches") || rjParams.LidarDebug)
+                            {
+                                Console.WriteLine("Insert ASC file " + lowerfilename);
+                            }
+                            tilefiles.Insert(0, lowerfilename);
+                        }
+                        else
+                        {
+                            if (lowerfilename.Contains("patches") || rjParams.LidarDebug)
+                            {
+                                Console.WriteLine("Appending ASC file " + lowerfilename);
+                            }
+                            tilefiles.Add(lowerfilename);
+                        }
+
+                        if ((ll++) % 20 == 0)
+                        {
+                            Console.Write(",");
+                        }
+                        //Console.WriteLine("Cache ZIP Directory Entry " + filename);
+                    }
+                }
+
+                if (eCountry == countryEnum.ie)
+                {
+                    // DTM_695_775.zip - tile name is 6977 (hopefully)
+                    // P_568818.zip - tile name is 5681 (again hopefully)
+
+                    string tilename = null;
+
+                    int dtmindx = lowerfilename.IndexOf("dtm_");
+                    if (dtmindx >= 0)
+                    {
+                        tilename = lowerfilename.Substring(dtmindx + 4, 2) + lowerfilename.Substring(dtmindx + 8, 2);
+                    }
+                    if (dtmindx < 0)
+                    {
+                        dtmindx = lowerfilename.IndexOf("p_");
+                        if (dtmindx >= 0)
+                        {
+                            tilename = lowerfilename.Substring(dtmindx + 2, 2) + lowerfilename.Substring(dtmindx + 5, 2);
+                        }
+                    }
+                    if (dtmindx < 0)
+                    {
+                        dtmindx = lowerfilename.IndexOf("tii_");
+                        if (dtmindx >= 0)
+                        {
+                            tilename = lowerfilename.Substring(dtmindx + 4, 2) + lowerfilename.Substring(dtmindx + 6, 2);
+                        }
+                    }
+                    if (dtmindx >= 0)
+                    {
+                        if (!myTileFilenames.ContainsKey(tilename))
+                        {
+                            myTileFilenames.Add(tilename, new List<string>());
+                        }
+                        List<string> tilefiles = myTileFilenames[tilename];
+
+                        if (rjParams.LidarDebug)
+                        {
+                            Console.WriteLine("Add Lidar file " + lowerfilename);
+                        }
+                        tilefiles.Add(lowerfilename);
+                    }
+                }
+
+                if (lowerfilename.Contains("wales"))
+                {
+                    int zipindx = lowerfilename.IndexOf("_dtm.zip");
+                    if (zipindx > 4 && (lowerfilename.IndexOf("1m") >= 0 || lowerfilename.IndexOf("2m") >= 0))
+                    {
+                        if (lowerfilename.Substring(zipindx - 5, 1) == "_")
+                        {
+                            string tilename = lowerfilename.Substring(zipindx - 4, 4);
+                            if (!myTileFilenames.ContainsKey(tilename))
+                            {
+                                myTileFilenames.Add(tilename, new List<string>());
+                            }
+
+                            List<string> tilefiles = myTileFilenames[tilename];
+                            if (lowerfilename.IndexOf("1m") > 0)
+                            {
+                                if (rjParams.LidarDebug)
+                                {
+                                    Console.WriteLine("Insert Lidar file " + lowerfilename);
+                                }
+                                // Insert the 1m tiles at the start - these take priority...
+                                tilefiles.Insert(0, lowerfilename);
+                            }
+
+                            if (lowerfilename.IndexOf("2m") > 0)
+                            {
+                                if (rjParams.LidarDebug)
+                                {
+                                    Console.WriteLine("Add Lidar file " + lowerfilename);
+                                }
+                                // Add the 2m tiles at the end
+                                tilefiles.Add(lowerfilename);
+                            }
+                            //Console.WriteLine("Cache ZIP Directory Entry " + filename);
+                            if ((ll++) % 20 == 0)
+                            {
+                                Console.Write("#");
+                            }
+                        }
+                        else
+                        {
+                            string bigTilename = lowerfilename.Substring(zipindx - 2, 2);
+                            var archive = ZipFile.OpenRead(lowerfilename);
+                            {
+                                foreach (var entry in archive.Entries)
+                                {
+                                    string fn = entry.Name.ToLower();
+
+                                    if (fn.EndsWith("dtm_1m.asc"))
+                                    {
+                                        for (int n = 0; n < 10; n++)
+                                        {
+                                            for (int e = 0; e < 10; e++)
+                                            {
+                                                string tilename = bigTilename + e + n;
+
+                                                string tmptile = fn.Substring(0, 3) + fn.Substring(4, 1);
+                                                if (tmptile.ToLower() == tilename)
+                                                {
+                                                    List<string> tilefiles;
+                                                    if (!myTileFilenames.ContainsKey(tilename))
+                                                    {
+                                                        myTileFilenames.Add(tilename, new List<string>());
+                                                    }
+                                                    tilefiles = myTileFilenames[tilename];
+                                                    tilefiles.Add(lowerfilename);
+
+                                                    if ((ll++) % 20 == 0)
+                                                    {
+                                                        Console.Write("@");
+                                                    }
+
+                                                    //Console.WriteLine("Cache ZIP Directory Entry " + lowerfilename);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (eCountry == countryEnum.no && lowerfilename.Contains("norway") && lowerfilename.Contains("dtm1_") && rjParams.LIDARRes < 5)
+                {
+                    string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("/"));
+
+                    // File name is of format DTM1_1718-1820_UTM33_20220924.zip
+                    string[] parts = tilename.Split("_");
+                    if (parts.Length >= 1)
+                    {
+                        string[] parts2 = parts[1].Split("-");
+
+                        int startI = 0;
+                        int endI = 0;
+                        int startJ = 0;
+                        int endJ = 0;
+
+                        if (parts2.Length == 2)
+                        {
+                            startI = Convert.ToInt32(parts2[0].Substring(0, 2));
+                            startJ = Convert.ToInt32(parts2[1].Substring(0, 2));
+                            if (parts2[0].Length > 2)
+                            {
+                                endI = Convert.ToInt32(parts2[0].Substring(2, 2));
+                            }
+                            else
+                            {
+                                endI = startI;
+                            }
+                            if (parts2[1].Length > 2)
+                            {
+                                endJ = Convert.ToInt32(parts2[1].Substring(2, 2));
+                            }
+                            else
+                            {
+                                endJ = startJ;
+                            }
+
+                            for (int i = startI; i <= endI; i++)
+                            {
+                                for (int j = startJ; j <= endJ; j++)
+                                {
+                                    tilename = i.ToString("00") + j.ToString("00");
+                                    if (!myTileFilenames.ContainsKey(tilename))
+                                    {
+                                        myTileFilenames.Add(tilename, new List<string>());
+                                    }
+                                    if (rjParams.LidarDebug)
+                                    {
+                                        Console.WriteLine("Add Lidar file " + lowerfilename);
+                                    }
+                                    myTileFilenames[tilename].Add(lowerfilename);
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                // Index Norway TIF DTM files...
+                if (eCountry == countryEnum.no && lowerfilename.Contains("norway") && lowerfilename.Contains("_tiff") && lowerfilename.Contains("dtm10") && !lowerfilename.Contains("nhs") && rjParams.LIDARRes > 5)
                 {
                     string tilename = lowerfilename.Substring(lowerfilename.LastIndexOf("/") + 11, 4);
                     if (!myTileFilenames.ContainsKey(tilename))

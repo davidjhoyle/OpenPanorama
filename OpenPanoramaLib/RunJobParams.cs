@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Proj4Net.Core;
 using PanaGraph;
+using SkiaSharp;
 
 namespace OpenPanoramaLib
 {
@@ -89,6 +90,7 @@ namespace OpenPanoramaLib
         public double checkLIDAR = -99999;
         public string checkFile = null;
         public string LASFile = null;
+        public double LIDARRes = 1.0;
         public string ASCFile = null;
         public double ASCSize = 0; // 0KM square by default - default to whatever the cloud size is.
         public bool CreateLIDARCache = false;
@@ -693,7 +695,8 @@ namespace OpenPanoramaLib
                                 break;
 
                             case "-LIDARRes":
-                                LidarBlockReader.SetLidarRes(Convert.ToDouble(args[++i]));
+                                LIDARRes = Convert.ToDouble(args[++i]);
+                                LidarBlockReader.SetLidarRes(LIDARRes);
                                 break;
 
                             case "-LAS":
@@ -856,6 +859,10 @@ namespace OpenPanoramaLib
             minPPAzDistance = other.minPPAzDistance;
             minPPElevDistance = other.minPPElevDistance;
             minPPDistance = other.minPPDistance;
+
+            LASFile = other.LASFile;
+            ASCFile = other.ASCFile;
+            LIDARRes = other.LIDARRes;
 
             Correlate = other.Correlate;
             CorrelateCSV = other.CorrelateCSV;
