@@ -196,3 +196,6 @@ Where d = declination, l = latitude, h = horizon height and az = azimuth
 Adjust the declination for refraction
 
 Update the Peak processing to handle north properly.
+
+
+Update to read the horizon data from the CSV file.

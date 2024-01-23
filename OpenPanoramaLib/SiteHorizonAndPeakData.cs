@@ -2,6 +2,7 @@
 using PanaGraph;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -32,6 +33,7 @@ namespace OpenPanoramaLib
             double minAzDistance, double minElevDistance, double minDistance, string csvPeakHeaderPrefix, string csvPeakDataPrefix, double latitude, double minSkimAzDelta)
         {
             readGPXData(gpxFile);
+            readCSVHorizonData(gpxFile.Replace(".gpx", ".csv"), pointsPerDegree);
             double[] hires = readHiResData(hiresFile, pointsPerDegree);
             if (hires == null)
             {
@@ -176,6 +178,97 @@ namespace OpenPanoramaLib
 
             return;
         }
+
+
+        public bool readCSVHorizonData(string csvFile, int ppd)
+        {
+            Console.WriteLine("Read CSV Horizon File " + csvFile);
+            bool allOK = true;
+
+            try
+            {
+                bool deleteTmp = false;
+
+                if (csvFile.ToLower().Contains("https://") || csvFile.ToLower().Contains("http://"))
+                {
+                    WebClient wc = new WebClient();
+                    Random rnd = new Random();
+                    string tmpCSVFile = "TempJSNFile" + rnd.Next(100000, 999999) + ".csv";
+
+                    Console.WriteLine("Temporary Downloaded JSON File " + csvFile + " Temp " + tmpCSVFile);
+                    wc.DownloadFile(csvFile, tmpCSVFile);
+                    csvFile = tmpCSVFile;
+                    deleteTmp = true;
+                }
+
+
+                double[] dvals = new double[10];
+                string[] columnNames = null;
+
+                using (StreamReader r = new StreamReader(csvFile))
+                {
+                    string? csvLine = r.ReadLine();
+                    if (csvLine != null)
+                    {
+                        columnNames = csvLine.Split(",");
+                    }
+                    else
+                    {
+                        allOK = false;
+                    }
+
+                    while (csvLine != null )
+                    {
+                        csvLine = r.ReadLine();
+                        if (csvLine != null)
+                        {
+                            string[] tmpvals = csvLine.Split(",");
+
+                            if (tmpvals.Length >= 6)
+                            {
+                                for (int c = 0; c < 6; c++)
+                                {
+                                    dvals[c] = Convert.ToDouble(tmpvals[c]);
+                                }
+
+                                int x = (int)(dvals[0] * ppd);
+
+                                if ( x < 0 || x >= theHoz.theHorizon.Length)
+                                {
+                                    Console.WriteLine("Reading from CSV File " + csvFile + " Angle >= 360 " + dvals[0]);
+                                    allOK = false;
+                                    break;
+                                }
+
+                                theHoz.theHorizon[x].bearing = dvals[0];
+                                theHoz.theHorizon[x].elevation = dvals[1];
+                                theHoz.theHorizon[x].distance = dvals[2];
+                                theHoz.theHorizon[x].latitude = dvals[3];
+                                theHoz.theHorizon[x].longitude = dvals[4];
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    } 
+                }
+
+                if (deleteTmp)
+                {
+                    Console.WriteLine("Delete Temporary Downloaded CSV File " + csvFile);
+                    File.Delete(csvFile);
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Could not read CSV File " + csvFile);
+                allOK = false;
+            }
+
+            return allOK;
+        }
+
 
 
         public double[] readHiResData(string HiResFile, int ppd)
@@ -707,7 +800,7 @@ namespace OpenPanoramaLib
                 }
 
                 done = false;
-                for (int j = 0; j < 20 && !done; j++)
+                for (int j = 0; j < 40 && !done; j++)
                 {
                     done = true;
                     // Now remove peaks only just above notches.
@@ -794,7 +887,7 @@ namespace OpenPanoramaLib
             for (int i = tmppeaks.Count - 1; i >= 0; i--)
             {
                 int x = tmppeaks[i];
-                if (theHoz.theHorizon[x].distance < minDistance)
+                if (theHoz.theHorizon[x].distance > 0 && theHoz.theHorizon[x].distance < minDistance)
                 {
                     //Console.WriteLine("Removed Peak at " + (double)x / 120 + " " + theHoz.theHorizon[x].elevation + " Distance " + theHoz.theHorizon[x].distance);
                     tmppeaks.Remove(x);
@@ -804,7 +897,7 @@ namespace OpenPanoramaLib
             for (int i = tmpnotches.Count - 1; i >= 0; i--)
             {
                 int x = tmpnotches[i];
-                if (theHoz.theHorizon[x].distance < minDistance)
+                if (theHoz.theHorizon[x].distance > 0 && theHoz.theHorizon[x].distance < minDistance)
                 {
                     //Console.WriteLine("Removed Notch at " + (double)x / 120 + " " + theHoz.theHorizon[x].elevation + " Distance " + theHoz.theHorizon[x].distance);
                     tmpnotches.Remove(x);
