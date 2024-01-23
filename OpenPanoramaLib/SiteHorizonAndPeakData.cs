@@ -313,7 +313,12 @@ namespace OpenPanoramaLib
 
             for (int x = 0; x < theHoz.theHorizon.Length; x++)
             {
-                double θel = theHoz.theHorizon[x].elevation / 180 * Math.PI;
+                // Refraction = 1.02 / TAN(RADIANS((H9 - J9 / 60) + 10.3 / ((H9 - J9 / 60) + 5.11)))
+                // RefractionMinutes = 1 / TAN(RADIANS(AltitudeDegs + 7.31/(AltitudeDegs+4.4)))
+                Double RefractionMinutes = 1 / Math.Tan((theHoz.theHorizon[x].elevation + 7.31 / (theHoz.theHorizon[x].elevation + 4.4)) / 180 * Math.PI);
+                Double RefractionRad = RefractionMinutes / 60 / 180 * Math.PI;
+
+                double θel = (theHoz.theHorizon[x].elevation / 180 * Math.PI ) - RefractionRad;
                 double θaz = theHoz.theHorizon[x].bearing / 180 * Math.PI;
 
                 double sinDeclination = Math.Sin(θel) * Math.Sin(θlat) + Math.Cos(θel) * Math.Cos(θlat) * Math.Cos(θaz);
@@ -547,7 +552,7 @@ namespace OpenPanoramaLib
                     Console.WriteLine("Create CSV Peak File " + filename);
                     string csvHeader = csvPeakHeaderPrefix +
                         ",IsPeak," + weightStr + ",ElevDiffWeight,PeakIndex" +
-                        ",HorizonLatitude,HorizonLogitude," + heightstr + ",HorizonDistance,HorizonBearing" + qualitystr;
+                        ",HorizonLatitude,HorizonLogitude," + heightstr + ",HorizonDistance,HorizonBearing,Declination" + qualitystr;
                     file.WriteLine(csvHeader);
 
                     foreach (var peakInfo in tmppeakList)
@@ -561,7 +566,8 @@ namespace OpenPanoramaLib
                             peakInfo.horizonPoint.longitude + "," +
                             peakInfo.horizonPoint.getY(useDeclinations) + "," +
                             peakInfo.horizonPoint.distance + "," +
-                            peakInfo.horizonPoint.bearing;
+                            peakInfo.horizonPoint.bearing + "," +
+                            peakInfo.horizonPoint.declination;
                         if (useDeclinations)
                         {
                             csvData += "," + peakInfo.slopeWeight * peakInfo.elevDiffWeight;

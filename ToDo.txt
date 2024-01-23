@@ -1,4 +1,156 @@
 ﻿
+Fix Equinox position - out by around 1/2 degree
+Fix the Equinox positions
+
+DONE - Fix the change in ecliptic
+DONE - STARTED - Add contours to all images in the UK.
+DONE - STARTED - Re-run for 150km
+DONE - Add display of wobble (Delta)
+DONE - Fix the size of the moon and sun when drawn - it is too big at present.
+
+DONE - Fix the parallax of the moon calculation - need to do thia only to the altitude and not affect Azimuth. 
+DONE - Also need to reduce parallax based on height of the observer...
+
+Find if we can get Cairns and other data from OS data sets.
+Add drawing of cairns and other items to the calculations
+
+DONE - Add maximum distance calculation for a specific height in an area.
+
+Update the colour generation to adjust for latitude and heights above 1000m.
+DONE - Improve accuracy of the get height at lat lon calculation.
+
+Add a general height override for specific locations for when the height stuff is wrong.
+
+DONE - Remove non ASCII characters from sites names.
+
+DONE - Fix the Refraction calculation based on the angle of the moon
+DONE - Update the Web site with a more modern feel
+DONE - Get rid of occasional odd dots - presumably the calculations go to infinity at some point and this needs looking at
+Take the TMA data and add this and links to the site - run a dedupe between the two data sources.
+DONE - Add height to web page lat lon
+
+
+Done - LIDAR Cache Size
+Done - SRTM Cache Size
+Done - OS Map Cache Size
+
+Done - Unknown command line parameters - error on them.
+
+Change the GPX generation back to generating the raw two values...
+Update horizon dump to include the angle in the output....
+
+Fix heights for when LIDAR is on.
+
+DONE - Allow Colour paramters to be passed in... ColourSea, ColourSky, ColourBase (DarkGreen), ColourTops (Brown), ColourDistant (DimGray), ColourOriginLatitude (45), ColourSlopeAdjust (20), ColourMaxDist (10K), ColourGreyCount(20), ColourGreenBrownShades(40), ColourCountGrayShades (80), ColourMaxHeight (1000). ColourMoon, ColourSun, ColourTitle, ColourCairns, ColourStones
+DONE - Set CopyrightNotice
+
+NOT DOING - SRTM Data - add 0.5 seconds onto each point
+LIDAR data - add 0.5 metres to each point...
+Handle the extra 0.5 m offset for LIDAR data.
+
+DONE - **** Update LIDAR handling to fix Wales LIDAR ****
+
+Update to process cache data on different disk...
+
+DONE - Create a simple distance and bearing cache for only two lines of data.
+NOT DOING - Update the functions to generate lat lon from ne and then get the distance and bearing to not require dynamic memory allocation. 
+
+DONE - Update Sun and Moon drawing code to allow some items to be removed or not shown... -Equinox -Solstice -Moon+e+i -Moon+e-i -Moon-e+i -Moon-e-i -AllSun -AllMoon
+
+DONE - Add MinDistance Parameter in.
+DONE - Fix Age Paramater handling for single year.
+
+Replace dodgy MSFT ZIP library with a less leaky one...
+Writing GPX FIles - check paths to Azure storage...
+
+Process the image as raw bytes. 
+Create new drawline primitive that does raw.
+DONE - Create higher level drawline that allows wrapping on North.
+NOT DOING - Reduce the lidar tile size to 5k squared points.
+
+Improve the single run handling of the app to allow Stellarium stuff to be generated etc.
+Description Handling
+Create a Job for single image
+Process PNG in memory for all use cases
+
+LIDAR Good Tile Value
+LIDAR FAIR Tile
+LIDAR NoData Tile Handling
+LIDAR Sea Tiles Handling
+LIDAR Non UK (IE) Handling
+NOT DOING - LIDAR pre-processing for all UK.
+LIDAR TIF Reading including metadata (possibly)
+LIDAR Non UK Grid Handling
+
+DONE - LIDAR Sorting tiles into order of goodness
+DONE - LIDAR handling for when a tile is good/complete - read and process each tile and if the tile is complete then stop reading more TIFs/ASCs.
+
+DONE - Height - Set observer heigh and change from int to doubles...
+DONE - Update to customise URLs - https://standingstonesorg.blob.core.windows.net/ and https://gpsvisualizer.com/atlas/map?url= and http://www.standingstones.org/viewer.html
+DONE - blobStoreURL - https://standingstonesorg.blob.core.windows.net/
+DONE - viewGPSURL - https://gpsvisualizer.com/atlas/map?url=
+DONE - viewImageURL - http://www.standingstones.org/viewer.html?name=
+DONE - standStonesHost = www.standingstones.org
+
+DONE - ProximalInterpolation - Minecraft mode
+DONE - Update to Low Level Get height at SRTM location to get the nearest point not interpolate...
+Add LIDAR Stepped Mode
+
+DONE - Add Build Date Time
+DONE - Add CSV List of Site Types to process - default of "Stone Circle", "Ring Cairn", "Standing Stone (Menhir)", "Standing Stones", "Stone Row / Alignment", "Henge", "Multiple Stone Rows / Avenue", "Timber Circle", "Viewpoint"
+
+Fix Countour Drawing at near Sea Level - Around Pennal for example.
+Add Multiple resolutions to bulk and removal of spot heights as options.
+Fix the folder creation with a space in the folder name.
+
+Fix the Stellarium Bug:-
+	f:\standingstonesorg\uk\devon\stone-row-alignment\green-hill-stall-moor_sx63666779\green-hill-stall-moor_sx63666779_5000_60_fgrid.jpg Already exists - Skipping - Remaining 985
+	ProcessZIPs Cache Filename f:\LIDARCACHE\BinCache_SX66.lid
+	ReadFileCache Filename f:\LIDARCACHE\BinCache_SX66.lid : Quality 100%
+	LIDAR Cached Block -129282144 Added
+	Read PNG File f:\standingstonesorg\uk\devon\stone-row-alignment\green-hill-stall-moor_sx63666779\green-hill--stall-moor_sx63666779.png
+	Delete Temporary Folder and Files tmpppything_7056_1
+	Delete folder tmpppything_7056_1
+	CreateStellariumZipFile Exception green-hill---stall-moor_sx63666779 Parameter is not valid.    at System.Drawing.Bitmap..ctor(String filename)
+	   at MappyLib.StellariumHelper.CreateStellariumPNGFiles(StoneSite site, String folder, Int32 count, String ZipFolder) in C:\Users\David\Documents\Visual Studio 2017\Projects\Panorama\MappyLib\StellariumClasses.cs:line 239
+	   at MappyLib.StellariumHelper.CreateStellariumZipFile(Boolean siteFolder, StoneSite site, String basefolder) in C:\Users\David\Documents\Visual Studio 2017\Projects\Panorama\MappyLib\StellariumClasses.cs:line 369
+	   at Panorama.PanoramaProgram.ProcessStellariumSite(Boolean overwrite, Boolean siteFolder, StoneSite stonestite) in C:\Users\David\Documents\Visual Studio 2017\Projects\Panorama\Panorama\PanoramaProgram.cs:line 722
+
+
+
+Fix the lidar patching to work.
+ 
+Check the sun and moon diameter are correctly handled.
+ 
+Update equinox and also look at cross quarter handling for site.
+ 
+DONE - Stellarium Generation is hardwired to 120 pixels per degree - needs fixing.
+
+If all OS Map fetches return false and contours have been specified then error the job.
+
+All processing time for a job into output.
+
+
+DONE - Remove all external site content. - Remove external CSS, Fonts and other potential tracking stuff.
+Horizon Map - add bearings in a least every degree.
+
+Change zoom so you cannot go off to the bottom. 
+
+Change when a site not found on mobile.
+DONE - Add special for https://www.thenorthernantiquarian.org/2022/12/14/grey-wether-ewes/
+
+
+FIX BUG:
+CreateHV Counts Are not the same 43200 43128
+Exception caught CreateHV Counts Are not the same 43200 43128    at MappyLib.SiteHorizonAndPeakData.CreateHV(Int32 count) in C:\Users\david\source\repos\davidjhoyle\Panorama\MappyLib\PeakDetectionAndCorrelation.cs:line 146
+   at MappyLib.SiteHorizonAndPeakData.readPNGData(String PngFile, Int32 ppd) in C:\Users\david\source\repos\davidjhoyle\Panorama\MappyLib\PeakDetectionAndCorrelation.cs:line 314
+   at MappyLib.SiteHorizonAndPeakData.PeakProcess(String gpxFile, String pngFile, String hiresFile, Int32 pointsPerDegree, String peakFileName, String declpeakFileName, Boolean saveJSON, Boolean saveCSV, Boolean DeclinationPeakJSON, Boolean DeclinationPeakCSV, Boolean saveDeclinPNG, Double minAzDistance, Double minElevDistance, Double minDistance, String csvPeakHeaderPrefix, String csvPeakDataPrefix, Double latitude, Double minSkimAzDelta) in C:\Users\david\source\repos\davidjhoyle\Panorama\MappyLib\PeakDetectionAndCorrelation.cs:line 100
+   at Panorama.PanoramaProgram.PeakProcessAndCorrelate(Boolean siteFolder, StoneSite stonestite, SunMoonRunJob job) in C:\Users\david\source\repos\davidjhoyle\Panorama\Panorama\PanoramaProgram.cs:line 817
+   at Panorama.PanoramaProgram.ProcessJob(Boolean siteFolder, SunMoonRunJob job) in C:\Users\david\source\repos\davidjhoyle\Panorama\Panorama\PanoramaProgram.cs:line 948
+   at Panorama.PanoramaProgram.PollJobs() in C:\Users\david\source\repos\davidjhoyle\Panorama\Panorama\PanoramaProgram.cs:line 990
+Not Added Types Found ,Barrow Cemetery,Rock Art,Sculptured Stone,Round Barrow(s),Cairn,Carving,Ancient Village or Settlement,Hillfort,Museum,Natural Stone / Erratic / Other Natural Feature,Cist,Artificial Mound,Ancient Cross,Chambered Tomb,Passage Grave,Long Barrow,Ancient Palace,Early Christian Sculptured Stone,Modern Stone Circle etc,Holy Well or Sacred Spring,Burial Chamber or Dolmen,Clava Cairn,Cave or Rock Shelter,Marker Stone
+
+
 
 •	Move all landscape processing into a dedicated set of sources away from the rest
 •	Draw into a bitmap that I manage rather than using the slow drawing primitives
@@ -37,3 +189,10 @@ dotnet publish -r linux-x64 -c Release
 dotnet publish -r linux-arm -c Release
 
 Fix Stellarium ZIP transparent floor bug
+
+Add extra Peak Declination value - work out the declination for the peak for the location.
+Sin d = (sin l x sin h) + (cos l x cos h x cos az)
+Where d = declination, l = latitude, h = horizon height and az = azimuth
+Adjust the declination for refraction
+
+Update the Peak processing to handle north properly.
