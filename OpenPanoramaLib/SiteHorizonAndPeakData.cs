@@ -357,12 +357,12 @@ namespace OpenPanoramaLib
             for (int x = 0; x < InputBitmap.Width; x++)
             {
                 Color tcol = InputBitmap.GetPixel(x, lasty);
-                if (tcol.A != 0)
+                if (!(tcol.R == 0 && tcol.G == 0 && tcol.B == 0))
                 {
                     for (int y = lasty; y >= 0; y--)
                     {
                         Color col = InputBitmap.GetPixel(x, y);
-                        if (col.A == 0)
+                        if (col.R == 0 && col.G == 0 && col.B == 0)
                         {
                             break;
                         }
@@ -376,7 +376,7 @@ namespace OpenPanoramaLib
                     {
                         lasty = y;
                         Color col = InputBitmap.GetPixel(x, y);
-                        if (col.A != 0)
+                        if (!(col.R == 0 && col.G == 0 && col.B == 0))
                         {
                             break;
                         }
