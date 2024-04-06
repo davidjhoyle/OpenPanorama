@@ -912,7 +912,7 @@ namespace OpenPanoramaLib
                 int x = tmppeaks[i];
                 if (x < 0 || x >= theHoz.theHorizon.Length)
                 {
-                    Console.WriteLine("Removed Peak out of range " + (double) x / 120 + " " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].elevation + " Distance " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].distance);
+                    //Console.WriteLine("Removed Peak out of range " + (double) x / 120 + " " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].elevation + " Distance " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].distance);
                     tmppeaks.Remove(x);
                 }
             }
@@ -922,7 +922,7 @@ namespace OpenPanoramaLib
                 int x = tmpnotches[i];
                 if (x < 0 || x >= theHoz.theHorizon.Length)
                 {
-                    Console.WriteLine("Removed Notch out of range at " + (double)x / 120 + " " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].elevation + " Distance " + theHoz.theHorizon[(uint)(x)  % theHoz.theHorizon.Length].distance);
+                    //Console.WriteLine("Removed Notch out of range at " + (double)x / 120 + " " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].elevation + " Distance " + theHoz.theHorizon[(uint)(x)  % theHoz.theHorizon.Length].distance);
                     tmpnotches.Remove(x);
                 }
             }
