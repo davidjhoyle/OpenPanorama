@@ -744,6 +744,35 @@ namespace OpenPanoramaLib
         }
 
 
+        public double getY(int x, bool useDeclinations)
+        {
+            while (x < 0)
+            {
+                x += theHoz.theHorizon.Length;
+            }
+            while( x >= theHoz.theHorizon.Length )
+            {
+                x -= theHoz.theHorizon.Length;
+            }
+
+            return theHoz.theHorizon[x].getY(useDeclinations);
+        }
+
+        public double getDistance(int x)
+        {
+            while (x < 0)
+            {
+                x += theHoz.theHorizon.Length;
+            }
+            while (x >= theHoz.theHorizon.Length)
+            {
+                x -= theHoz.theHorizon.Length;
+            }
+
+            return theHoz.theHorizon[x].distance;
+        }
+
+
         public void FindPeaks(double minAzDistance, double minElevDistance, double minDistance, bool useDeclinations)
         {
             List<int> tmppeaks = new List<int>();
@@ -758,31 +787,31 @@ namespace OpenPanoramaLib
             // Get the RAW peaks from the horizon data - this includes all single pixel peaks so is very noisy.
             for (int x = -theHoz.theHorizon.Length/2; x < (theHoz.theHorizon.Length + theHoz.theHorizon.Length/2 - 2); x++)
             {
-                if (theHoz.theHorizon[(uint)(x)% theHoz.theHorizon.Length].getY(useDeclinations) > (theHoz.theHorizon[(uint)(x-1) % theHoz.theHorizon.Length].getY(useDeclinations)))
+                if (getY(x, useDeclinations) > getY(x - 1, useDeclinations))
                 {
                     found_rising = true;
                     found_falling = false;
                     start_rising = x;
                 }
 
-                if (theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].getY(useDeclinations) < (theHoz.theHorizon[(uint)(x-1) % theHoz.theHorizon.Length].getY(useDeclinations)))
+                if (getY(x, useDeclinations) < getY(x - 1, useDeclinations))
                 {
                     found_rising = false;
                     found_falling = true;
                     start_falling = x;
                 }
 
-                if (found_rising && theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].getY(useDeclinations) > (theHoz.theHorizon[(uint)(x+1) % theHoz.theHorizon.Length].getY(useDeclinations)))
+                if (found_rising && getY(x, useDeclinations) > getY(x + 1, useDeclinations))
                 {
                     int peakX = (x + start_rising) / 2;
-                    //Console.WriteLine("Peaks at " + (double)peakX / 120 + " " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].getY(useDeclinations));
+                    //Console.WriteLine("Peaks at " + (double)peakX / 120 + " " + getY(x, useDeclinations));
                     tmppeaks.Add(peakX);
                 }
 
-                if (found_falling && theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].getY(useDeclinations) < (theHoz.theHorizon[(uint)(x+1) % theHoz.theHorizon.Length].getY(useDeclinations)))
+                if (found_falling && getY(x, useDeclinations) < getY(x + 1, useDeclinations))
                 {
                     int notchX = (x + start_falling) / 2;
-                    //Console.WriteLine("Notches at " + (double)notchX / 120 + " " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].getY(useDeclinations));
+                    //Console.WriteLine("Notches at " + (double)notchX / 120 + " " + getY(x,useDeclinations));
                     tmpnotches.Add(notchX);
                 }
             }
@@ -805,7 +834,7 @@ namespace OpenPanoramaLib
                 {
                     done = true;
                     // Now remove peaks only just above notches.
-                    for (int i = tmppeaks.Count - 2; i > 0; i--)
+                    for (int i = tmppeaks.Count - 2; i >= 0; i--)
                     {
                         int x1 = tmppeaks[i];
                         int x2 = tmppeaks[i + 1];
@@ -817,7 +846,7 @@ namespace OpenPanoramaLib
 
 
                         // if Peaks are too far apart then skip.
-                        if ((x2 - x1) / pointsPerDegree > minAzDistance)
+                        if (Math.Abs(x2 - x1) / pointsPerDegree > minAzDistance)
                         {
                             //Console.WriteLine("Peaks far apart - skip " + (double)x1 / 120 + " " + (double)x2 / 120 + " Difference " + (x2 - x1) / pointsPerDegree);
                             continue;
@@ -825,7 +854,7 @@ namespace OpenPanoramaLib
 
 
                         // Which of the two peaks do we remove? We consider removing the lowest of the two peaks
-                        if (theHoz.theHorizon[(uint)(x2) % theHoz.theHorizon.Length].getY(useDeclinations) > theHoz.theHorizon[(uint)(x1) % theHoz.theHorizon.Length].getY(useDeclinations))
+                        if (getY(x2, useDeclinations) > getY(x1, useDeclinations))
                         {
                             removePeakX = x1;
                         }
@@ -852,7 +881,7 @@ namespace OpenPanoramaLib
                         if (notchx2 >= 0 && notchx1 >= 0)
                         {
                             // if notches are too far apart then skip.
-                            if ((notchx2 - notchx1) / pointsPerDegree > minAzDistance)
+                            if (Math.Abs(notchx2 - notchx1) / pointsPerDegree > minAzDistance)
                             {
                                 //Console.WriteLine("Notches far apart " + (double)notchx1 / 120 + " " + (double)notchx2 / 120 + " Difference " + (notchx2 - notchx1) / pointsPerDegree);
                                 continue;
@@ -860,7 +889,7 @@ namespace OpenPanoramaLib
                         }
 
                         // Which of the two notches do we remove? We consider removing the highest of the two notches
-                        if ( theHoz.theHorizon[(uint) (notchx1) % theHoz.theHorizon.Length].getY(useDeclinations) > theHoz.theHorizon[(uint)(notchx2) % theHoz.theHorizon.Length].getY(useDeclinations))
+                        if ( getY(notchx1, useDeclinations) > getY(notchx2, useDeclinations))
                         {
                             removeNotchX = notchx1;
                         }
@@ -871,9 +900,9 @@ namespace OpenPanoramaLib
 
                         if (removeNotchX > mixvalx && removePeakX > mixvalx)
                         {
-                            if (theHoz.theHorizon[(uint)(removePeakX) % theHoz.theHorizon.Length].getY(useDeclinations) - theHoz.theHorizon[(uint)(removeNotchX) % theHoz.theHorizon.Length ].getY(useDeclinations) < minElevDistance)
+                            if (getY(removePeakX, useDeclinations) - getY(removeNotchX, useDeclinations) < minElevDistance)
                             {
-                                //Console.WriteLine(passInfo + " Removed Peak and Notch at " + (double)removePeakX / 120 + " " + theHoz.theHorizon[(uint)(removePeakX) % theHoz.theHorizon.Length].getY(useDeclinations) + " Notch " + (double)removeNotchX / 120 + " " + theHoz.theHorizon[(uint)(removeNotchX) % theHoz.theHorizon.Length].getY(useDeclinations) + " Leaving " + (double)x2 / 120 + " Difference " + (theHoz.theHorizon[(uint)(removePeakX ) % theHoz.theHorizon.Length].getY(useDeclinations) - theHoz.theHorizon[ (uint)(removeNotchX ) % theHoz.theHorizon.Length].getY(useDeclinations)));
+                                //Console.WriteLine(passInfo + " Removed Peak and Notch at " + (double)removePeakX / 120 + " " + getY(removePeakX, useDeclinations) + " Notch " + (double)removeNotchX / 120 + " " + getY(removeNotchX, useDeclinations) + " Leaving " + (double)x2 / 120 + " Difference " + (getY(removePeakX, useDeclinations) - getY(removeNotchX, useDeclinations)));
                                 tmppeaks.Remove(removePeakX);
                                 tmpnotches.Remove(removeNotchX);
                                 done = false;
@@ -888,9 +917,9 @@ namespace OpenPanoramaLib
             for (int i = tmppeaks.Count - 1; i >= 0; i--)
             {
                 int x = tmppeaks[i];
-                if (theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].distance > 0 && theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].distance < minDistance)
+                if (getDistance(x) > 0 && getDistance(x) < minDistance)
                 {
-                    //Console.WriteLine("Removed Peak at " + (double)x / 120 + " " + theHoz.theHorizon[x% theHoz.theHorizon.Length].elevation + " Distance " + theHoz.theHorizon[x% theHoz.theHorizon.Length].distance);
+                    //Console.WriteLine("Removed Peak at " + (double)x / 120 + " " + getY(x, useDeclinations) + " Distance " + getDistance(x));
                     tmppeaks.Remove(x);
                 }
             }
@@ -898,9 +927,9 @@ namespace OpenPanoramaLib
             for (int i = tmpnotches.Count - 1; i >= 0; i--)
             {
                 int x = tmpnotches[i];
-                if (theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].distance > 0 && theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].distance < minDistance)
+                if (getDistance(x) > 0 && getDistance(x) < minDistance)
                 {
-                    //Console.WriteLine("Removed Notch at " + (double)x / 120 + " " + theHoz.theHorizon[x% theHoz.theHorizon.Length].elevation + " Distance " + theHoz.theHorizon[x% theHoz.theHorizon.Length].distance);
+                    //Console.WriteLine("Removed Notch at " + (double)x / 120 + " " + getY(x, useDeclinations) + " Distance " + getDistance(x));
                     tmpnotches.Remove(x);
                 }
             }
@@ -912,7 +941,7 @@ namespace OpenPanoramaLib
                 int x = tmppeaks[i];
                 if (x < 0 || x >= theHoz.theHorizon.Length)
                 {
-                    //Console.WriteLine("Removed Peak out of range " + (double) x / 120 + " " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].elevation + " Distance " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].distance);
+                    //Console.WriteLine("Removed Peak out of range " + (double) x / 120 + " " + getY(x, useDeclinations) + " Distance " + getDistance(x));
                     tmppeaks.Remove(x);
                 }
             }
@@ -922,7 +951,7 @@ namespace OpenPanoramaLib
                 int x = tmpnotches[i];
                 if (x < 0 || x >= theHoz.theHorizon.Length)
                 {
-                    //Console.WriteLine("Removed Notch out of range at " + (double)x / 120 + " " + theHoz.theHorizon[(uint)(x) % theHoz.theHorizon.Length].elevation + " Distance " + theHoz.theHorizon[(uint)(x)  % theHoz.theHorizon.Length].distance);
+                    //Console.WriteLine("Removed Notch out of range at " + (double)x / 120 + " " + getY(x, useDeclinations) + " Distance " + getDistance(x));
                     tmpnotches.Remove(x);
                 }
             }
