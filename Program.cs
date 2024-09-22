@@ -950,7 +950,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
 
             try
             {
-                string lastFilename = job.rjParams.filename.Replace(".jpg", "_" + (int)job.rjParams.ages[job.rjParams.ages.Length - 1] + "_60_fgrid.jpg");
+                string lastFilename = job.rjParams.filename.Replace(".jpg", "_" + (int)job.rjParams.ages[job.rjParams.ages.Length - 1] + "_60_grid.jpg");
                 if (!job.rjParams.replaceFiles && File.Exists(lastFilename))
                 {
                     Console.WriteLine(lastFilename + " Already exists - Skipping - Remaining " + theJobs.Count);
@@ -976,7 +976,6 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                         {
                             Console.WriteLine("Exception caught " + ex.Message + " " + ex.StackTrace + " " + ex.InnerException);
                         }
-
                     }
 
 
@@ -1009,6 +1008,10 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                         Console.WriteLine("recreateHorizon SaveHorizonGPXCSV " + gpxfilename);
                         pi.SaveHorizonGPXCSV(true, gpxfilename);
                     }
+
+                    string endFilename = job.rjParams.filename.Replace(".jpg", ".end");
+                    System.IO.StreamWriter endoutfile = new System.IO.StreamWriter(endFilename);
+                    endoutfile.Close();
 
                     return;
                 }
@@ -1067,6 +1070,10 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                 {
                     PeakProcessAndCorrelate(siteFolder, stonestite, job);
                 }
+
+                string endFilename = job.rjParams.filename.Replace(".jpg", ".end");
+                System.IO.StreamWriter endoutfile = new System.IO.StreamWriter(endFilename);
+                endoutfile.Close();
             }
             finally
             {

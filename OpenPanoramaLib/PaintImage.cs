@@ -699,6 +699,12 @@ namespace OpenPanoramaLib
                         if (!rjParams.allGrids)
                         {
                             bool drawme = false;
+
+                            if (grd == 0 && rjParams.noGrid)
+                            {
+                                drawme = true;
+                            }
+
                             if (grd == 2 && rjParams.fineGrid)
                             {
                                 drawme = true;
@@ -709,16 +715,12 @@ namespace OpenPanoramaLib
                                 drawme = true;
                             }
 
-                            if (grd == 0 && !rjParams.grid && !rjParams.fineGrid)
-                            {
-                                drawme = true;
-                            }
-
                             if (!drawme)
                             {
                                 continue;
                             }
                         }
+
 
                         for (int y = 0; y < rjParams.ages.Length; y++)
                         {
@@ -732,25 +734,29 @@ namespace OpenPanoramaLib
 
                             gridSuffix = "";
 
+                            pi.rjParams.noGrid = false;
                             pi.rjParams.grid = false;
                             pi.rjParams.fineGrid = false;
 
                             switch (grd)
                             {
+                                case 0:
+                                    pi.rjParams.noGrid = true;
+                                    break;
                                 case 1:
                                     pi.rjParams.grid = true;
-                                    if (rjParams.allGrids)
-                                    {
-                                        gridSuffix = "_grid";
-                                    }
+                                    //if (rjParams.allGrids)
+                                    //{
+                                    gridSuffix = "_grid";
+                                    //}
                                     break;
                                 case 2:
                                     pi.rjParams.grid = true;
                                     pi.rjParams.fineGrid = true;
-                                    if (rjParams.allGrids)
-                                    {
+                                    //if (rjParams.allGrids)
+                                    //{
                                         gridSuffix = "_fgrid";
-                                    }
+                                    //}
                                     break;
                             }
 

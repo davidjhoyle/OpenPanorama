@@ -30,6 +30,7 @@ namespace OpenPanoramaLib
         public bool drawLocations = false;
         public bool drwSpots = false;
         public bool nodrwSpots = false;
+        public bool noGrid = false;
         public bool grid = false;
         public bool fineGrid = false;
         public bool allGrids = false;
@@ -219,8 +220,15 @@ namespace OpenPanoramaLib
                             fineGrid = true;
                             break;
 
+                        case "-nogrid":
+                            noGrid = true;
+                            break;
+
                         case "-allgrids":
                             allGrids = true;
+                            noGrid = true;
+                            fineGrid = true;
+                            grid = true;
                             break;
 
                         case "-stellarium":
@@ -752,6 +760,11 @@ namespace OpenPanoramaLib
                         }
                     }
 
+                    if (!allGrids && !noGrid && !fineGrid && !grid)
+                    {
+                        noGrid = true;
+                    }
+
                     if (!found)
                     {
                         throw (new Exception("Invalid Parameter Command Line Parameter " + i + " " + " " + args[i]));
@@ -785,6 +798,7 @@ namespace OpenPanoramaLib
             drawLocations = other.drawLocations;
             drwSpots = other.drwSpots;
             nodrwSpots = other.nodrwSpots;
+            noGrid = other.noGrid;
             grid = other.grid;
             fineGrid = other.fineGrid;
             allGrids = other.allGrids;
