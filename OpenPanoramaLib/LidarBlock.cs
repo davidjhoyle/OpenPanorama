@@ -19,6 +19,8 @@ namespace OpenPanoramaLib
         public int unset_points;
 
         public const int NODATA_const = -9999;
+        public const int NODATA2_const = 0;
+
         public bool changed = false;
 
         public LidarBlock(string fn)

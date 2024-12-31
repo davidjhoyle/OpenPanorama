@@ -959,7 +959,7 @@ namespace OpenPanoramaLib
                 if (ne != null)
                 {
                     double z = LidarBlockReader.GetHeight(minecraft, ne.X, ne.Y, true, eCountry, rjParams);
-                    if (z != LidarBlock.NODATA_const)
+                    if (z != LidarBlock.NODATA_const && z != LidarBlock.NODATA2_const)
                     {
                         return z;
                     }

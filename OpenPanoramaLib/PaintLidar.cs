@@ -113,7 +113,7 @@ namespace OpenPanoramaLib
             double deltadistdiag = Math.Sqrt(LIDAR_CellSize * LIDAR_CellSize * 2);
             double steepest = 99999;
 
-            if (z == LidarBlock.NODATA_const)
+            if (z == LidarBlock.NODATA_const || z == LidarBlock.NODATA2_const)
             {
                 return false;
             }
@@ -155,7 +155,7 @@ namespace OpenPanoramaLib
                 }
 
                 zs[i] = LidarBlockReader.GetHeight(rjParams.proximalInterpolation, xIndx, yIndx, true, eCountry, rjParams);
-                if (zs[i] == LidarBlock.NODATA_const)
+                if (zs[i] == LidarBlock.NODATA_const || zs[i] == LidarBlock.NODATA2_const)
                 {
                     return false;
                 }

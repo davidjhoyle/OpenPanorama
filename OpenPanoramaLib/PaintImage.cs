@@ -345,7 +345,7 @@ namespace OpenPanoramaLib
         }
 
 
-        public static string getJPGName(bool siteFolder, string county, string montype, string name, string mapref)
+        public static string getImageFilename(bool siteFolder, string county, string montype, string name, string mapref, string extension)
         {
             string foldername = getFolderName(siteFolder, county, montype, name, mapref);
             string filename = "";
@@ -353,16 +353,16 @@ namespace OpenPanoramaLib
             {
                 filename += foldername + "/";
             }
-            filename += cleanfilename(name + "_" + mapref + ".jpg").ToLower();
+            filename += cleanfilename(name + "_" + mapref + extension.ToLower()).ToLower();
             filename = filename.Replace(" ", "-").Replace("--", "-");
 
             return filename;
         }
 
 
-        public static string getJPGName(bool siteFolder, SunMoonRunJob job)
+        public static string getImageFilename(bool siteFolder, SunMoonRunJob job)
         {
-            return getJPGName(siteFolder, job.county, job.typestr, job.name, job.mapref);
+            return getImageFilename(siteFolder, job.county, job.typestr, job.name, job.mapref, job.rjParams.imageFileExtension);
         }
 
 
@@ -618,23 +618,23 @@ namespace OpenPanoramaLib
             // Save  the initial image as a PNG in case we need a template later.
             if (rjParams.createTemplate)
             {
-                SaveImage(rjParams.filename.Replace(".jpg", ".png"));
+                SaveImage(rjParams.filename.Replace(rjParams.imageFileExtension.ToLower(), ".png"));
             }
 
             if (rjParams.createHorizon)
             {
-                SaveHorizonGPXCSV(true, rjParams.filename.Replace(".jpg", ".gpx"));
+                SaveHorizonGPXCSV(true, rjParams.filename.Replace(rjParams.imageFileExtension.ToLower(), ".gpx"));
             }
 
             if (rjParams.createHorizonCSV)
             {
-                SaveHorizonGPXCSV(false, rjParams.filename.Replace(".jpg", ".csv"));
+                SaveHorizonGPXCSV(false, rjParams.filename.Replace(rjParams.imageFileExtension.ToLower(), ".csv"));
             }
 
             // Save  the initial image as a PNG in case we need a template later.
             if (rjParams.HiResHorizon)
             {
-                SaveHiResJSON(rjParams.filename.Replace(".jpg", "_hires.jsn"));
+                SaveHiResJSON(rjParams.filename.Replace(rjParams.imageFileExtension.ToLower(), "_hires.jsn"));
             }
 
 
@@ -763,7 +763,7 @@ namespace OpenPanoramaLib
                             string tmpfil = rjParams.filename;
                             if (rjParams.ages.Length > 1 || gridSuffix.Length > 0 || labelSuffix.Length > 0 || PiRes.Length > 1)
                             {
-                                tmpfil = rjParams.filename.Replace(".jpg", yearSuffix + resSuffix + gridSuffix + labelSuffix + ".jpg");
+                                tmpfil = rjParams.filename.Replace(rjParams.imageFileExtension.ToLower(), yearSuffix + resSuffix + gridSuffix + labelSuffix + rjParams.imageFileExtension.ToLower());
                             }
 
                             List<PassingPoint> passingPoints = new List<PassingPoint>();
@@ -778,14 +778,14 @@ namespace OpenPanoramaLib
 
                             pi.ProcessSingleImage(rjs, rjParams.ages[y], PiRes[rs], thehorizonLatLon, theZBuffer, passingPoints);
                             pi.SaveImage(tmpfil);
-                            //pi.SaveImage(tmpfil.Replace( ".jpg", "_2.png"));
+                            //pi.SaveImage(tmpfil.Replace( rjParams.imageFileExtension.ToLower(), "_2.png"));
                             Console.WriteLine("Written File " + tmpfil);
 
                             if (passingPoints.Count > 0 && this.rjParams.createPassingPoints)
                             {
-                                string pfilename = tmpfil.Replace(".jpg", "_sunmoon.gpx");
+                                string pfilename = tmpfil.Replace(rjParams.imageFileExtension.ToLower(), "_sunmoon.gpx");
                                 PassingPoint.DumpPassingPoints(true, site, rjParams.lat, rjParams.lon, pfilename, passingPoints);
-                                pfilename = tmpfil.Replace(".jpg", "_sunmoon.csv");
+                                pfilename = tmpfil.Replace(rjParams.imageFileExtension.ToLower(), "_sunmoon.csv");
                                 PassingPoint.DumpPassingPoints(false, site, rjParams.lat, rjParams.lon, pfilename, passingPoints);
                                 Console.WriteLine("Written Sun Moon Setting Points File " + pfilename);
                             }

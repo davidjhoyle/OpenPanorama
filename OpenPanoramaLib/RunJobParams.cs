@@ -79,7 +79,9 @@ namespace OpenPanoramaLib
         public bool proximalInterpolation = false;
         public double observerHeight = 1.5;
         public string[] siteTypes = new string[] { "Stone Circle", "Ring Cairn", "Standing Stone (Menhir)", "Standing Stones", "Stone Row / Alignment", "Henge", "Multiple Stone Rows / Avenue", "Timber Circle", "Viewpoint" };
-        public string blobStoreURL = "https://standingstonesorg.blob.core.windows.net/";
+        public string webStoreURL = "https://standingstonesorg.blob.core.windows.net/";
+        public string blobStoreContainerExtra = "0";
+        public string imageFileExtension = ".png";
         public string viewGPSURL = "https://gpsvisualizer.com/atlas/map?url=";
         public string viewImageURL = "https://www.standingstones.org/viewer.html?name=";
         public string megpURL = "https://www.megalithic.co.uk/article.php?sid=";
@@ -670,8 +672,16 @@ namespace OpenPanoramaLib
                                 siteTypes = args[++i].Split(splitterCSV);
                                 break;
 
+                            case "-ImageFileType":
+                                imageFileExtension = args[++i];
+                                break;
+
                             case "-BlobStoreURL":
-                                blobStoreURL = args[++i];
+                                webStoreURL = args[++i];
+                                if (webStoreURL.Contains("blob.core.windows.net"))
+                                {
+                                    blobStoreContainerExtra = "0";
+                                }
                                 break;
 
                             case "-ViewGPSURL":
@@ -843,8 +853,10 @@ namespace OpenPanoramaLib
             maxJobs = other.maxJobs;
             proximalInterpolation = other.proximalInterpolation;
             observerHeight = other.observerHeight;
+            imageFileExtension = other.imageFileExtension;
             siteTypes = other.siteTypes;
-            blobStoreURL = other.blobStoreURL;
+            webStoreURL = other.webStoreURL;
+            blobStoreContainerExtra = other.blobStoreContainerExtra;
             viewGPSURL = other.viewGPSURL;
             viewImageURL = other.viewImageURL;
             megpURL = other.megpURL;

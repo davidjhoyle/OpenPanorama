@@ -6,6 +6,8 @@ using Microsoft.VisualBasic.FileIO;
 using System.Xml.Linq;
 using OpenPanoramaLib;
 using System.Security.Cryptography;
+using System.Diagnostics;
+using System.Net.NetworkInformation;
 
 namespace OpenPanorama // Note: actual namespace depends on the project name.
 {
@@ -229,7 +231,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
             string countiesfilename = PaintImage.outfolder + "/" + theCountyFile;
             string countiesHTMLfilename = PaintImage.outfolder + "/" + theCountyHTML;
 
-            string gpxurl = rjs[0].rjParams.blobStoreURL + CC + "0/";
+            string gpxurl = rjs[0].rjParams.webStoreURL + CC + rjs[0].rjParams.blobStoreContainerExtra + "/";
 
             Console.WriteLine("Create Counties File " + countiesfilename + " Count = " + allCounties.Count);
             System.IO.StreamWriter outfile = new System.IO.StreamWriter(countiesfilename);
@@ -747,8 +749,9 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
             try
             {
                 bool createLockFile = false;
-
+                
                 filename = filename.Replace(".jpg", ".lck");
+                filename = filename.Replace(".png", ".lck");
                 FileInfo fi = new FileInfo(filename);
 
                 if (fi.Exists)
@@ -790,6 +793,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
         static public void RemoveLock(string filename)
         {
             filename = filename.Replace(".jpg", ".lck");
+            filename = filename.Replace(".png", ".lck");
             FileInfo fi = new FileInfo(filename);
             fi.Delete();
         }
@@ -939,7 +943,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
 
         static public void ProcessJob(bool siteFolder, SunMoonRunJob job)
         {
-            job.rjParams.filename = PaintImage.getJPGName(siteFolder, job).Replace("--", "-").Replace("--", "-");
+            job.rjParams.filename = PaintImage.getImageFilename(siteFolder, job).Replace("--", "-").Replace("--", "-");
             job.rjParams.lat = job.lat;
             job.rjParams.lon = job.lon;
             double height = -9999;
@@ -950,7 +954,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
 
             try
             {
-                string lastFilename = job.rjParams.filename.Replace(".jpg", "_" + (int)job.rjParams.ages[job.rjParams.ages.Length - 1] + "_60_grid.jpg");
+                string lastFilename = job.rjParams.filename.Replace(job.rjParams.imageFileExtension.ToLower(), "_" + (int)job.rjParams.ages[job.rjParams.ages.Length - 1] + "_60_grid" + job.rjParams.imageFileExtension);
                 if (!job.rjParams.replaceFiles && File.Exists(lastFilename))
                 {
                     Console.WriteLine(lastFilename + " Already exists - Skipping - Remaining " + theJobs.Count);
@@ -984,7 +988,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                         PaintImage pi = new PaintImage(job.rjParams, true);
                         SiteHorizonAndPeakData shapd = new SiteHorizonAndPeakData();
 
-                        string gpxfilename = job.rjParams.filename.Replace(".jpg", ".gpx");
+                        string gpxfilename = job.rjParams.filename.Replace(job.rjParams.imageFileExtension.ToLower(), ".gpx");
 
                         Console.WriteLine("recreateHorizon readGPXData " + gpxfilename);
 
@@ -1009,9 +1013,23 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                         pi.SaveHorizonGPXCSV(true, gpxfilename);
                     }
 
-                    string endFilename = job.rjParams.filename.Replace(".jpg", ".end");
-                    System.IO.StreamWriter endoutfile = new System.IO.StreamWriter(endFilename);
-                    endoutfile.Close();
+                    string endFilename = job.rjParams.filename.Replace(job.rjParams.imageFileExtension.ToLower(), ".end");
+                    try
+                    {
+                        System.IO.StreamWriter endoutfile = new System.IO.StreamWriter(endFilename);
+                        endoutfile.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex.Message.ToString().Contains("because it is being used by another process"))
+                        {
+                            Console.WriteLine("Exception caught and handled " + ex.Message + " " + ex.StackTrace + " " + ex.InnerException);
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
 
                     return;
                 }
@@ -1071,7 +1089,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                     PeakProcessAndCorrelate(siteFolder, stonestite, job);
                 }
 
-                string endFilename = job.rjParams.filename.Replace(".jpg", ".end");
+                string endFilename = job.rjParams.filename.Replace(job.rjParams.imageFileExtension.ToLower(), ".end");
                 System.IO.StreamWriter endoutfile = new System.IO.StreamWriter(endFilename);
                 endoutfile.Close();
             }

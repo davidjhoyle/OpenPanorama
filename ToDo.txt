@@ -199,3 +199,20 @@ Update the Peak processing to handle north properly.
 
 
 Update to read the horizon data from the CSV file.
+
+
+Create the Linux versions... (from package manager console in the UI)
+PM> dotnet publish . -r linux-arm64 -c Release
+PM> dotnet publish . -r linux-arm -c Release
+PM> dotnet publish . -r linux-x64 -c Release
+
+
+
+Fix the following exception:
+f:\standingstonesorg\xx/powys/standing-stone-menhir/maen-llia-runes-stone_sn9248419163/maen-llia-runes-stone_sn9248419163_0_60_grid.png Already exists - Skipping - Remaining 0
+Exception caught The process cannot access the file 'f:\standingstonesorg\xx\powys\standing-stone-menhir\maen-llia-runes-stone_sn9248419163\maen-llia-runes-stone_sn9248419163.end' because it is being used by another process.    at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.StreamWriter.ValidateArgsAndOpenPath(String path, Boolean append, Encoding encoding, Int32 bufferSize)
+   at OpenPanorama.Program.ProcessJob(Boolean siteFolder, SunMoonRunJob job) in C:\Users\david\source\repos\OpenPanorama\OpenPanorama\Program.cs:line 1014
+GetLock f:\standingstonesorg\xx/powys/standing-stone-menhir/maen-llia-runes-stone_sn9248419163/maen-llia-runes-stone_sn9248419163.lck Success
