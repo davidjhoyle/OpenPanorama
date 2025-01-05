@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="StandingStonesScripts\" />
     <Folder Include="Resources\" />
   </ItemGroup>
 
