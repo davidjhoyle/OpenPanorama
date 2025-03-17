@@ -537,7 +537,13 @@ namespace OpenPanoramaLib
                 catch
                 {
                     if (!quiet) OutputStr("*");
-                    BadOSGrids.Add(filesearcher);
+                    lock (BadOSGrids)
+                    {
+                        if (!BadOSGrids.Contains(filesearcher))
+                        {
+                            BadOSGrids.Add(filesearcher);
+                        }
+                    }
                     return null;
                 }
 
@@ -571,7 +577,14 @@ namespace OpenPanoramaLib
                                             }
                                             if (oldest != null)
                                             {
-                                                xdocCacheLines.Remove(oldest);
+                                                lock (xdocCacheLines)
+                                                {
+                                                    if (xdocCacheLines.ContainsKey(oldest))
+                                                    {
+                                                        xdocCacheLines.Remove(oldest);
+                                                    }
+                                                }
+                                                
                                                 //Console.WriteLine("Evicted Cache Item " + oldest + " Time " + oldestTime);
                                                 Console.Write(" -");
                                                 GeneralUtilClasses.RunGC();
@@ -581,7 +594,13 @@ namespace OpenPanoramaLib
                                         XDocCacheLine alin = new XDocCacheLine();
                                         alin.lastAccess = lastAccessTicker++;
                                         alin.xdoc = doc;
-                                        xdocCacheLines.Add(filesearcher, alin);
+                                        lock (xdocCacheLines)
+                                        {
+                                            if (!xdocCacheLines.ContainsKey(filesearcher))
+                                            {
+                                                xdocCacheLines.Add(filesearcher, alin);
+                                            }
+                                        }
                                         //Console.WriteLine("Added Cache Item " + filesearcher + " Time " + alin.lastAccess);
                                         if (!quiet) OutputStr(" +");
 
@@ -605,7 +624,13 @@ namespace OpenPanoramaLib
             }
 
             //Console.WriteLine("GetOSVectorData return null " + GridRef);
-            BadOSGrids.Add(filesearcher);
+            lock (BadOSGrids)
+            {
+                if (!BadOSGrids.Contains(filesearcher))
+                {
+                    BadOSGrids.Add(filesearcher);
+                }
+            }
             return null;
         }
 
@@ -959,7 +984,7 @@ namespace OpenPanoramaLib
                 if (ne != null)
                 {
                     double z = LidarBlockReader.GetHeight(minecraft, ne.X, ne.Y, true, eCountry, rjParams);
-                    if (z != LidarBlock.NODATA_const && z != LidarBlock.NODATA2_const)
+                    if (z != LidarBlock.NODATA_const ) // && z != LidarBlock.NODATA2_const)
                     {
                         return z;
                     }

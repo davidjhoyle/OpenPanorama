@@ -253,8 +253,10 @@ namespace OpenPanoramaLib
         }
 
 
-        static public void createfolders(string folder)
+        static public void createfolders(string folder, bool isFile)
         {
+            //Console.WriteLine("createfolders " + folder);
+
             if (folder == null | folder.Length == 0)
             {
                 return;
@@ -263,16 +265,20 @@ namespace OpenPanoramaLib
             try
             {
                 string tmp;
-                for (int i = 0; i < folder.Length; i++)
+                for (int i = 1; i < folder.Length; i++)
                 {
                     tmp = folder;
                     if (tmp[i] == '/' || tmp[i] == '\\')
                     {
                         tmp = tmp.Substring(0, i);
+                        //Console.WriteLine("createfolders CreateDirectory " + tmp );
                         FileSystem.CreateDirectory(tmp);
                     }
                 }
-                FileSystem.CreateDirectory(folder);
+                if (!isFile)
+                {
+                    FileSystem.CreateDirectory(folder);
+                }
             }
             catch (Exception ex)
             {
@@ -338,7 +344,7 @@ namespace OpenPanoramaLib
                 foldername = foldername.Trim();
 
                 foldername = cleanfilename(foldername).ToLower();
-                createfolders(foldername);
+                createfolders(foldername, false);
             }
 
             return foldername;

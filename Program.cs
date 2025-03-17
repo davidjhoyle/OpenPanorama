@@ -772,6 +772,8 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
 
                 if (createLockFile)
                 {
+                    PaintImage.createfolders(filename, true);
+
                     var stream = fi.Create();
                     stream.Close();
                     Console.WriteLine("GetLock " + filename + " Success");
@@ -1023,7 +1025,7 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                     {
                         if (ex.Message.ToString().Contains("because it is being used by another process"))
                         {
-                            Console.WriteLine("Exception caught and handled " + ex.Message + " " + ex.StackTrace + " " + ex.InnerException);
+                            Console.WriteLine("Exception caught and handled " + ex.Message );
                         }
                         else
                         {
