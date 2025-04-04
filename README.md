@@ -1,1 +1,95 @@
 # OpenPanorama
+Originally developed to create images for the the Standing Stones web site (www.standingstones.org). Still a work in progress so there are some rough edges.
+Panorama is able to use SRTM, OS 50m data and LIDAR data to draw landscapes and supports shaded and wireframe output.
+
+Multiple command lines options are available:-
+-drawJobs (draw cairns, stones etc). Attempts to draw circles, stones and cairns when bulk processing from a list of CSV files.
+-PosRange <angle> - Draw degrees above horizon. The default is 20 degrees above horizontal.
+-NegRange <angle> - Draw degrees below horizon. The default is 5 degrees below horizontal.
+-lidar (Process LIDAR data for locations).
+-lidarfolder (Location where the LIDAR source data is stored (ZIPs and ASC files))
+-lidarcache (Location to save processed binary LIDAR cache data for later use)
+-lidarrange MaxDistance (Maximum distance (m) from observer to use LIDAR data - default 10000m)
+-f OutputFilename
+-r (replace file if it already exists)
+-country <xx> - short country code, e.g. FR for France – uses ISO country codes apart from UK for GB
+-CountryLong <country> - long country name, e.g. France
+-match <sitename> - only processes bulk sites form CSV that match the name.
+-region <region> - Region Filter - only process sites from CSV that match region
+-hf <height> - Height Filter – only process sites from CSV above height.
+-county <CountyFile> - Region of the site
+-countyHTML <CountyFileHTML> - obsolete - not generally used anymore.
+-locs (dump location GPX files when bulk processing from a list of CSV files. The GPX files are used to display maps of specific countries/regions)
+-mr - Create multiple resolutions of images (30, 60 pixels per degree). 30, 60 pixels per degree). Create images at the specific Pixels Per Degree value (default 120) and half resolution (60) and quarter resolution (30).
+-ch - Save Horizon GPX File. This allows a map to be displayed of the horizon as seen from a site.
+-pp - Create Passing Points GPX File, where the sun/moon cross the horizon. These GPX files allow a map to be displayed showing the sun and moon rising and setting positions for a site.
+-labels (Add OS spot height labels - The OS Map data has spot heights that by default are not drawn. This adds these in with Latitude and Longitude.)
+-spots (Add OS spot markers when processing CSV Bulk Data - The OS Map data has spot heights that by default are not drawn. This adds these in with Latitude and Longitude.)
+-nospots (Don't add OS spot markers)
+-contours (Add OS Contours)
+-srtm (Use SRTM Data)
+-grid (add a grid)
+-fgrid (fine grid)
+-allgrids (Create files with no grid, grid and fine grid in one go)
+-stellarium (Generate Stellarium ZIP file)
+-out OutputFolder
+-srtmFolder <folder> - SRTM Source folder name, e.g. %USERPROFILE%\Appdata\roaming\SRTM Data
+-osFolder <folder> - OS Maps 50M data FOlder e.g. %USERPROFILE%\Appdata\roaming\OS Terrain 50
+-p Pixels (pixels per degree - default 120)
+-oldcsv <oldcsvfile> - Not really used any more
+-json JSONOutFile (Create JSON File)
+-max MaxDistance in M
+-l Location
+-a age
+-t (Create Template file)
+-tf InputTemplateFilename
+-d Description
+-h Height
+-csv CSVFiles (Bulk process from a list of CSV files)
+-threads N (Number of threads to run)
+-Solstice - Draw Sun Solstices
+-Equinox - Draw Sun Equinox
+-xq - Draw Sun Cross Quarters
+-Moon+e+i - Draw Moon +e+i
+-Moon+e-i - Draw Moon +e-i
+-Moon-e+i - Draw Moon -e+i
+-Moon-e-i - Draw Moon -e-i
+-AllSun - Draw all Sun positions
+-AllMoon - Draw all Moon positions
+-CacheLIDAR N (Number of LIDAR tiles to cache (400MB per tile, default 4)
+-CacheSRTM N (Number of SRTM tiles to cache (26MB per tile, default 12)
+-CacheOSMap N (Number of OS Map tiles to cache (few MB each, default 150)
+-ColourSea <RGB> - Default is Hex RGB (e.g. 000000) for Black
+-ColourSky <RGB> - Default is Hex RGB for Blue
+-ColourBase <RGB> - Default is Hex RGB for DarkGreen
+-ColourTops <RGB> - Default is Hex RGB for Brown
+-ColourDistant <RGB> - Default is Hex RGB for DimGray
+-ColourOriginLatitude <latitude> - default 45
+-ColourSlopeAdjust <int> - default 20
+-ColourMaxDist <metres> - default 10k
+-ColourGreenBrownShades <count) - default 40
+-ColourGreyCount <count) - default 80
+-ColourMaxHeight <height> - max height colour in metres
+-ColourMoon <RGB> - Default is Hex RGB for Grey
+-ColourSun <RGB> - Default is Hex RGB for Yellow
+-ColourSaMText <RGB> - Sun and Moon Text - Default is Hex RGB for Black
+-ColourTitle <RGB> - Default is Hex RGB for White
+-ColourCairns <RGB> - Default is Hex RGB for Red
+-ColourStones <RGB> - Default is Hex RGB for DarkGrey
+-ColourSpotHeight <RGB> - Default is Hex RGB for Dark Red
+-ColourReticleBackground <RGB> - Default is Hex RGB for White
+-ColourReticleMajor <RGB> - Default is Hex RGB for Dark Grey
+-ColourReticleMinor <RGB> - Default is Hex RGB for Grey
+-ColourReticleHorizontal <RGB> - Default is Hex RGB for Black
+-ColourReticleText <RGB> - Default is Hex RGB for Black
+-CopyrightNotice <Text> - Change Copyright Notice Text
+-DumpHeights <string> - Where string is latitue, longitude, lat Increment, lon Increment, lat Count, lon count (e.g. "53.068053, -4.076761,2.777777777777778e-5,2.777777777777778e-5,100,100")
+-MaxJobs <number> - Stop processesing after at most N jobs (the MSFT ZIP library leaks badly so useful to restart after N jobs - for LIDAR sites set N to ~3)
+-ProximalInterpolation - Perform Proximal Interpolation rather than Linear (Mincraft mode)
+-ObserverHeight <height> - Observer eye height (1.5m)
+-SiteTypes = <types> - where default types are "Stone Circle,Ring Cairn,Standing Stone(Menhir),Standing Stones,Stone Row / Alignment,Henge,Multiple Stone Rows / Avenue,Timber Circle,Viewpoint"
+-BlobStoreURL <URL> - where URL default is storageURL + ""
+-ViewGPSURL <URL> - where URL default is "https://gpsvisualizer.com/atlas/map?url="
+-ViewImageURL <URL> - where URL default is "http://www.standingstones.org/viewer.html?name="
+-MegpURL <URL> - where URL default is "https://www.megalithic.co.uk/article.php?sid="
+-StandStonesHost <URL> - where host default is www.standingstones.org
