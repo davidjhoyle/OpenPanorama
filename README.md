@@ -1,6 +1,6 @@
 # OpenPanorama
-Originally developed to create images for the the Standing Stones web site (www.standingstones.org). Still a work in progress so there are some rough edges.
-Written in C# and targetting Windows, and Linux builds for command line use.
+Originally developed to create highly accurate landscape images for the the Standing Stones web site (www.standingstones.org). Still a work in progress so there are some rough edges in places.
+Written in C# and targetting Windows, and Linux builds for command line use with options for bulk/batch generation and multiple thread support.
 Panorama is able to use SRTM, OS 50m data and LIDAR data to draw landscapes and supports shaded and wireframe output.
 
 Multiple command lines options are available:
