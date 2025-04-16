@@ -588,10 +588,17 @@ namespace OpenPanorama // Note: actual namespace depends on the project name.
                                     if (rjParms.sidfiles != null && rjParms.sidfiles.Length > 0)
                                     {
                                         string sidsfilename = rjParms.sidfiles + "/" + rj.url + ".json";
-                                        Console.WriteLine("Open SID File, Out = " + sidsfilename + " " + rj.name + " " + rj.county + " " + rjParms.myCountryLong);
-                                        System.IO.StreamWriter sidfile = new System.IO.StreamWriter(sidsfilename);
-                                        dumpJSONDetails(true, sidfile, rj);
-                                        sidfile.Close();
+                                        if (!File.Exists(sidsfilename))
+                                        {
+                                            Console.WriteLine("Open SID File, Out = " + sidsfilename + " " + rj.name + " " + rj.county + " " + rjParms.myCountryLong);
+                                            System.IO.StreamWriter sidfile = new System.IO.StreamWriter(sidsfilename);
+                                            dumpJSONDetails(true, sidfile, rj);
+                                            sidfile.Close();
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("SID File already exists, skipping " + sidsfilename + " " + rj.name + " " + rj.county + " " + rjParms.myCountryLong);
+                                        }
                                     }
                                 }
                             }
