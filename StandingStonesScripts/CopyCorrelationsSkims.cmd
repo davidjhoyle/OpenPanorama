@@ -22,7 +22,7 @@ md "C:\Users\david\Desktop\Standing Stones\Peaks\"
 del "C:\Users\david\Desktop\Standing Stones\Peaks\*_Peaks.csv"
 for /r %%x in (*_Peaks.csv) do @copy /y "%%x" "C:\Users\david\Desktop\Standing Stones\Peaks\"
 type "C:\Users\david\Desktop\Standing Stones\Peaks\*_Peaks.csv" > "C:\Users\david\Desktop\Standing Stones\Peaks\AllPeaks.csv"
-echo Name,GridRef,MonType,Region,Country,IsPeak,SlopeWeight,ElevDiffWeight,PeakIndex,HorizonLatitude,HorizonLogitude,HorizonElevation,HorizonDistance,HorizonBearing > f:\standingstonesorg\uk\AllPeaks.csv
+echo Name,GridRef,MonType,Region,Country,IsPeak,SlopeWeight,ElevDiffWeight,PeakIndex,HorizonLatitude,HorizonLongitude,HorizonElevation,HorizonDistance,HorizonBearing > f:\standingstonesorg\uk\AllPeaks.csv
 findstr /v /i gridref "C:\Users\david\Desktop\Standing Stones\Peaks\AllPeaks.csv" >> f:\standingstonesorg\uk\AllPeaks.csv
 
 
@@ -31,7 +31,7 @@ md "C:\Users\david\Desktop\Standing Stones\declpeaks\"
 del "C:\Users\david\Desktop\Standing Stones\declpeaks\*_declpeaks.csv"
 for /r %%x in (*_declpeaks.csv) do @copy /y "%%x" "C:\Users\david\Desktop\Standing Stones\declpeaks\"
 type "C:\Users\david\Desktop\Standing Stones\declpeaks\*_declpeaks.csv" > "C:\Users\david\Desktop\Standing Stones\declpeaks\Alldeclpeaks.csv"
-echo Name,GridRef,MonType,Region,Country,IsPeak,SkimWidth,ElevDiffWeight,PeakIndex,HorizonLatitude,HorizonLogitude,Declination,HorizonDistance,HorizonBearing,Quality,NotchDeclin > f:\standingstonesorg\uk\Alldeclpeaks.csv
+echo Name,GridRef,MonType,Region,Country,IsPeak,SkimWidth,ElevDiffWeight,PeakIndex,HorizonLatitude,HorizonLongitude,Declination,HorizonDistance,HorizonBearing,Quality,NotchDeclin > f:\standingstonesorg\uk\Alldeclpeaks.csv
 findstr /v /i gridref "C:\Users\david\Desktop\Standing Stones\declpeaks\Alldeclpeaks.csv" >> f:\standingstonesorg\uk\Alldeclpeaks.csv
 
 

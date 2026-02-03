@@ -645,7 +645,7 @@ namespace OpenPanoramaLib
                     Console.WriteLine("Create CSV Peak File " + filename);
                     string csvHeader = csvPeakHeaderPrefix +
                         ",IsPeak," + weightStr + ",ElevDiffWeight,PeakIndex" +
-                        ",HorizonLatitude,HorizonLogitude," + heightstr + ",HorizonDistance,HorizonBearing,Declination" + qualitystr;
+                        ",HorizonLatitude,HorizonLongitude," + heightstr + ",HorizonDistance,HorizonBearing,Declination2" + qualitystr;
                     file.WriteLine(csvHeader);
 
                     foreach (var peakInfo in tmppeakList)

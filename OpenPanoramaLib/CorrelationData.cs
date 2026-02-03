@@ -156,7 +156,7 @@ namespace OpenPanoramaLib
                                 ",CorrelationValueWeighted,CorrelationValue,SlopeWeighted,ElevDiffWeighted,DeltaBearing" +
                                 ",RASPLatitude,RASPLongitude,Body,TCB,RASPBearing,RASPElevation,RASPSetting" +
                                 ",IsPeak,SlopeWeight,ElevDiffWeaight,PeakIndex" +
-                                ",HorizonLatitude,HorizonLogitude,HorizonElevation,HorizonDistance,HorizonBearing";
+                                ",HorizonLatitude,HorizonLongitude,HorizonElevation,HorizonDistance,HorizonBearing";
                         file.WriteLine(csvHeader);
 
                         foreach (var c in correlations)
